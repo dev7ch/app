@@ -3,12 +3,8 @@
  * @param  {String}   src Location of the file on the web
  * @return {Promise}      Resolves the extension module, rejects loading error
  */
-// let index = 0;
 
-// Style urls collector
-let styles = [];
-
-// let auth = JSON.parse(window.sessionStorage['directus-sdk-js']);
+// let auth = window.sessionStorage["directus-sdk-js"] ? JSON.parse(window.sessionStorage["directus-sdk-js"]) : null;
 
 export default function loadExtension(src) {
   return new Promise((resolve, reject) => {
@@ -47,37 +43,43 @@ export default function loadExtension(src) {
     script.onerror = onerror;
     script.src = src;
 
+    // Adding scripts
     document.body.appendChild(script);
 
-    // Collection styles (no in use)
-    styles.push(link);
-
-    // Check if if remote css file exists
+    // Prepare CSS Append
+    // Check if if remote css file exists (Workaround)
     async function fileExists(file) {
       let xhr = new XMLHttpRequest(),
-        method = "head",
+        method = "HEAD",
         url = file;
-      xhr.open(method, url, true);
       xhr.onreadystatechange = function() {
-        // Request finished. Do processing here.
-        if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
-          // Request finished. Do processing here.
+        if (xhr.readyState !== 4) return;
+        if (
+          this.readyState === XMLHttpRequest.DONE &&
+          this.status >= 200 &&
+          this.status < 300
+        ) {
+          // Request finished. Do processing here;
           document.head.appendChild(link);
-
-          //console.log(xhr);
-          //console.log("Found:", link.href);
+          // console.log("Found:", link.href);
         } else if (this.status === 404) {
+          console.clear();
+          // console.log = function() {return "No Styles required:", link.href};
+          // console.log('Please exclude console clearing :)')
           xhr.abort();
         }
+        xhr.abort();
       };
-      xhr.send(null);
-    }
 
-    try {
-      fileExists(link.href);
-    } catch (e) {
-      return e.message;
+      if ("withCredentials" in xhr) {
+        xhr.withCredentials = false;
+        xhr.open(method, url, true);
+        //xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(null);
+      } else {
+        return;
+      }
     }
-    // index++;
+    fileExists(link.href);
   });
 }

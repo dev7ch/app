@@ -285,6 +285,7 @@ export default {
       this.saving = true;
 
       const id = this.$helpers.shortid.generate();
+
       this.$store.dispatch("loadingStart", { id });
 
       this.$api
@@ -498,7 +499,6 @@ export default {
       this.confirmFieldRemove = true;
     },
     removeField(fieldName) {
-      this.removingField = true;
 
       const id = this.$helpers.shortid.generate();
       this.$store.dispatch("loadingStart", { id });
@@ -508,7 +508,6 @@ export default {
         .then(() => {
           this.$store.dispatch("loadingFinished", id);
           this.fields = this.fields.filter(({ field }) => field !== fieldName);
-          this.removingField = false;
           this.fieldToBeRemoved = null;
           this.confirmFieldRemove = false;
           this.$notify({

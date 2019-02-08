@@ -41,19 +41,19 @@
         </option>
       </select>
     </div>
-    <PassPrompt :projectUrl="selectionUrl" :projectName="selectionName" />
+    <NavLogin :projectUrl="selectionUrl" :projectName="selectionName" />
   </div>
 </template>
 
 <script>
 import VSignal from "../../signal.vue";
-import PassPrompt from "./nav-login.vue";
+import NavLogin from "./nav-login.vue";
 
 export default {
   name: "project-switcher",
   components: {
     VSignal,
-    PassPrompt
+      NavLogin
   },
   data() {
     return {

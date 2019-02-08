@@ -1,5 +1,5 @@
 <template>
-  <div class="project-switcher">
+  <div class="project-switcher" :class="{'is-active':$store.state.auth.projectName !== selectionName}">
     <div
       :class="{
         slow: $store.getters.signalStrength == 1,
@@ -38,11 +38,7 @@
         </option>
       </select>
     </div>
-    <template
-      v-if="!!selectionName && selectionName !== $store.state.auth.projectName"
-    >
-      <PassPrompt :projectUrl="selectionUrl" :projectName="selectionName" />
-    </template>
+    <PassPrompt :projectUrl="selectionUrl" :projectName="selectionName" />
   </div>
 </template>
 
@@ -60,7 +56,7 @@ export default {
     return {
       active: false,
       selectionUrl: null,
-      selectionName: null
+      selectionName: this.$store.state.auth.projectName
     };
   },
   computed: {
@@ -90,51 +86,84 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.project-switcher > div {
-  height: calc(
-    var(--header-height) + 1px
-  ); /* Force border bottom to be aligned with listing headers */
-  width: 100%;
-  border-bottom: 1px solid var(--lightest-gray);
-  display: flex;
-  align-items: center;
-  color: var(--accent);
-  margin-bottom: 10px;
-  position: relative;
+.project-switcher {
 
-  &.slow {
-    color: var(--warning);
-    svg {
-      fill: var(--warning);
-    }
-    i {
-      color: var(--warning);
-    }
+  .nav-login {
+    max-height: 0;
+    opacity: 0;
+    transition: min-height var(--fast) var(--transition), opacity var(--slow) var(--transition);
+    background-color: var(--white);;
+    z-index: 1;
   }
 
-  &.disconnected {
-    color: var(--danger);
-    svg {
-      fill: var(--danger);
-    }
-    i {
-      color: var(--danger);
-    }
-  }
-
-  svg {
-    fill: var(--accent);
-  }
-
-  i {
+  > div {
+    height: calc(
+            var(--header-height) + 1px
+    ); /* Force border bottom to be aligned with listing headers */
+    width: 100%;
+    border-bottom: 1px solid var(--lightest-gray);
+    display: flex;
+    align-items: center;
     color: var(--accent);
+    margin-bottom: 10px;
+    position: relative;
+    transition: border-bottom-width .15s ease-in-out;
+
+    &.slow {
+      color: var(--warning);
+      svg {
+        fill: var(--warning);
+      }
+      i {
+        color: var(--warning);
+      }
+    }
+
+
+    &.disconnected {
+      color: var(--danger);
+      svg {
+        fill: var(--danger);
+      }
+      i {
+        color: var(--danger);
+      }
+    }
+
+    svg {
+      fill: var(--accent);
+    }
+
+    i {
+      color: var(--accent);
+    }
+
+    span {
+      flex-grow: 1;
+      line-height: 24px;
+      text-align: left;
+
+    }
   }
 
-  span {
-    flex-grow: 1;
-    line-height: 24px;
-    text-align: left;
+  &.is-active {
+    .nav-login {
+      opacity: 1;
+      max-height: 100vh;
+      border-bottom: 1px solid var(--lightest-gray);
+      margin-bottom: 20px;
+      margin-top: 20px;
+    }
+    span {
+      color: var(--dark-gray);
+    }
+
+    > div {
+      //border-bottom-width: 0;
+    }
+
   }
+
 }
 
 .icon {

@@ -75,7 +75,9 @@ export default {
       };
 
       return this.$store.dispatch("login", credentials).then(() => {
-        window.location.reload();
+          console.log(this.$router.push('/collections'))
+          this.$router.push('/collections')
+          window.location.reload();
       });
     }
   }
@@ -83,13 +85,19 @@ export default {
 </script>
 <style lang="scss">
 .nav-login {
+
+  width: 100%;
   position: relative;
+  overflow: hidden;
+  .nav-login-form {
+    position: relative;
+  }
 
   .buttons {
     button {
       width: 100%;
     }
-    margin-bottom: 40px;
+    margin-bottom: 20px;
   }
 
   .nav-login-icon {
@@ -103,14 +111,18 @@ export default {
   }
 
   .nav-login-title {
-    padding-left: 25px;
+    padding-left: 26px;
   }
 }
 
 .material-input {
   position: relative;
   width: 100%;
-  margin: 20px 0 20px;
+  margin: 10px 20px 10px 0;
+
+  &:last-of-type {
+    margin-bottom: 20px;
+  }
 
   input {
     border: 0;

@@ -77,8 +77,8 @@ export default {
       };
 
       return this.$store.dispatch("login", credentials).then(() => {
-          this.$router.push('/collections')
-          window.location.reload();
+        this.$router.push("/collections");
+        window.location.reload();
       });
     }
   }
@@ -185,5 +185,4 @@ export default {
     }
   }
 }
-
 </style>

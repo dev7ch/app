@@ -1,5 +1,8 @@
 <template>
-  <div class="project-switcher" :class="{'is-active':$store.state.auth.projectName !== selectionName}">
+  <div
+    class="project-switcher"
+    :class="{ 'is-active': $store.state.auth.projectName !== selectionName }"
+  >
     <div
       :class="{
         slow: $store.getters.signalStrength == 1,
@@ -33,7 +36,6 @@
           :name="name"
           :value="url"
           :selected="url === currentUrl || url + '/' === currentUrl"
-          >{{ name }}</option
         >
           {{ name }}
         </option>
@@ -88,18 +90,18 @@ export default {
 
 <style lang="scss" scoped>
 .project-switcher {
-
   .nav-login {
     max-height: 0;
     opacity: 0;
-    transition: min-height var(--fast) var(--transition), opacity var(--slow) var(--transition);
-    background-color: var(--white);;
+    transition: min-height var(--fast) var(--transition),
+      opacity var(--slow) var(--transition);
+    background-color: var(--white);
     z-index: 1;
   }
 
   > div {
     height: calc(
-            var(--header-height) + 1px
+      var(--header-height) + 1px
     ); /* Force border bottom to be aligned with listing headers */
     width: 100%;
     border-bottom: 1px solid var(--lightest-gray);
@@ -108,7 +110,7 @@ export default {
     color: var(--accent);
     margin-bottom: 10px;
     position: relative;
-    transition: border-bottom-width .15s ease-in-out;
+    transition: border-bottom-width 0.15s ease-in-out;
 
     &.slow {
       color: var(--warning);
@@ -119,7 +121,6 @@ export default {
         color: var(--warning);
       }
     }
-
 
     &.disconnected {
       color: var(--danger);
@@ -143,7 +144,6 @@ export default {
       flex-grow: 1;
       line-height: 24px;
       text-align: left;
-
     }
   }
 
@@ -158,9 +158,7 @@ export default {
     span {
       color: var(--dark-gray);
     }
-
   }
-
 }
 
 .icon {

@@ -78,7 +78,6 @@ export default {
 
       let recoveryUrl = window.__DirectusConfig__.api[this.$props.projectUrl];
 
-      console.log(this.$store.state.auth);
       return this.$store
         .dispatch("changeAPI", this.$props.projectUrl)
         .then(() => {

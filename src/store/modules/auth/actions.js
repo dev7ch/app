@@ -127,8 +127,6 @@ export function changeAPI({ commit }, url) {
   const parts = url.split("/");
   const project = parts.pop() || parts.pop();
   const newUrl = parts.join("/");
-
-  console.log(url);
   commit(CHANGE_API, { url: newUrl, project });
 }
 
@@ -141,6 +139,5 @@ export function clearAuth({ commit }) {
 }
 
 export function recoverAuth({ commit }, name) {
-  console.log(name);
   commit(RECOVER_AUTH, name);
 }

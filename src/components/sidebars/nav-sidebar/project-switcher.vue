@@ -25,30 +25,42 @@
         v-if="Object.keys(urls).length > 1"
         :value="currentUrl"
         @change.prevent="changeUrl"
+        @click="changeUrl"
       >
         <option
           v-for="(name, url) in urls"
           :key="name + url"
+          :name="name"
           :value="url"
-          :checked="url === currentUrl || url + '/' === currentUrl"
-          >{{ name }}</option
+          :selected="url === currentUrl || url + '/' === currentUrl"
         >
+          {{ name }}
+        </option>
       </select>
     </div>
+    <template
+      v-if="!!selectionName && selectionName !== $store.state.auth.projectName"
+    >
+      <PassPrompt :projectUrl="selectionUrl" :projectName="selectionName" />
+    </template>
   </div>
 </template>
 
 <script>
 import VSignal from "../../signal.vue";
+import PassPrompt from "./nav-login.vue";
 
 export default {
   name: "project-switcher",
   components: {
-    VSignal
+    VSignal,
+    PassPrompt
   },
   data() {
     return {
-      active: false
+      active: false,
+      selectionUrl: null,
+      selectionName: null
     };
   },
   computed: {
@@ -59,14 +71,19 @@ export default {
     },
     currentUrl() {
       return (
-        this.$store.state.auth.url + "/" + this.$store.state.auth.env + "/"
+        this.$store.state.auth.url + "/" + this.$store.state.auth.project + "/"
       );
     }
   },
   methods: {
     changeUrl(event) {
       const newUrl = event.target.value;
-      this.$store.dispatch("changeAPI", newUrl);
+      const newName = window.__DirectusConfig__.api[newUrl]
+        ? window.__DirectusConfig__.api[newUrl]
+        : this.$store.state.auth.projectName;
+
+      this.selectionUrl = newUrl;
+      this.selectionName = newName;
     }
   }
 };

@@ -36,6 +36,7 @@ function extractHostname(url) {
 }
 
 export function login({ commit }, credentials) {
+  console.log(credentials);
   commit(LOGIN_PENDING);
 
   const { url } = credentials;
@@ -122,14 +123,18 @@ export function logout({ commit }, error) {
   });
 }
 
-export function changeAPI({ commit, dispatch }, url) {
-  dispatch("logout").then(() => {
-    const parts = url.split("/");
-    const project = parts.pop() || parts.pop();
-    const newUrl = parts.join("/");
+export function changeAPI({ commit }, url) {
+  const parts = url.split("/");
+  const project = parts.pop() || parts.pop();
+  const newUrl = parts.join("/");
 
-    commit(CHANGE_API, { url: newUrl, project });
-  });
+  let currentProject = JSON.parse(window.sessionStorage["directus-sdk-js"])
+    .project;
+
+  console.log(currentProject);
+  console.log(project);
+
+  commit(CHANGE_API, { url: newUrl, project });
 }
 
 export function removeAuthError({ commit }) {

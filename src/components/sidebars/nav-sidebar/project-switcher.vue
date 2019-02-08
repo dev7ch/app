@@ -33,6 +33,7 @@
           :name="name"
           :value="url"
           :selected="url === currentUrl || url + '/' === currentUrl"
+          >{{ name }}</option
         >
           {{ name }}
         </option>
@@ -156,10 +157,6 @@ export default {
     }
     span {
       color: var(--dark-gray);
-    }
-
-    > div {
-      //border-bottom-width: 0;
     }
 
   }

@@ -12,7 +12,8 @@ import {
   REFRESH_TOKEN,
   REMOVE_AUTH_ERROR,
   LOGOUT,
-  CHANGE_API
+  CHANGE_API,
+  RECOVER_AUTH
 } from "../../mutation-types";
 import { stopPolling } from "../../../polling";
 
@@ -127,6 +128,7 @@ export function changeAPI({ commit }, url) {
   const project = parts.pop() || parts.pop();
   const newUrl = parts.join("/");
 
+  console.log(url);
   commit(CHANGE_API, { url: newUrl, project });
 }
 
@@ -136,4 +138,9 @@ export function removeAuthError({ commit }) {
 
 export function clearAuth({ commit }) {
   commit(LOGOUT);
+}
+
+export function recoverAuth({ commit }, name) {
+  console.log(name);
+  commit(RECOVER_AUTH, name);
 }

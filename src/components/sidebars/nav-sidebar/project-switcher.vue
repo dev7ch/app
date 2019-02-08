@@ -1,7 +1,12 @@
 <template>
   <div
     class="project-switcher"
-    :class="{ 'is-active': $store.state.auth.projectName !== selectionName }"
+    :class="{
+      'is-active':
+        $store.state.auth.projectName !== selectionName ||
+        !$store.state.auth.project,
+      'has-error': !$store.state.auth.project
+    }"
   >
     <div
       :class="{
@@ -53,13 +58,15 @@ export default {
   name: "project-switcher",
   components: {
     VSignal,
-      NavLogin
+    NavLogin
   },
   data() {
     return {
       active: false,
       selectionUrl: null,
       selectionName: this.$store.state.auth.projectName
+        ? this.$store.state.auth.projectName
+        : ""
     };
   },
   computed: {
@@ -157,6 +164,14 @@ export default {
     }
     span {
       color: var(--dark-gray);
+    }
+  }
+
+  &.has-error {
+    > div {
+      svg {
+        fill: var(--red);
+      }
     }
   }
 }

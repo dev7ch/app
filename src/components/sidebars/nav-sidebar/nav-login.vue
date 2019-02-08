@@ -14,7 +14,7 @@
           autocomplete="current-user"
           class="v-input"
           :class="{ 'has-value': user && user.length > 0 }"
-          @keypress.13="password && user ? submit() : null"
+          @keypress.13="password && user ? submitLogin() : null"
           placeholder="Username"
           type="text"
           id="name"
@@ -27,7 +27,7 @@
           autocomplete="current-password"
           class="v-input"
           :class="{ 'has-value': password && password.length > 0 }"
-          @keypress.13="password && user ? submit() : null"
+          @keypress.13="password && user ? submitLogin() : null"
           placeholder="Password"
           type="password"
           id="password"
@@ -38,7 +38,7 @@
     <div class="buttons">
       <v-button
         class="confirm"
-        @click="submit()"
+        @click="submitLogin()"
         :disabled="password && user ? false : true"
       >
         {{ confirmText || $t("ok") }}
@@ -69,17 +69,32 @@ export default {
   },
 
   methods: {
-    submit() {
+    submitLogin() {
       const credentials = {
         url: this.$props.projectUrl,
         email: this.user,
         password: this.password
       };
 
-      return this.$store.dispatch("login", credentials).then(() => {
-        this.$router.push("/collections");
-        window.location.reload();
-      });
+      let recoveryUrl = window.__DirectusConfig__.api[this.$props.projectUrl];
+
+      console.log(this.$store.state.auth);
+      return this.$store
+        .dispatch("changeAPI", this.$props.projectUrl)
+        .then(() => {
+          return this.$store
+            .dispatch("login", credentials)
+            .then(() => {
+              this.$router.push("/collections");
+              window.location.reload();
+            })
+            .catch(error => {
+              return this.$store.dispatch("recoverAuth", {
+                recoveryUrl,
+                error
+              });
+            });
+        });
     }
   }
 };

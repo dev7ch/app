@@ -374,7 +374,20 @@ export default {
       return this.$store.state.collections[this.collection];
     },
     defaultValues() {
-      return this.$lodash.mapValues(this.fields, field => field.default_value);
+      return this.$lodash.mapValues(this.fields, field => {
+        if (field.type === "array") {
+          return [field.default_value];
+        }
+
+        if (field.type === "boolean") {
+          if (field.default_value === "1" || field.default_value === "true") {
+            return true;
+          }
+          return false;
+        }
+
+        return field.default_value;
+      });
     },
     values() {
       const edits = this.$store.state.edits.values;
@@ -678,11 +691,15 @@ export default {
           }
 
           if (method === "add") {
-            return this.$store.dispatch("startEditing", {
-              collection: this.collection,
-              primaryKey: "+",
-              savedValues: {}
-            });
+            if (this.$route.fullPath.endsWith("+")) {
+              this.$store.dispatch("startEditing", {
+                collection: this.collection,
+                primaryKey: "+",
+                savedValues: {}
+              });
+            } else {
+              this.$router.push(`/collections/${this.collection}/+`);
+            }
           }
         })
         .catch(error => {

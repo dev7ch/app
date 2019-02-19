@@ -56,6 +56,7 @@ export default {
   connection: "Connection",
   collection: "Collection",
   collections_and_fields: "Collection & Fields",
+  collection_invalid_name: "Invalid collection name",
   collection_updated: "{collection} Collection Updated",
   collection_removed: "{collection} Collection Removed",
   collection_names_cannot_be_changed:
@@ -88,6 +89,8 @@ export default {
   datatype: "Datatype",
   db_datatype: "{db} Datatype",
   editing_my_profile: "Editing My Profile",
+  embed: "Embed",
+  embed_placeholder: "YouTube, Vimeo, or other link",
   fieldtypes: {
     alias:
       "Fields that do not save data or do not have corresponding database columns",
@@ -319,6 +322,8 @@ export default {
   not_in_list: "Not one of these",
   no_interface_error: "Field {field} doesn't have an interface setup",
   manage: "Manage",
+  manage_started: "Started Managing {collection}",
+  manage_stopped: "Stopped Managing {collection}",
   max_size: "Max. Size: {size}",
   max_one_primary_key: "You can only have 1 primary key field per collection",
   dont_manage: "Don't Manage",
@@ -421,6 +426,7 @@ export default {
   something_went_wrong: "Something went wrong.",
   something_went_wrong_body:
     "Trouble processing request. Try again after refreshing the page.",
+  sort_by: "Sort By",
   sign_in: "Sign In",
   signing_in: "Signing In",
   sign_out: "Sign Out",

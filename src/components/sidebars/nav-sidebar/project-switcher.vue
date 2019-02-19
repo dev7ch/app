@@ -1,5 +1,13 @@
 <template>
-  <div class="project-switcher">
+  <div
+    class="project-switcher"
+    :class="{
+      'is-active':
+        $store.state.auth.projectName !== selectionName ||
+        !$store.state.auth.project,
+      'has-error': !$store.state.auth.project
+    }"
+  >
     <div
       :class="{
         slow: $store.getters.signalStrength == 1,
@@ -25,30 +33,40 @@
         v-if="Object.keys(urls).length > 1"
         :value="currentUrl"
         @change.prevent="changeUrl"
+        @click="changeUrl"
       >
         <option
           v-for="(name, url) in urls"
           :key="name + url"
+          :name="name"
           :value="url"
           :selected="url === currentUrl || url + '/' === currentUrl"
-          >{{ name }}</option
         >
+          {{ name }}
+        </option>
       </select>
     </div>
+    <NavLogin :projectUrl="selectionUrl" :projectName="selectionName" />
   </div>
 </template>
 
 <script>
 import VSignal from "../../signal.vue";
+import NavLogin from "./nav-login.vue";
 
 export default {
   name: "project-switcher",
   components: {
-    VSignal
+    VSignal,
+    NavLogin
   },
   data() {
     return {
-      active: false
+      active: false,
+      selectionUrl: null,
+      selectionName: this.$store.state.auth.projectName
+        ? this.$store.state.auth.projectName
+        : ""
     };
   },
   computed: {
@@ -66,57 +84,95 @@ export default {
   methods: {
     changeUrl(event) {
       const newUrl = event.target.value;
-      this.$store.dispatch("changeAPI", newUrl);
+      const newName = window.__DirectusConfig__.api[newUrl]
+        ? window.__DirectusConfig__.api[newUrl]
+        : this.$store.state.auth.projectName;
+
+      this.selectionUrl = newUrl;
+      this.selectionName = newName;
     }
   }
 };
 </script>
 
 <style lang="scss" scoped>
-.project-switcher > div {
-  height: calc(
-    var(--header-height) + 1px
-  ); /* Force border bottom to be aligned with listing headers */
-  width: 100%;
-  border-bottom: 1px solid var(--lightest-gray);
-  display: flex;
-  align-items: center;
-  color: var(--accent);
-  margin-bottom: 10px;
-  position: relative;
-
-  &.slow {
-    color: var(--warning);
-    svg {
-      fill: var(--warning);
-    }
-    i {
-      color: var(--warning);
-    }
+.project-switcher {
+  .nav-login {
+    max-height: 0;
+    opacity: 0;
+    transition: min-height var(--fast) var(--transition),
+      opacity var(--slow) var(--transition);
+    background-color: var(--white);
+    z-index: 1;
   }
 
-  &.disconnected {
-    color: var(--danger);
-    svg {
-      fill: var(--danger);
-    }
-    i {
-      color: var(--danger);
-    }
-  }
-
-  svg {
-    fill: var(--accent);
-  }
-
-  i {
+  > div {
+    height: calc(
+      var(--header-height) + 1px
+    ); /* Force border bottom to be aligned with listing headers */
+    width: 100%;
+    border-bottom: 1px solid var(--lightest-gray);
+    display: flex;
+    align-items: center;
     color: var(--accent);
+    margin-bottom: 10px;
+    position: relative;
+    transition: border-bottom-width 0.15s ease-in-out;
+
+    &.slow {
+      color: var(--warning);
+      svg {
+        fill: var(--warning);
+      }
+      i {
+        color: var(--warning);
+      }
+    }
+
+    &.disconnected {
+      color: var(--danger);
+      svg {
+        fill: var(--danger);
+      }
+      i {
+        color: var(--danger);
+      }
+    }
+
+    svg {
+      fill: var(--accent);
+    }
+
+    i {
+      color: var(--accent);
+    }
+
+    span {
+      flex-grow: 1;
+      line-height: 24px;
+      text-align: left;
+    }
   }
 
-  span {
-    flex-grow: 1;
-    line-height: 24px;
-    text-align: left;
+  &.is-active {
+    .nav-login {
+      opacity: 1;
+      max-height: 100vh;
+      border-bottom: 1px solid var(--lightest-gray);
+      margin-bottom: 20px;
+      margin-top: 20px;
+    }
+    span {
+      color: var(--dark-gray);
+    }
+  }
+
+  &.has-error {
+    > div {
+      svg {
+        fill: var(--red);
+      }
+    }
   }
 }
 

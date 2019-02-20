@@ -499,7 +499,6 @@ export default {
       this.confirmFieldRemove = true;
     },
     removeField(fieldName) {
-
       const id = this.$helpers.shortid.generate();
       this.$store.dispatch("loadingStart", { id });
 

@@ -13,7 +13,7 @@ import {
   REMOVE_AUTH_ERROR,
   LOGOUT,
   CHANGE_API,
-  RECOVER_AUTH
+  SWITCH_PROJECT
 } from "../../mutation-types";
 import { stopPolling } from "../../../polling";
 
@@ -137,6 +137,7 @@ export function clearAuth({ commit }) {
   commit(LOGOUT);
 }
 
-export function recoverAuth({ commit }, name) {
-  commit(RECOVER_AUTH, config[name]);
+export function switchProject({ commit }, name) {
+  this.resetState();
+  commit(SWITCH_PROJECT, config[name]);
 }

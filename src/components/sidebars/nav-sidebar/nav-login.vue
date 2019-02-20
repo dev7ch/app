@@ -86,7 +86,7 @@ export default {
               window.location.reload();
             })
             .catch(error => {
-              return this.$store.dispatch("recoverAuth", {
+              return this.$store.dispatch("switchProject", {
                 currentProjectName: this.$props.projectUrl,
                 error
               });

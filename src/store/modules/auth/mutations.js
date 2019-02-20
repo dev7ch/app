@@ -6,7 +6,7 @@ import {
   REFRESH_TOKEN,
   REMOVE_AUTH_ERROR,
   CHANGE_API,
-  RECOVER_AUTH
+  SWITCH_PROJECT
 } from "../../mutation-types";
 
 const mutations = {
@@ -52,7 +52,7 @@ const mutations = {
     state.url = url;
     state.project = project;
   },
-  [RECOVER_AUTH](state, obj) {
+  [SWITCH_PROJECT](state, obj) {
     state.projectName = obj.currentProjectName;
   }
 };

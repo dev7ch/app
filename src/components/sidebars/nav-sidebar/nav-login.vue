@@ -76,8 +76,8 @@ export default {
         password: this.password
       };
 
-        let currentProjectName = this.$props.projectUrl;
-        return this.$store
+      let currentProjectName = this.$props.projectUrl;
+      return this.$store
         .dispatch("changeAPI", this.$props.projectUrl)
         .then(() => {
           return this.$store

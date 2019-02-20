@@ -124,6 +124,10 @@ export default {
     position: relative;
     transition: border-bottom-width 0.15s ease-in-out;
 
+    span, svg {
+      transition: color .25s ease-in-out, fill .25s ease-in-out;;
+    }
+
     &.slow {
       color: var(--warning);
       svg {
@@ -167,15 +171,19 @@ export default {
       margin-bottom: 20px;
       margin-top: 20px;
     }
-    span {
-      color: var(--dark-gray);
-    }
   }
 
   &.has-error {
     > div {
       svg {
         fill: var(--red);
+      }
+    }
+    span {
+      color: var(--red);
+      + i {
+
+          color: var(--red);
       }
     }
   }

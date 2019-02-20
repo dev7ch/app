@@ -166,7 +166,7 @@ export default {
   &.is-active {
     .nav-login {
       opacity: 1;
-      max-height: 200px;
+      max-height: 260px;
       border-bottom: 1px solid var(--lightest-gray);
       margin-bottom: 20px;
       margin-top: 20px;

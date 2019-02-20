@@ -187,27 +187,26 @@ export default {
       }
     }
   }
-}
 
-.icon {
-  width: 15px;
-  height: 18px;
-  margin-right: 10px;
-  color: var(--light-gray);
-  fill: var(--light-gray);
-}
 
-.form {
-  margin: 20px auto;
-}
+  .icon {
+    width: 15px;
+    height: 18px;
+    margin-right: 10px;
+  }
 
-select {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  cursor: pointer;
+  .form {
+    margin: 20px auto;
+  }
+
+  select {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+  }
 }
 </style>

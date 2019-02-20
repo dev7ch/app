@@ -10,17 +10,22 @@
   >
     <div
       :class="{
-        slow: $store.getters.signalStrength == 1,
-        disconnected: $store.getters.signalStrength == 0
+        slow: $store.getters.signalStrength === 1,
+        disconnected: $store.getters.signalStrength === 0
       }"
       v-tooltip.left="{
         content:
-          $store.state.auth.url +
-          `<br>${$t('latency')}: ${$n(
-            Math.round(
-              $store.state.latency[$store.state.latency.length - 1].latency
-            )
-          )}ms`,
+          (!!$store.state.auth.url ? $store.state.auth.url : 'No connection') +
+          `<br>${$t('latency')}:${
+            !!$store.state.auth.url
+              ? $n(
+                  Math.round(
+                    $store.state.latency[$store.state.latency.length - 1]
+                      .latency
+                  )
+                )
+              : ' - '
+          }ms`,
         boundariesElement: 'body'
       }"
     >
@@ -95,12 +100,12 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .project-switcher {
   .nav-login {
     max-height: 0;
     opacity: 0;
-    transition: min-height var(--fast) var(--transition),
+    transition: max-height var(--fast) var(--transition),
       opacity var(--slow) var(--transition);
     background-color: var(--white);
     z-index: 1;
@@ -157,7 +162,7 @@ export default {
   &.is-active {
     .nav-login {
       opacity: 1;
-      max-height: 100vh;
+      max-height: 200px;
       border-bottom: 1px solid var(--lightest-gray);
       margin-bottom: 20px;
       margin-top: 20px;

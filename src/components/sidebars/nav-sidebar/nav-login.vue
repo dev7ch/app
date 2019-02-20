@@ -76,7 +76,6 @@ export default {
         password: this.password
       };
 
-      let currentProjectName = this.$props.projectUrl;
       return this.$store
         .dispatch("changeAPI", this.$props.projectUrl)
         .then(() => {
@@ -88,7 +87,7 @@ export default {
             })
             .catch(error => {
               return this.$store.dispatch("switchProject", {
-                currentProjectName,
+                currentProjectName: this.$props.projectUrl,
                 error
               });
             });
@@ -122,11 +121,15 @@ export default {
     font-size: 18px;
     width: 18px;
     height: 18px;
+    transform: translateY();
     color: var(--accent);
   }
 
   .nav-login-title {
     padding-left: 26px;
+    font-size: 13px;
+    padding-top: 3px;
+    color: var(--accent);
   }
 
   .material-input {

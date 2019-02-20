@@ -53,7 +53,7 @@ const mutations = {
     state.project = project;
   },
   [SWITCH_PROJECT](state, obj) {
-    state.projectName = obj.currentProjectName;
+    state.projectName = obj;
   }
 };
 

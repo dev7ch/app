@@ -138,6 +138,5 @@ export function clearAuth({ commit }) {
 }
 
 export function switchProject({ commit }, name) {
-  this.resetState();
-  commit(SWITCH_PROJECT, config[name]);
+  commit(SWITCH_PROJECT, config.api[name.currentProjectName]);
 }

@@ -97,7 +97,6 @@ export function loginSSO({ commit }, request_token) {
     .then(res => res.data)
     .then(({ token }) => {
       api.token = token;
-
       commit(LOGIN_SUCCESS, {
         project: project,
         url,
@@ -139,5 +138,5 @@ export function clearAuth({ commit }) {
 }
 
 export function recoverAuth({ commit }, name) {
-  commit(RECOVER_AUTH, name);
+  commit(RECOVER_AUTH, config[name]);
 }

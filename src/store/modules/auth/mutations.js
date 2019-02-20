@@ -53,7 +53,7 @@ const mutations = {
     state.project = project;
   },
   [RECOVER_AUTH](state, obj) {
-    state.projectName = obj.recoveryUrl;
+    state.projectName = obj.currentProjectName;
   }
 };
 

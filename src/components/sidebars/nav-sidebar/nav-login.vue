@@ -1,8 +1,8 @@
 <template>
   <section class="nav-login">
     <h3 class="nav-login-title" v-if="$props.projectName">
-      <i class="material-icons chevron nav-login-icon">
-        account_circle
+      <i class="material-icons nav-login-icon">
+        lock_open
       </i>
       {{ $props.projectName }}
     </h3>
@@ -21,7 +21,7 @@
         />
       </div>
 
-      <div class="material-input ">
+      <div class="material-input">
         <input
           v-model="password"
           autocomplete="current-password"
@@ -39,7 +39,7 @@
       <v-button
         class="confirm"
         @click="submitLogin()"
-        :disabled="password && user ? false : true"
+        :disabled="!(password && user)"
       >
         {{ confirmText || $t("ok") }}
       </v-button>
@@ -76,8 +76,6 @@ export default {
         password: this.password
       };
 
-      let recoveryUrl = window.__DirectusConfig__.api[this.$props.projectUrl];
-
       return this.$store
         .dispatch("changeAPI", this.$props.projectUrl)
         .then(() => {
@@ -89,7 +87,7 @@ export default {
             })
             .catch(error => {
               return this.$store.dispatch("recoverAuth", {
-                recoveryUrl,
+                currentProjectName: this.$props.projectUrl,
                 error
               });
             });

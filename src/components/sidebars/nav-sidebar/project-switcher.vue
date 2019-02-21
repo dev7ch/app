@@ -100,7 +100,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .project-switcher {
   .nav-login {
     max-height: 0;

@@ -205,4 +205,5 @@ export default {
     height: 100%;
     cursor: pointer;
   }
+}
 </style>

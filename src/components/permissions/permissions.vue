@@ -157,14 +157,15 @@ export default {
 </script>
 
 <style lang="scss">
-.interface {
-  margin-bottom: 40px;
-}
 .v-permissions {
   background-color: var(--white);
   border-radius: var(--border-radius);
   border: var(--input-border-width) solid var(--lighter-gray);
   max-width: 1000px;
+
+  &.interface {
+    margin-bottom: 40px;
+  }
 
   .no-collections-message {
     text-align: center;
@@ -221,16 +222,17 @@ export default {
   &.loading {
     padding: 300px 0;
   }
-}
 
-label {
-  display: flex;
-  cursor: pointer;
-  align-items: center;
-  margin-top: 10px;
+  + label {
+    display: flex;
+    cursor: pointer;
+    align-items: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
 
-  .toggle {
-    margin-right: 5px;
+    .toggle {
+      margin-right: 5px;
+    }
   }
 }
 </style>

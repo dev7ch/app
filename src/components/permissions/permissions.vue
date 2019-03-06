@@ -156,7 +156,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .interface {
   margin-bottom: 40px;
 }
@@ -174,11 +174,12 @@ export default {
     color: var(--light-gray);
   }
 
-  >>> .body .row {
+  > .body .row {
     display: flex;
     align-items: center;
     padding: 10px;
     height: 40px;
+    position: relative;
 
     &.sub {
       &::before {
@@ -200,9 +201,8 @@ export default {
     }
   }
 
-  >>> .cell {
+  .cell {
     flex-basis: 70px;
-
     &:first-child {
       flex-grow: 2;
     }

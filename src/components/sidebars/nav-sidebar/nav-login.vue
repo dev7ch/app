@@ -43,6 +43,9 @@
       >
         {{ confirmText || $t("ok") }}
       </v-button>
+      <v-button class="cancel" @click="cancelLogin()">
+        {{ cancelText || $t("cancel") }}
+      </v-button>
     </div>
   </section>
 </template>
@@ -64,7 +67,8 @@ export default {
         ? this.$store.state.currentUser.email
         : "",
       password: "",
-      confirmText: "Login"
+      confirmText: "Login",
+      cancelText: "Cancel"
     };
   },
 
@@ -92,6 +96,10 @@ export default {
               });
             });
         });
+    },
+
+    cancelLogin() {
+      return window.location.reload();
     }
   }
 };
@@ -110,6 +118,21 @@ export default {
   .buttons {
     button {
       width: 100%;
+      margin-bottom: 10px;
+      transition: ease-in-out background-color 0.25s, color 0.15s ease-in-out;
+
+      &:last-of-type {
+        margin-bottom: 0;
+      }
+
+      &.cancel {
+        background-color: var(--lightest-gray);
+        color: var(--darker-gray);
+
+        &:hover {
+          color: var(--white);
+        }
+      }
     }
     margin-bottom: 20px;
   }
@@ -121,7 +144,6 @@ export default {
     font-size: 18px;
     width: 18px;
     height: 18px;
-    transform: translateY();
     color: var(--accent);
   }
 

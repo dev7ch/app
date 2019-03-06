@@ -124,8 +124,9 @@ export default {
     position: relative;
     transition: border-bottom-width 0.15s ease-in-out;
 
-    span, svg {
-      transition: color .25s ease-in-out, fill .25s ease-in-out;;
+    span,
+    svg {
+      transition: color 0.25s ease-in-out, fill 0.25s ease-in-out;
     }
 
     &.slow {
@@ -182,12 +183,10 @@ export default {
     span {
       color: var(--red);
       + i {
-
-          color: var(--red);
+        color: var(--red);
       }
     }
   }
-
 
   .icon {
     width: 15px;

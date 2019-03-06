@@ -129,7 +129,7 @@ export default {
       default: false
     },
     mask: {
-      type: [String, Array],
+      type: [String, Array, Boolean],
       default: ""
     }
   },

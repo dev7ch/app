@@ -130,7 +130,7 @@ export default {
     },
     mask: {
       type: String,
-      default: null
+      default: ""
     }
   },
   computed: {

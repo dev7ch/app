@@ -155,84 +155,70 @@ export default {
   }
 };
 </script>
-
-<style lang="scss">
-.v-permissions {
-  background-color: var(--white);
-  border-radius: var(--border-radius);
-  border: var(--input-border-width) solid var(--lighter-gray);
-  max-width: 1000px;
-
-  &.interface {
+<style lang="scss" scoped>
+  .interface {
     margin-bottom: 40px;
   }
+  .v-permissions {
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    border: var(--input-border-width) solid var(--lighter-gray);
+    max-width: 1000px;
+    .no-collections-message {
+      text-align: center;
+      margin-top: 20px;
+      margin-bottom: 40px;
+      font-size: 1.2em;
+      color: var(--light-gray);
+    }
 
-  .no-collections-message {
-    text-align: center;
-    margin-top: 20px;
-    margin-bottom: 40px;
-    font-size: 1.2em;
-    color: var(--light-gray);
-  }
-
-  > .body .row {
-    display: flex;
-    align-items: center;
-    padding: 10px;
-    height: 40px;
-    position: relative;
-
-    &.sub {
-      &::before {
-        content: "call_missed_outgoing";
-        font-family: "Material Icons";
-        position: absolute;
-        transform: rotate(45deg);
-        font-size: 18px;
-        color: var(--lighter-gray);
+    /deep/ .body .row {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      height: 40px;
+      &.sub {
+        &::before {
+          content: "call_missed_outgoing";
+          font-family: "Material Icons";
+          position: absolute;
+          transform: rotate(45deg);
+          font-size: 18px;
+          color: var(--lighter-gray);
+        }
+        & .cell:first-child {
+          padding-left: 2rem;
+        }
       }
-
-      & .cell:first-child {
-        padding-left: 2rem;
+      &:not(.sub) {
+        border-top: 1px solid var(--lightest-gray);
       }
     }
-
-    &:not(.sub) {
-      border-top: 1px solid var(--lightest-gray);
+    /deep/ .cell {
+      flex-basis: 70px;
+      &:first-child {
+        flex-grow: 2;
+      }
+      &:nth-last-child(3),
+      &:nth-last-child(2),
+      &:last-child {
+        flex-grow: 1;
+      }
+    }
+    .border {
+      border-top: 1px solid var(--lighter-gray);
+    }
+    &.loading {
+      padding: 300px 0;
     }
   }
-
-  .cell {
-    flex-basis: 70px;
-    &:first-child {
-      flex-grow: 2;
-    }
-
-    &:nth-last-child(3),
-    &:nth-last-child(2),
-    &:last-child {
-      flex-grow: 1;
-    }
-  }
-
-  .border {
-    border-top: 1px solid var(--lighter-gray);
-  }
-
-  &.loading {
-    padding: 300px 0;
-  }
-
-  + label {
+  label {
     display: flex;
     cursor: pointer;
     align-items: center;
     margin-top: 10px;
-    margin-bottom: 10px;
-
     .toggle {
       margin-right: 5px;
     }
   }
-}
 </style>

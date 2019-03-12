@@ -52,6 +52,5 @@ export function resetState() {
   // as-is
   const newState = Object.assign({}, initialStateCopy);
   newState.auth.url = store.state.auth.url;
-
   store.replaceState(newState);
 }

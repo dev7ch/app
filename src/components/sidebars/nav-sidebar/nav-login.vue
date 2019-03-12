@@ -1,8 +1,8 @@
 <template>
   <section class="nav-login">
     <h3 class="nav-login-title" v-if="$props.projectName">
-      <i class="material-icons chevron nav-login-icon">
-        account_circle
+      <i class="material-icons nav-login-icon">
+        lock_open
       </i>
       {{ $props.projectName }}
     </h3>
@@ -21,7 +21,7 @@
         />
       </div>
 
-      <div class="material-input ">
+      <div class="material-input">
         <input
           v-model="password"
           autocomplete="current-password"
@@ -39,9 +39,12 @@
       <v-button
         class="confirm"
         @click="submitLogin()"
-        :disabled="password && user ? false : true"
+        :disabled="!(password && user)"
       >
         {{ confirmText || $t("ok") }}
+      </v-button>
+      <v-button class="cancel" @click="cancelLogin()">
+        {{ cancelText || $t("cancel") }}
       </v-button>
     </div>
   </section>
@@ -64,7 +67,8 @@ export default {
         ? this.$store.state.currentUser.email
         : "",
       password: "",
-      confirmText: "Login"
+      confirmText: "Login",
+      cancelText: "Cancel"
     };
   },
 
@@ -76,8 +80,6 @@ export default {
         password: this.password
       };
 
-      let recoveryUrl = window.__DirectusConfig__.api[this.$props.projectUrl];
-
       return this.$store
         .dispatch("changeAPI", this.$props.projectUrl)
         .then(() => {
@@ -88,12 +90,16 @@ export default {
               window.location.reload();
             })
             .catch(error => {
-              return this.$store.dispatch("recoverAuth", {
-                recoveryUrl,
+              return this.$store.dispatch("switchProject", {
+                currentProjectName: this.$props.projectUrl,
                 error
               });
             });
         });
+    },
+
+    cancelLogin() {
+      return window.location.reload();
     }
   }
 };
@@ -112,6 +118,21 @@ export default {
   .buttons {
     button {
       width: 100%;
+      margin-bottom: 10px;
+      transition: ease-in-out background-color 0.25s, color 0.15s ease-in-out;
+
+      &:last-of-type {
+        margin-bottom: 0;
+      }
+
+      &.cancel {
+        background-color: var(--lightest-gray);
+        color: var(--darker-gray);
+
+        &:hover {
+          color: var(--white);
+        }
+      }
     }
     margin-bottom: 20px;
   }
@@ -128,6 +149,9 @@ export default {
 
   .nav-login-title {
     padding-left: 26px;
+    font-size: 13px;
+    padding-top: 3px;
+    color: var(--accent);
   }
 
   .material-input {

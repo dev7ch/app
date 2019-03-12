@@ -13,7 +13,7 @@ import {
   REMOVE_AUTH_ERROR,
   LOGOUT,
   CHANGE_API,
-  RECOVER_AUTH
+  SWITCH_PROJECT
 } from "../../mutation-types";
 import { stopPolling } from "../../../polling";
 
@@ -97,7 +97,6 @@ export function loginSSO({ commit }, request_token) {
     .then(res => res.data)
     .then(({ token }) => {
       api.token = token;
-
       commit(LOGIN_SUCCESS, {
         project: project,
         url,
@@ -138,6 +137,6 @@ export function clearAuth({ commit }) {
   commit(LOGOUT);
 }
 
-export function recoverAuth({ commit }, name) {
-  commit(RECOVER_AUTH, name);
+export function switchProject({ commit }, name) {
+  commit(SWITCH_PROJECT, config.api[name.currentProjectName]);
 }

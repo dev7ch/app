@@ -10,17 +10,22 @@
   >
     <div
       :class="{
-        slow: $store.getters.signalStrength == 1,
-        disconnected: $store.getters.signalStrength == 0
+        slow: $store.getters.signalStrength === 1,
+        disconnected: $store.getters.signalStrength === 0
       }"
       v-tooltip.left="{
         content:
-          $store.state.auth.url +
-          `<br>${$t('latency')}: ${$n(
-            Math.round(
-              $store.state.latency[$store.state.latency.length - 1].latency
-            )
-          )}ms`,
+          (!!$store.state.auth.url ? $store.state.auth.url : 'No connection') +
+          `<br>${$t('latency')}:${
+            !!$store.state.auth.url
+              ? $n(
+                  Math.round(
+                    $store.state.latency[$store.state.latency.length - 1]
+                      .latency
+                  )
+                )
+              : ' - '
+          }ms`,
         boundariesElement: 'body'
       }"
     >
@@ -100,7 +105,7 @@ export default {
   .nav-login {
     max-height: 0;
     opacity: 0;
-    transition: min-height var(--fast) var(--transition),
+    transition: max-height var(--fast) var(--transition),
       opacity var(--slow) var(--transition);
     background-color: var(--white);
     z-index: 1;
@@ -118,6 +123,11 @@ export default {
     margin-bottom: 10px;
     position: relative;
     transition: border-bottom-width 0.15s ease-in-out;
+
+    span,
+    svg {
+      transition: color 0.25s ease-in-out, fill 0.25s ease-in-out;
+    }
 
     &.slow {
       color: var(--warning);
@@ -157,13 +167,10 @@ export default {
   &.is-active {
     .nav-login {
       opacity: 1;
-      max-height: 100vh;
+      max-height: 260px;
       border-bottom: 1px solid var(--lightest-gray);
       margin-bottom: 20px;
       margin-top: 20px;
-    }
-    span {
-      color: var(--dark-gray);
     }
   }
 
@@ -173,28 +180,29 @@ export default {
         fill: var(--red);
       }
     }
+    span {
+      color: var(--red);
+      + i {
+        color: var(--red);
+      }
+    }
   }
-}
 
-.icon {
-  width: 15px;
-  height: 18px;
-  margin-right: 10px;
-  color: var(--light-gray);
-  fill: var(--light-gray);
-}
+  .icon {
+    width: 15px;
+    height: 18px;
+    margin-right: 10px;
+  }
 
-.form {
-  margin: 20px auto;
-}
-
-select {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  cursor: pointer;
+  select {
+    position: absolute;
+    opacity: 0;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+  }
 }
 </style>

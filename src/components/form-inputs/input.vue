@@ -20,7 +20,7 @@
       :value="value"
       :id="id"
       :step="step"
-      v-mask="mask"
+      :mask="mask ? mask : false"
       @keyup="$emit('keyup', $event)"
       @keydown="$emit('keydown', $event)"
       @input="$emit('input', $event.target.value)"
@@ -129,8 +129,8 @@ export default {
       default: false
     },
     mask: {
-      type: String,
-      default: null
+      type: [String, Array, Boolean],
+      default: ""
     }
   },
   computed: {

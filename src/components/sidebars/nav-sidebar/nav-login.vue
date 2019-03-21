@@ -91,7 +91,7 @@ export default {
             })
             .catch(error => {
               return this.$store.dispatch("switchProject", {
-                currentProjectName: this.$props.projectUrl,
+                url: this.$props.projectUrl,
                 error
               });
             });

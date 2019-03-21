@@ -39,7 +39,6 @@
     </transition>
   </div>
 </template>
-
 <script>
 import VLogo from "./logo.vue";
 import ProjectSwitcher from "./project-switcher.vue";

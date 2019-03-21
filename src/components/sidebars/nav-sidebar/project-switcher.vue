@@ -51,19 +51,16 @@
         </option>
       </select>
     </div>
-    <NavLogin :projectUrl="selectionUrl" :projectName="selectionName" />
   </div>
 </template>
 
 <script>
 import VSignal from "../../signal.vue";
-import NavLogin from "./nav-login.vue";
 
 export default {
   name: "project-switcher",
   components: {
-    VSignal,
-    NavLogin
+    VSignal
   },
   data() {
     return {
@@ -95,6 +92,7 @@ export default {
 
       this.selectionUrl = newUrl;
       this.selectionName = newName;
+      return this.$store.dispatch("changeAPI", newUrl)
     }
   }
 };

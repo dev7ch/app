@@ -33,9 +33,9 @@
       <span class="no-wrap">{{
         selectionName ? selectionName : $store.state.auth.projectName
       }}</span>
-      <i v-if="Object.keys(urls).length > 1" class="material-icons chevron"
-        >arrow_drop_down</i
-      >
+      <i v-if="Object.keys(urls).length > 1" class="material-icons chevron">
+        arrow_drop_down
+      </i>
       <select
         v-if="Object.keys(urls).length > 1"
         :value="currentUrl"

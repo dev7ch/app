@@ -40,7 +40,6 @@
         v-if="Object.keys(urls).length > 1"
         :value="currentUrl"
         @change.prevent="changeUrl"
-        @click="changeUrl"
       >
         <option
           v-for="(name, url) in urls"
@@ -54,19 +53,16 @@
         </option>
       </select>
     </div>
-    <NavLogin :projectUrl="selectionUrl" :projectName="selectionName" />
   </div>
 </template>
 
 <script>
 import VSignal from "../../signal.vue";
-import NavLogin from "./nav-login.vue";
 
 export default {
   name: "project-switcher",
   components: {
-    VSignal,
-    NavLogin
+    VSignal
   },
   data() {
     return {

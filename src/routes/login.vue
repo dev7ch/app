@@ -258,7 +258,6 @@ export default {
     }
   },
 
-  mounted() {},
   created() {
     this.checkUrl = this.$lodash.debounce(this.checkUrl, 300);
 
@@ -291,8 +290,10 @@ export default {
         vm.url = atob(to.query.project);
       });
     }
-
     return next();
+  },
+  mounted() {
+    this.handleAutoFill();
   },
   watch: {
     url() {
@@ -318,6 +319,23 @@ export default {
     }
   },
   methods: {
+    handleAutoFill() {
+      var cls = "-webkit-autofill";
+      var el = this.$el.children[0].elements;
+      if (el.email.hasAttribute("class", cls)) {
+        el.email.className = "has-value";
+      }
+      if (el.password.hasAttribute("class", cls)) {
+        el.password.className = "has-value";
+      }
+      if (
+        el.email.className == "has-value" &&
+        el.password.className == "has-value" &&
+        el[3].hasAttribute("disabled")
+      ) {
+        el[3].removeAttribute("disabled");
+      }
+    },
     processForm() {
       if (this.resetMode) {
         this.loading = true;

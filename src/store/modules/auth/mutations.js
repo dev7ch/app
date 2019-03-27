@@ -53,7 +53,11 @@ const mutations = {
     state.project = project;
   },
   [SWITCH_PROJECT](state, obj) {
-    state.projectName = obj;
+    state.project = obj.project ? obj.project : null;
+    state.url = obj.url ? obj.url : null;
+    state.projectName = obj.projectName;
+    // @todo check for and enable usage of static or SSO token
+    state.token = null;
   }
 };
 

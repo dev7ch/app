@@ -122,11 +122,17 @@ export function logout({ commit }, error) {
   });
 }
 
-export function changeAPI({ commit }, url) {
-  const parts = url.split("/");
-  const project = parts.pop() || parts.pop();
-  const newUrl = parts.join("/");
-  commit(CHANGE_API, { url: newUrl, project });
+export function switchProject({ commit }, obj) {
+  commit(SWITCH_PROJECT, obj);
+}
+
+export function changeAPI({ commit, dispatch }, url) {
+  dispatch("logout").then(() => {
+    const parts = url.split("/");
+    const project = parts.pop() || parts.pop();
+    const newUrl = parts.join("/");
+    commit(CHANGE_API, { url: newUrl, project });
+  });
 }
 
 export function removeAuthError({ commit }) {
@@ -135,8 +141,4 @@ export function removeAuthError({ commit }) {
 
 export function clearAuth({ commit }) {
   commit(LOGOUT);
-}
-
-export function switchProject({ commit }, name) {
-  commit(SWITCH_PROJECT, config.api[name.currentProjectName]);
 }

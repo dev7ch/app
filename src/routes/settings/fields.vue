@@ -433,10 +433,7 @@ export default {
               iconMain: "check"
             });
 
-            this.$store.dispatch("updateField", {
-              collection: this.collection,
-              field: savedFieldInfo
-            });
+            this.$store.dispatch("getCollections");
           } else {
             this.fields = [...this.fields, savedFieldInfo];
 
@@ -448,10 +445,7 @@ export default {
               iconMain: "check"
             });
 
-            this.$store.dispatch("addField", {
-              collection: this.collection,
-              field: savedFieldInfo
-            });
+            this.$store.dispatch("getCollections");
           }
 
           if (relation) {

@@ -30,10 +30,12 @@
       }"
     >
       <v-signal class="icon" />
-      <span class="no-wrap">{{ $store.state.auth.projectName }}</span>
-      <i v-if="Object.keys(urls).length > 1" class="material-icons chevron"
-        >arrow_drop_down</i
-      >
+      <span class="no-wrap">{{
+        selectionName ? selectionName : $store.state.auth.projectName
+      }}</span>
+      <i v-if="Object.keys(urls).length > 1" class="material-icons chevron">
+        arrow_drop_down
+      </i>
       <select
         v-if="Object.keys(urls).length > 1"
         :value="currentUrl"
@@ -45,6 +47,7 @@
           :key="name + url"
           :name="name"
           :value="url"
+          @click="changeUrl"
           :selected="url === currentUrl || url + '/' === currentUrl"
         >
           {{ name }}
@@ -69,9 +72,7 @@ export default {
     return {
       active: false,
       selectionUrl: null,
-      selectionName: this.$store.state.auth.projectName
-        ? this.$store.state.auth.projectName
-        : ""
+      selectionName: ""
     };
   },
   computed: {
@@ -95,6 +96,13 @@ export default {
 
       this.selectionUrl = newUrl;
       this.selectionName = newName;
+
+      this.$store
+        .dispatch("switchProject", {
+          projectName: newName,
+          url: newUrl
+        })
+        .then(() => this.$store.dispatch("changeAPI", newUrl));
     }
   }
 };

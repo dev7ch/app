@@ -398,7 +398,6 @@ export default {
     },
     checkUrl() {
       if (!this.url) return;
-
       this.checkingExistence = true;
       this.exists = null;
       this.thirdPartyAuthProviders = null;
@@ -409,8 +408,32 @@ export default {
       parts.pop() || parts.pop();
       const newUrl = parts.join("/");
 
+      // Allow sending basic auth apache headers in api url
+      let basicAuthUser = null;
+      let basicAuthPassword = null;
+
+      // Check and get basic auth data from url string
+      let reg = /:\/\/([^@]+)/gi;
+      let matches = (newUrl.match(reg) || []).map(e => e.replace(reg, "$1"));
+
+      if (/:/i.test(matches)) {
+        let separated = matches[0].split(/:(.+)/);
+        basicAuthUser = separated[0];
+        basicAuthPassword = separated[1];
+
+        console.log(basicAuthUser);
+        console.log(basicAuthPassword);
+      }
+
       this.$axios
-        .get(newUrl + "/server/ping")
+        .get(newUrl + "/server/ping", {},
+          {
+            withCredentials:  !!(basicAuthUser && basicAuthPassword),
+            auth: {
+              username: basicAuthUser,
+              password: basicAuthPassword
+            }
+          })
         .then(() => {
           this.exists = true;
           this.checkingExistence = false;

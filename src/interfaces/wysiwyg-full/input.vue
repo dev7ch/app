@@ -316,7 +316,6 @@
         :editor="editor"
       />
     </div>
-    <!--- edit raw html in hidden text area --->
     <div class="editor__raw" v-show="showSource">
       <v-textarea
         v-if="showSource && showRaw"
@@ -328,7 +327,6 @@
         :rows="options.rows ? +options.rows : 10"
       ></v-textarea>
 
-      <!--- show formatted raw html in CodeMirror --->
       <CodeMirror
         :placeholder="options.placeholder"
         class="textarea"
@@ -362,8 +360,6 @@
       @click="updateText(editor.view.dom.innerHTML)"
       v-html="showSource ? 'Show WYSIWYG' : 'Source Code'"
     ></p>
-
-    <!--- modal for image selection --->
 
     <portal to="modal" v-if="chooseImage">
       <v-modal
@@ -415,7 +411,7 @@
 </template>
 <script>
 import Icon from "./components/icon";
-import mixin from "../../../mixins/interface";
+import mixin from "@directus/extension-toolkit/mixins/interface";
 import { Editor, EditorContent, EditorMenuBar, EditorMenuBubble } from "tiptap";
 import {
   Blockquote,
@@ -495,7 +491,7 @@ export default {
     },
 
     updateText($text) {
-      if (!!this.showSource) {
+      if (this.showSource) {
         this.editor.setContent(this.editorText);
       } else {
         this.editorText = $text;
@@ -525,7 +521,6 @@ export default {
 
     insertImageUrl(url) {
       if (url !== "") {
-        console.log(url);
         this.chooseImage = false;
         this.addImageCommand(url);
       }
@@ -588,7 +583,6 @@ export default {
 
   mounted() {
     this.init();
-    console.log(this.options);
   },
   beforeDestroy() {
     this.editor.destroy();

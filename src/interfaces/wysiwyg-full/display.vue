@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import mixin from "@directus/extension-toolkit/mixins/interface";
+import mixin from "../../../mixins/interface";
 
 export default {
   name: "display-wysiwyg-full",

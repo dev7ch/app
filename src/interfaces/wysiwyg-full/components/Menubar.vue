@@ -1,5 +1,5 @@
 <template>
-  <div class="editor-menu-wrapper">
+  <div class="menubar__wrapper">
     <editor-menu-bar v-show="!showSource" :editor="$parent.editor">
       <div
         class="menubar"
@@ -23,7 +23,7 @@
           @click="commands.italic"
           :style="{ order: $parent.options.toolbarOptions.indexOf('Italic') }"
         >
-          <icon name="format_italic" />
+          <icon name="format_italic" title="Italic" />
         </button>
 
         <button
@@ -392,3 +392,16 @@ export default {
   }
 };
 </script>
+<style lang="scss" scoped>
+.menubar__wrapper {
+  border: var(--input-border-width) solid var(--lighter-gray);
+  border-top-left-radius: var(--border-radius);
+  border-top-right-radius: var(--border-radius);
+  color: var(--gray);
+  background-color: var(--lightest-gray);
+  transition: var(--fast) var(--transition);
+  transition-property: color, border-color;
+  margin-bottom: -5px;
+  padding-top: 5px;
+}
+</style>

@@ -1,9 +1,9 @@
 <template>
   <div
     class="icon"
-    :class="[`icon--${name}`, `icon--${size}`, { 'has-align-fix': fixAlign }]"
+    :class="[`icon--${name}`, `icon--${size}`, `icon--${modifier}`]"
   >
-    <i class="material-icons icon">{{ name }}</i>
+    <i class="material-icons icon" :title="title ? title : name">{{ name }}</i>
   </div>
 </template>
 
@@ -11,14 +11,12 @@
 export default {
   props: {
     name: {},
+    title: {},
     size: {
       default: "normal"
     },
     modifier: {
       default: null
-    },
-    fixAlign: {
-      default: true
     }
   }
 };
@@ -34,17 +32,6 @@ export default {
   margin: 0 0.3rem;
   top: -0.05rem;
   fill: currentColor;
-
-  // &.has-align-fix {
-  // 	top: -.1rem;
-  // }
-
-  &__svg {
-    display: inline-block;
-    vertical-align: top;
-    width: 100%;
-    height: 100%;
-  }
 
   &:first-child {
     margin-left: 0;

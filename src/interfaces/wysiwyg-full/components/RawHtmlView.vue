@@ -4,7 +4,7 @@
       v-if="showSource && showRaw"
       v-model.lazy="$parent.editorText"
       class="textarea"
-      :id="name"
+      :id="name + '-raw'"
       :value="$parent.editor.view.dom.innerHTML"
       :placeholder="options.placeholder"
       :rows="options.rows ? +options.rows : 10"
@@ -15,7 +15,7 @@
     <CodeMirror
       :placeholder="options.placeholder"
       class="textarea code"
-      :id="id + '-formatted'"
+      :id="id + '-raw-formatted'"
       v-if="showSource && !showRaw"
       :alt-options="options.codeMirrorOptions"
       :value="$parent.editor.view.dom.innerHTML"

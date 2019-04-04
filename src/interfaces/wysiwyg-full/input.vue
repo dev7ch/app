@@ -6,8 +6,10 @@
     @input="$emit('input', $event.target.innerHTML)"
   >
     <div class="editor__inner" :class="{ hidden: showSource }">
-      <Menubar :options="options" :editor="editor" />
+      <!-- WYSIWYG Editor Menubar and Bubble compontens -->
 
+      <Menubar :options="options" :editor="editor" />
+      <!-- WYSIWYG Editor  -->
       <editor-content
         ref="editor"
         :class="['interface-wysiwyg', readonly ? 'readonly' : '']"
@@ -15,6 +17,7 @@
         :editor="editor"
       />
     </div>
+    <!-- Unformatted raw html view -->
     <div class="editor__raw" v-show="showSource">
       <v-textarea
         v-if="showSource && showRaw"
@@ -25,6 +28,8 @@
         :placeholder="options.placeholder"
         :rows="options.rows ? +options.rows : 10"
       ></v-textarea>
+
+      <!-- include code mirror component for formatted raw view -->
 
       <CodeMirror
         :placeholder="options.placeholder"
@@ -37,7 +42,7 @@
         type="textarea"
       >
       </CodeMirror>
-
+      <!-- formatted / unformatted  view toggler -->
       <div
         class="editor__rawformat"
         v-if="showSource"
@@ -54,12 +59,14 @@
         >
       </div>
     </div>
+    <!-- raw html view toggler -->
     <p
       class="editor__button"
       @click="updateText(editor.view.dom.innerHTML)"
       v-html="showSource ? 'Show WYSIWYG' : 'Source Code'"
     ></p>
 
+    <!-- image selection modal interface  -->
     <portal to="modal" v-if="chooseImage">
       <v-modal
         ref="imageModal"

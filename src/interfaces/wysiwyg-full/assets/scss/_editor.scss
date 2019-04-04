@@ -121,6 +121,8 @@
           left: 50%;
           top: 50%;
           transform: translate(-50%, -50%);
+          color:  var(--light-gray);
+          transition: color .15s ease-in-out;
         }
         .label {
           top: calc(50% - 4px);
@@ -130,9 +132,9 @@
           letter-spacing: -1px;
         }
 
-        &.is-active {
+        &.is-active, &:hover, &:focus {
           i {
-            color: var(--accent);
+            color: var(--dark-gray);
           }
         }
       }
@@ -230,6 +232,10 @@
       position: absolute;
       top:-20px;
       right: 0;
+    }
+
+    .editor__button, .editor__rawformat {
+      cursor: pointer;
     }
   }
 }

@@ -179,14 +179,17 @@
       "wysiwyg_full": "Advanced WYSIWYG",
       "placeholder": "Placeholder",
       "placeholder_comment": "Enter placeholder text",
-      "toolbar_options": "Toolbar Options",
-      "toolbar_options_comment": "[TipTap Editor](https://github.com/scrumpy/tiptap) based on ProseMirror",
+      "toolbar_options": "Editor toolbar options",
+      "toolbar_options_comment": "Enable and sort extensions in the toolbar of [TipTap Editor](https://github.com/scrumpy/tiptap)",
+      "toolbar_cm_options": "Code Mirror Options",
+      "toolbar_cm_options_comment": "Code Mirror Options for the formatted raw view of this editor",
       "upload_files": "Upload files",
       "upload_files_comment": "Upload files to directus instead of using Base64 encoded images. Needs 'image' in toolbar.",
       "custom_url": "URL base for images",
       "custom_url_comment": "Optional custom URL base for images including last '/'",
       "add_url": "Add hyperlink",
       "edit_url": "Edit hyperlink"
+
     }
   }
 }

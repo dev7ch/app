@@ -116,7 +116,7 @@ export default {
 
     updateText($text) {
       if (this.showSource) {
-        this.editor.setContent(this.editorText);
+        this.editor.view.dom.innerHTML = this.editorText;
       } else {
         this.editorText = $text;
       }

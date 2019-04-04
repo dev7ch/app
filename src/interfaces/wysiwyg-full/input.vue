@@ -6,7 +6,7 @@
     @input="$emit('input', $event.target.innerHTML)"
   >
     <div class="editor__inner" :class="{ hidden: showSource }">
-      <!-- WYSIWYG Editor Menubar and Bubble compontens -->
+      <!-- WYSIWYG Editor Menubar and Bubble components -->
 
       <Menubar :options="options" v-if="editor" />
       <!-- WYSIWYG Editor  -->

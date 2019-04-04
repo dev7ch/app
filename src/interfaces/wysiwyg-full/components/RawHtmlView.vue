@@ -44,6 +44,15 @@
 import CodeMirror from "../../code/input";
 export default {
   props: ["showSource", "options", "editor", "id", "name"],
+  watch: {
+    value(newVal) {
+      if (newVal && !this.$parent.showSource) {
+        this.$parent.editorText = newVal;
+      } else {
+        this.$emit("input", this.$parent.editorText);
+      }
+    }
+  },
   components: {
     CodeMirror
   },

@@ -19,12 +19,14 @@
       />
     </div>
     <!-- Unformatted raw html view -->
-    <RawHtmlView
-      :id="name + '-raw'"
-      :options="options"
-      :show-source="showSource"
-      :name="name"
-    />
+    <template v-if="showSource">
+      <RawHtmlView
+          :id="name + '-raw'"
+          :options="options"
+          :show-source="showSource"
+          :name="name"
+      />
+    </template>
     <!-- raw html view toggler -->
     <p
       class="editor__button"
@@ -37,7 +39,7 @@
 import mixin from "@directus/extension-toolkit/mixins/interface";
 import { Editor, EditorContent } from "tiptap";
 import Menubar from "./components/Menubar";
-import RawHtmlView from "./components/RawHtmlView";
+const RawHtmlView = () => import("./components/RawHtmlView");
 import {
   Blockquote,
   CodeBlock,

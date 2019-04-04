@@ -7,149 +7,149 @@
         :class="{ 'options-is-open': isActive.table() }"
       >
         <button
-          v-if="options.toolbarOptions.includes('Bold')"
+          v-if="$parent.$parent.options.toolbarOptions.includes('Bold')"
           class="menubar__button"
           :class="{ 'is-active': isActive.bold() }"
           @click="commands.bold"
-          :style="{ order: options.toolbarOptions.indexOf('Bold') }"
+          :style="{ order: $parent.options.toolbarOptions.indexOf('Bold') }"
         >
           <icon name="format_bold" />
         </button>
 
         <button
-          v-if="options.toolbarOptions.includes('Italic')"
+          v-if="$parent.options.toolbarOptions.includes('Italic')"
           class="menubar__button"
           :class="{ 'is-active': isActive.italic() }"
           @click="commands.italic"
-          :style="{ order: options.toolbarOptions.indexOf('Italic') }"
+          :style="{ order: $parent.options.toolbarOptions.indexOf('Italic') }"
         >
           <icon name="format_italic" />
         </button>
 
         <button
-          v-if="options.toolbarOptions.includes('Strike')"
+          v-if="$parent.options.toolbarOptions.includes('Strike')"
           class="menubar__button"
           :class="{ 'is-active': isActive.strike() }"
           @click="commands.strike"
-          :style="{ order: options.toolbarOptions.indexOf('Strike') }"
+          :style="{ order: $parent.options.toolbarOptions.indexOf('Strike') }"
         >
           <icon name="format_strikethrough" />
         </button>
 
         <button
           class="menubar__button"
-          v-if="options.toolbarOptions.includes('Underline')"
+          v-if="$parent.options.toolbarOptions.includes('Underline')"
           :class="{ 'is-active': isActive.underline() }"
           @click="commands.underline"
-          :style="{ order: options.toolbarOptions.indexOf('Underline') }"
+          :style="{ order: $parent.options.toolbarOptions.indexOf('Underline') }"
         >
           <icon name="format_underline" />
         </button>
 
         <button
-          v-if="options.toolbarOptions.includes('Code')"
+          v-if="$parent.options.toolbarOptions.includes('Code')"
           class="menubar__button"
           :class="{ 'is-active': isActive.code() }"
           @click="commands.code"
-          :style="{ order: options.toolbarOptions.indexOf('Code') }"
+          :style="{ order: $parent.options.toolbarOptions.indexOf('Code') }"
         >
           <icon name="code" />
         </button>
 
         <button
-          v-if="options.toolbarOptions.includes('Paragraph')"
+          v-if="$parent.options.toolbarOptions.includes('Paragraph')"
           class="menubar__button"
           :class="{ 'is-active': isActive.paragraph() }"
           @click="commands.paragraph"
-          :style="{ order: options.toolbarOptions.indexOf('Paragraph') }"
+          :style="{ order: $parent.options.toolbarOptions.indexOf('Paragraph') }"
         >
           <icon name="subject" />
         </button>
 
         <button
-          v-show="options.toolbarOptions.includes('h1')"
+          v-show="$parent.options.toolbarOptions.includes('h1')"
           class="menubar__button"
           :class="{ 'is-active': isActive.heading({ level: 1 }) }"
           @click="commands.heading({ level: 1 })"
-          :style="{ order: options.toolbarOptions.indexOf('h1') }"
+          :style="{ order: $parent.options.toolbarOptions.indexOf('h1') }"
         >
           <span class="label">H1</span>
           <icon name="crop_square" />
         </button>
 
         <button
-          v-show="options.toolbarOptions.includes('h2')"
+          v-show="$parent.options.toolbarOptions.includes('h2')"
           class="menubar__button"
           :class="{ 'is-active': isActive.heading({ level: 2 }) }"
           @click="commands.heading({ level: 2 })"
-          :style="{ order: options.toolbarOptions.indexOf('h2') }"
+          :style="{ order: $parent.options.toolbarOptions.indexOf('h2') }"
         >
           <span class="label">H2</span>
           <icon name="crop_square" />
         </button>
 
         <button
-          v-show="options.toolbarOptions.includes('h3')"
+          v-show="$parent.options.toolbarOptions.includes('h3')"
           class="menubar__button"
           :class="{ 'is-active': isActive.heading({ level: 3 }) }"
           @click="commands.heading({ level: 3 })"
-          :style="{ order: options.toolbarOptions.indexOf('h3') }"
+          :style="{ order: $parent.options.toolbarOptions.indexOf('h3') }"
         >
           <span class="label">H3</span>
           <icon name="crop_square" />
         </button>
 
         <button
-          v-if="options.toolbarOptions.includes('BulletList')"
+          v-if="$parent.options.toolbarOptions.includes('BulletList')"
           class="menubar__button"
           :class="{ 'is-active': isActive.bullet_list() }"
           @click="commands.bullet_list"
-          :style="{ order: options.toolbarOptions.indexOf('BulletList') }"
+          :style="{ order: $parent.options.toolbarOptions.indexOf('BulletList') }"
         >
           <icon name="format_list_bulleted" />
         </button>
 
         <button
-          v-if="options.toolbarOptions.includes('OrderedList')"
+          v-if="$parent.options.toolbarOptions.includes('OrderedList')"
           class="menubar__button"
           :class="{ 'is-active': isActive.ordered_list() }"
           @click="commands.ordered_list"
-          :style="{ order: options.toolbarOptions.indexOf('OrderedList') }"
+          :style="{ order: $parent.options.toolbarOptions.indexOf('OrderedList') }"
         >
           <icon name="format_list_numbered" />
         </button>
 
         <button
-          v-if="options.toolbarOptions.includes('Blockquote')"
+          v-if="$parent.options.toolbarOptions.includes('Blockquote')"
           class="menubar__button"
           :class="{ 'is-active': isActive.blockquote() }"
           @click="commands.blockquote"
-          :style="{ order: options.toolbarOptions.indexOf('Blockquote') }"
+          :style="{ order: $parent.options.toolbarOptions.indexOf('Blockquote') }"
         >
           <icon name="format_quote" />
         </button>
 
         <button
-          v-if="options.toolbarOptions.includes('Link')"
+          v-if="$parent.options.toolbarOptions.includes('Link')"
           class="menubar__button"
           :class="{ 'is-active': linkBubble }"
           @click="setLink()"
-          :style="{ order: options.toolbarOptions.indexOf('Link') }"
+          :style="{ order: $parent.options.toolbarOptions.indexOf('Link') }"
         >
           <icon name="link" />
         </button>
         <button
-          v-if="options.toolbarOptions.includes('Image')"
+          v-if="$parent.options.toolbarOptions.includes('Image')"
           class="menubar__button"
           @click="chooseImage = !chooseImage"
-          :style="{ order: options.toolbarOptions.indexOf('Image') }"
+          :style="{ order: $parent.options.toolbarOptions.indexOf('Image') }"
         >
           <icon name="image" />
         </button>
         <button
-          v-if="options.toolbarOptions.includes('Table')"
+          v-if="$parent.options.toolbarOptions.includes('Table')"
           class="menubar__button"
-          :style="{ order: options.toolbarOptions.indexOf('Table') }"
+          :style="{ order: $parent.options.toolbarOptions.indexOf('Table') }"
           @click="
             commands.createTable({
               rowsCount: 3,
@@ -228,17 +228,17 @@
           </button>
         </div>
         <button
-          v-if="options.toolbarOptions.includes('HorizontalRule')"
-          :style="{ order: options.toolbarOptions.indexOf('HorizontalRule') }"
+          v-if="$parent.options.toolbarOptions.includes('HorizontalRule')"
+          :style="{ order: $parent.options.toolbarOptions.indexOf('HorizontalRule') }"
           class="menubar__button"
           @click="commands.horizontal_rule"
         >
           <icon name="maximize" />
         </button>
         <div
-          class="bottom__actions"
-          v-if="options.toolbarOptions.includes('History')"
-          :style="{ order: options.toolbarOptions.indexOf('HorizontalRule') }"
+            class="history__actions"
+            v-if="$parent.options.toolbarOptions.includes('History')"
+            :style="{ order: $parent.options.toolbarOptions.indexOf('HorizontalRule') }"
         >
           <button class="menubar__button" @click="commands.undo">
             <icon name="undo" />
@@ -327,7 +327,7 @@ export default {
     return {
       linkUrl: null,
       linkBubble: false,
-      chooseImage:false,
+      chooseImage: false,
       imageUrlRaw: "",
       imageUrlRawBroken: false,
       viewOptions: {
@@ -346,7 +346,7 @@ export default {
 
     addImageCommand(data) {
       if (data.command !== null || data.command !== "data") {
-        this.editor.commands.image({
+        this.$parent.editor.commands.image({
           src: data
         });
 
@@ -356,8 +356,8 @@ export default {
 
     insertItem(item) {
       let url = item.data.full_url;
-      if (this.options.custom_url) {
-        url = `${this.options.custom_url}${item.filename}`;
+      if (this.$parent.options.custom_url) {
+        url = `${this.$parent.options.custom_url}${item.filename}`;
       }
       // @todo implement image source base url
       // const index = (this.editor.getSelection() || {}).index || this.editor.getLength();
@@ -369,12 +369,6 @@ export default {
         this.chooseImage = false;
         this.addImageCommand(url);
       }
-    }
-  },
-
-  mounted() {
-    if (this.$parent.editor) {
-      console.log(this.$parent.editor)
     }
   },
   components: {

@@ -54,10 +54,6 @@
       return {
         showRaw: false
       }
-    },
-
-    // mounted() {
-    //   console.log(this.$props.id)
-    // }
+    }
   }
 </script>

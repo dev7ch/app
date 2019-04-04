@@ -41,7 +41,9 @@
           v-if="$parent.options.toolbarOptions.includes('Underline')"
           :class="{ 'is-active': isActive.underline() }"
           @click="commands.underline"
-          :style="{ order: $parent.options.toolbarOptions.indexOf('Underline') }"
+          :style="{
+            order: $parent.options.toolbarOptions.indexOf('Underline')
+          }"
         >
           <icon name="format_underline" />
         </button>
@@ -61,7 +63,9 @@
           class="menubar__button"
           :class="{ 'is-active': isActive.paragraph() }"
           @click="commands.paragraph"
-          :style="{ order: $parent.options.toolbarOptions.indexOf('Paragraph') }"
+          :style="{
+            order: $parent.options.toolbarOptions.indexOf('Paragraph')
+          }"
         >
           <icon name="subject" />
         </button>
@@ -104,7 +108,9 @@
           class="menubar__button"
           :class="{ 'is-active': isActive.bullet_list() }"
           @click="commands.bullet_list"
-          :style="{ order: $parent.options.toolbarOptions.indexOf('BulletList') }"
+          :style="{
+            order: $parent.options.toolbarOptions.indexOf('BulletList')
+          }"
         >
           <icon name="format_list_bulleted" />
         </button>
@@ -114,7 +120,9 @@
           class="menubar__button"
           :class="{ 'is-active': isActive.ordered_list() }"
           @click="commands.ordered_list"
-          :style="{ order: $parent.options.toolbarOptions.indexOf('OrderedList') }"
+          :style="{
+            order: $parent.options.toolbarOptions.indexOf('OrderedList')
+          }"
         >
           <icon name="format_list_numbered" />
         </button>
@@ -124,7 +132,9 @@
           class="menubar__button"
           :class="{ 'is-active': isActive.blockquote() }"
           @click="commands.blockquote"
-          :style="{ order: $parent.options.toolbarOptions.indexOf('Blockquote') }"
+          :style="{
+            order: $parent.options.toolbarOptions.indexOf('Blockquote')
+          }"
         >
           <icon name="format_quote" />
         </button>
@@ -229,16 +239,20 @@
         </div>
         <button
           v-if="$parent.options.toolbarOptions.includes('HorizontalRule')"
-          :style="{ order: $parent.options.toolbarOptions.indexOf('HorizontalRule') }"
+          :style="{
+            order: $parent.options.toolbarOptions.indexOf('HorizontalRule')
+          }"
           class="menubar__button"
           @click="commands.horizontal_rule"
         >
           <icon name="maximize" />
         </button>
         <div
-            class="history__actions"
-            v-if="$parent.options.toolbarOptions.includes('History')"
-            :style="{ order: $parent.options.toolbarOptions.indexOf('HorizontalRule') }"
+          class="history__actions"
+          v-if="$parent.options.toolbarOptions.includes('History')"
+          :style="{
+            order: $parent.options.toolbarOptions.indexOf('HorizontalRule')
+          }"
         >
           <button class="menubar__button" @click="commands.undo">
             <icon name="undo" />
@@ -257,46 +271,46 @@
     <!-- image selection modal interface  -->
     <portal to="modal" v-if="chooseImage">
       <v-modal
-          ref="imageModal"
-          :title="$t('choose_one')"
-          :buttons="{
+        ref="imageModal"
+        :title="$t('choose_one')"
+        :buttons="{
           done: {
             text: $t('done'),
             disabled: !imageUrlRaw || (imageUrlRaw && imageUrlRawBroken)
           }
         }"
-          @close="chooseImage = false"
-          @done="insertImageUrl(imageUrlRaw)"
+        @close="chooseImage = false"
+        @done="insertImageUrl(imageUrlRaw)"
       >
         <div
-            class="interface-wysiwyg-modal-url-input"
-            :class="{ 'is-active': imageUrlRaw }"
+          class="interface-wysiwyg-modal-url-input"
+          :class="{ 'is-active': imageUrlRaw }"
         >
           <v-input
-              v-model="imageUrlRaw"
-              placeholder="Paste url to image or select an existing"
-              @input="imageUrlRawBroken = false"
+            v-model="imageUrlRaw"
+            placeholder="Paste url to image or select an existing"
+            @input="imageUrlRawBroken = false"
           ></v-input>
           <div class="interface-wysiwyg-modal-url-preview" v-if="imageUrlRaw">
             <i v-if="imageUrlRawBroken" class="material-icons error icon"
-            >broken_image</i
+              >broken_image</i
             >
             <img
-                v-else
-                :src="imageUrlRaw"
-                alt="preview-url-image"
-                class="image"
-                @error="imageUrlRawBroken = true"
+              v-else
+              :src="imageUrlRaw"
+              alt="preview-url-image"
+              class="image"
+              @error="imageUrlRawBroken = true"
             />
           </div>
         </div>
         <v-items
-            v-if="imageUrlRaw === ''"
-            collection="directus_files"
-            view-type="cards"
-            :selection="[]"
-            :view-options="viewOptions"
-            @select="insertItem($event[0])"
+          v-if="imageUrlRaw === ''"
+          collection="directus_files"
+          view-type="cards"
+          :selection="[]"
+          :view-options="viewOptions"
+          @select="insertItem($event[0])"
         >
         </v-items>
       </v-modal>
@@ -336,7 +350,7 @@ export default {
         content: "description",
         src: "data"
       }
-    }
+    };
   },
 
   methods: {

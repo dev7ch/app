@@ -19,7 +19,12 @@
       />
     </div>
     <!-- Unformatted raw html view -->
-    <RawHtmlView    :id="name + '-raw'" :options="options" :show-source="showSource" :name="name" />
+    <RawHtmlView
+      :id="name + '-raw'"
+      :options="options"
+      :show-source="showSource"
+      :name="name"
+    />
     <!-- raw html view toggler -->
     <p
       class="editor__button"

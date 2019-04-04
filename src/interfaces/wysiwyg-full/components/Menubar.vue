@@ -251,7 +251,7 @@
           class="history__actions"
           v-if="$parent.options.toolbarOptions.includes('History')"
           :style="{
-            order: $parent.options.toolbarOptions.indexOf('HorizontalRule')
+            order: $parent.options.toolbarOptions.indexOf('History')
           }"
         >
           <button class="menubar__button" @click="commands.undo">

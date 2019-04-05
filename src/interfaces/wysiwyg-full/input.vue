@@ -7,7 +7,6 @@
   >
     <div class="editor__inner" :class="{shrinked: showSource }">
       <!-- WYSIWYG Editor Menubar and Bubble components -->
-
       <Menubar :options="options" v-if="editor" />
       <!-- WYSIWYG Editor  -->
       <editor-content
@@ -15,7 +14,6 @@
         ref="editor"
         :class="['interface-wysiwyg editor__content', readonly ? 'readonly' : '', {hidden: showSource }]"
         :editor="editor"
-        @click="updateText(editor.view.dom.innerHTML)"
       />
     </div>
     <!-- Unformatted raw html view -->
@@ -35,6 +33,7 @@ import mixin from "@directus/extension-toolkit/mixins/interface";
 import { Editor, EditorContent } from "tiptap";
 import Menubar from "./components/Menubar";
 const RawHtmlView = () => import("./components/RawHtmlView");
+
 import {
   Blockquote,
   CodeBlock,
@@ -62,7 +61,7 @@ import {
 
 
 export default {
-  name: "interface-wysiwyg-full",
+  name: "interface-wysiwyg",
   mixins: [mixin],
   watch: {
     value(newVal) {
@@ -113,7 +112,6 @@ export default {
 
     updateText($text) {
       if (this.showSource) {
-        console.log($text)
         this.editor.view.dom.innerHTML = this.editorText;
       } else {
         this.editorText = $text;
@@ -149,6 +147,7 @@ export default {
 
   data() {
     return {
+      editorExtensions: [],
       editorText: "",
       editor: null,
       showSource: false,

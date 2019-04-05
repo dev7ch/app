@@ -6,7 +6,7 @@
       class="textarea"
       :id="name + '-raw'"
       :value="$parent.editor.view.dom.innerHTML"
-      :placeholder="options.placeholder"
+      :placeholder="$parent.options.placeholder"
       :rows="options.rows ? +options.rows : 10"
     ></v-textarea>
 
@@ -16,8 +16,8 @@
       :placeholder="options.placeholder"
       class="textarea code"
       :id="id + '-raw-formatted'"
-      v-if="showSource && !showRaw"
-      :alt-options="options.codeMirrorOptions"
+      v-if="$parent.showSource && !showRaw"
+      :alt-options="$parent.options.codeMirrorOptions"
       :value="$parent.editor.view.dom.innerHTML"
       v-model.lazy="$parent.editorText"
       :name="'htmlmixed'"

@@ -5,24 +5,28 @@
     :name="name"
     @input="$emit('input', $event.target.innerHTML)"
   >
-    <div class="editor__inner" :class="{shrinked: showSource }">
+    <div class="editor__inner" :class="{ shrinked: showSource }">
       <!-- WYSIWYG Editor Menubar and Bubble components -->
       <Menubar :options="options" v-if="editor" />
       <!-- WYSIWYG Editor  -->
       <editor-content
         id="wysiwyg-full"
         ref="editor"
-        :class="['interface-wysiwyg editor__content', readonly ? 'readonly' : '', {hidden: showSource }]"
+        :class="[
+          'interface-wysiwyg editor__content',
+          readonly ? 'readonly' : '',
+          { hidden: showSource }
+        ]"
         :editor="editor"
       />
     </div>
     <!-- Unformatted raw html view -->
     <template v-if="showSource">
       <RawHtmlView
-          :id="name + '-raw'"
-          :options="options"
-          :show-source="showSource"
-          :name="name"
+        :id="name + '-raw'"
+        :options="options"
+        :show-source="showSource"
+        :name="name"
       />
     </template>
     <!-- raw html view toggler -->
@@ -31,7 +35,7 @@
 <script>
 import mixin from "@directus/extension-toolkit/mixins/interface";
 import { Editor, EditorContent } from "tiptap";
-import Menubar from "./components/Menubar";
+const Menubar = () => import("./components/Menubar");
 const RawHtmlView = () => import("./components/RawHtmlView");
 
 import {
@@ -59,7 +63,6 @@ import {
   TableCell
 } from "tiptap-extensions";
 
-
 export default {
   name: "interface-wysiwyg",
   mixins: [mixin],
@@ -76,29 +79,73 @@ export default {
   methods: {
     init() {
       const ext = [
-        new Blockquote(),
-        new BulletList(),
-        new CodeBlock(),
-        new HardBreak(),
+        this.options.toolbarOptions.includes("Blockquote")
+          ? new Blockquote()
+          : "disabled",
+        this.options.toolbarOptions.includes("BulletList")
+          ? new BulletList()
+          : "disabled",
+        this.options.toolbarOptions.includes("CodeBlock")
+          ? new CodeBlock()
+          : "disabled",
+        this.options.toolbarOptions.includes("HardBreak")
+          ? new HardBreak()
+          : "disabled",
         new Heading({ levels: [1, 2, 3, 4, 5] }),
-        new HorizontalRule(),
-        new ListItem(),
-        new OrderedList(),
-        new TodoItem(),
-        new TodoList(),
-        new Bold(),
-        new Image(),
-        new Code(),
-        new Italic(),
-        new Link(),
-        new Strike(),
-        new Underline(),
-        new History(),
-        new Table(),
-        new TableHeader(),
-        new TableCell(),
-        new TableRow()
+        this.options.toolbarOptions.includes("HorizontalRule")
+          ? new HorizontalRule()
+          : "disabled",
+        this.options.toolbarOptions.includes("ListItem")
+          ? new ListItem()
+          : "disabled",
+        this.options.toolbarOptions.includes("OrderedList")
+          ? new OrderedList()
+          : "disabled",
+        this.options.toolbarOptions.includes("TodoItem")
+          ? new TodoItem()
+          : "disabled",
+        this.options.toolbarOptions.includes("TodoList")
+          ? new TodoList()
+          : "disabled",
+        this.options.toolbarOptions.includes("Bold") ? new Bold() : "disabled",
+        this.options.toolbarOptions.includes("Image")
+          ? new Image()
+          : "disabled",
+        this.options.toolbarOptions.includes("Code") ? new Code() : "disabled",
+        this.options.toolbarOptions.includes("Italic")
+          ? new Italic()
+          : "disabled",
+        this.options.toolbarOptions.includes("Link") ? new Link() : "disabled",
+        this.options.toolbarOptions.includes("Strike")
+          ? new Strike()
+          : "disabled",
+        this.options.toolbarOptions.includes("Underline")
+          ? new Underline()
+          : "disabled",
+        this.options.toolbarOptions.includes("History")
+          ? new History()
+          : "disabled",
+        this.options.toolbarOptions.includes("Table")
+          ? new Table()
+          : "disabled",
+        this.options.toolbarOptions.includes("TableHeader")
+          ? new TableHeader()
+          : "disabled",
+        this.options.toolbarOptions.includes("TableCell")
+          ? new TableCell()
+          : "disabled",
+        this.options.toolbarOptions.includes("TableRow")
+          ? new TableRow()
+          : "disabled"
       ];
+
+      const search_term = "disabled";
+
+      for (let i = ext.length - 1; i >= 0; i--) {
+        if (ext[i] === search_term) {
+          ext.splice(i, 1);
+        }
+      }
 
       this.editor = new Editor({
         extensions: ext,

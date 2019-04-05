@@ -34,7 +34,9 @@
           @click="showLinkMenu(getMarkAttrs('link'))"
           :class="{ 'is-active': isActive.link() }"
         >
-          <span>{{ isActive.link() ? $t("edit_link") : $t("add_link") }}</span>
+          <span
+            v-text="isActive.link() ? $t('edit_link') : $t('add_link')"
+          ></span>
           <icon name="link" />
         </button>
       </template>

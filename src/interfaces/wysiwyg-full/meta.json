@@ -44,7 +44,6 @@
           "BulletList",
           "OrderedList",
           "ListItem",
-          "CodeBlock",
           "HardBreak",
           "HorizontalRule",
           "Image",
@@ -68,7 +67,6 @@
         "BulletList",
         "OrderedList",
         "ListItem",
-        "CodeBlock",
         "HardBreak",
         "Image",
         "Link",
@@ -138,9 +136,9 @@
           "styleSelectedText": true,
           "line": true,
           "hintOptions": {
-            "completeSingle": true
+            "completeSingle": false
           },
-          "lineNumbers": false,
+          "lineNumbers": true,
           "lineWrapping": true,
           "mode": "text/html",
           "matchBrackets": true,
@@ -148,27 +146,6 @@
           "theme": "default",
           "extraKeys": {
             "Ctrl": "autocomplete"
-          },
-          "tags": {
-            "style": [
-              [
-                "type",
-                "\/^text\/(x-)?scss$/\"",
-                "text/x-scss"
-              ],
-              [
-                null,
-                null,
-                "css"
-              ]
-            ],
-            "custom": [
-              [
-                null,
-                null,
-                "customMode"
-              ]
-            ]
           }
         }
       }
@@ -187,8 +164,8 @@
       "upload_files_comment": "Upload files to directus instead of using Base64 encoded images. Needs 'image' in toolbar.",
       "custom_url": "URL base for images",
       "custom_url_comment": "Optional custom URL base for images including last '/'",
-      "add_url": "Add hyperlink",
-      "edit_url": "Edit hyperlink"
+      "add_link": "Add Link",
+      "edit_link": "Edit Link"
 
     }
   }

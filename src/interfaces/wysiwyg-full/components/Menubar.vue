@@ -262,10 +262,13 @@
           </button>
         </div>
         <button
-            class="menubar__button toggler"
-            @click="$parent.updateText($parent.editor.view.dom.innerHTML), $parent.showSource = !$parent.showSource"
-            v-html="$parent.showSource ? 'WYSIWYG' : 'Code'"
-            :style="{
+          class="menubar__button toggler"
+          @click="
+            $parent.updateText($parent.editor.view.dom.innerHTML),
+              ($parent.showSource = !$parent.showSource)
+          "
+          v-html="$parent.showSource ? 'WYSIWYG' : 'Code'"
+          :style="{
             order: 99
           }"
         ></button>

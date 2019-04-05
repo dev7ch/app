@@ -86,10 +86,21 @@
 
     .editor__inner {
       min-height: inherit;
+      //ransition: min-height .2s ease-in-out;
 
-      &.hidden {
+      &.shrinked {
         min-height: 0;
-        display: none;
+        .menubar__button:not(.toggler) {
+          display: none;
+        }
+      }
+
+
+      .editor__content {
+        &.hidden {
+          min-height: 0;
+          display: none;
+        }
       }
 
       img {
@@ -135,17 +146,18 @@
 
       .menubar__button {
         position: relative;
+        min-height: 30px;
         span,
         i {
           position: absolute;
           left: 50%;
-          top: 50%;
+          top: 60%;
           transform: translate(-50%, -50%);
           color:  var(--light-gray);
           transition: color .15s ease-in-out;
         }
         .label {
-          top: calc(50% - 4px);
+          top: calc(50%);
           left: calc(50% + 2px);
           transform: translate(-50%, -50%);
           font-size: 8px;

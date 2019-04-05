@@ -5,7 +5,7 @@
     :name="name"
     @input="$emit('input', $event.target.innerHTML)"
   >
-    <div class="editor__inner" :class="{ hidden: showSource }">
+    <div class="editor__inner" :class="{shrinked: showSource }">
       <!-- WYSIWYG Editor Menubar and Bubble components -->
 
       <Menubar :options="options" v-if="editor" />
@@ -13,9 +13,9 @@
       <editor-content
         id="wysiwyg-full"
         ref="editor"
-        :class="['interface-wysiwyg', readonly ? 'readonly' : '']"
-        class="editor__content"
+        :class="['interface-wysiwyg editor__content', readonly ? 'readonly' : '', {hidden: showSource }]"
         :editor="editor"
+        @click="updateText(editor.view.dom.innerHTML)"
       />
     </div>
     <!-- Unformatted raw html view -->
@@ -28,11 +28,6 @@
       />
     </template>
     <!-- raw html view toggler -->
-    <p
-      class="editor__button"
-      @click="updateText(editor.view.dom.innerHTML)"
-      v-html="showSource ? 'Show WYSIWYG' : 'Source Code'"
-    ></p>
   </div>
 </template>
 <script>
@@ -67,7 +62,7 @@ import {
 
 
 export default {
-  name: "interface-wysiwyg",
+  name: "interface-wysiwyg-full",
   mixins: [mixin],
   watch: {
     value(newVal) {
@@ -118,11 +113,11 @@ export default {
 
     updateText($text) {
       if (this.showSource) {
+        console.log($text)
         this.editor.view.dom.innerHTML = this.editorText;
       } else {
         this.editorText = $text;
       }
-      this.showSource = !this.showSource;
     },
 
     showLinkMenu(attrs) {

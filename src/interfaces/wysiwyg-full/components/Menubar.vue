@@ -1,6 +1,6 @@
 <template>
   <div class="menubar__wrapper">
-    <editor-menu-bar v-show="!showSource" :editor="$parent.editor">
+    <editor-menu-bar :editor="$parent.editor">
       <div
         class="menubar"
         slot-scope="{ commands, isActive }"
@@ -261,6 +261,14 @@
             <icon name="redo" />
           </button>
         </div>
+        <button
+            class="menubar__button toggler"
+            @click="$parent.updateText($parent.editor.view.dom.innerHTML), $parent.showSource = !$parent.showSource"
+            v-html="$parent.showSource ? 'WYSIWYG' : 'Code'"
+            :style="{
+            order: 99
+          }"
+        ></button>
       </div>
     </editor-menu-bar>
     <Bubble
@@ -402,6 +410,12 @@ export default {
   transition: var(--fast) var(--transition);
   transition-property: color, border-color;
   margin-bottom: -5px;
-  padding-top: 5px;
+  padding-top: 0;
+
+  .toggler {
+    margin-left: auto;
+    padding-right: 5px;
+    transform: translateY(-2px);
+  }
 }
 </style>

@@ -1,4 +1,7 @@
 .interface-wysiwyg-container {
+  position: relative;
+  width: 100%;
+  max-width: var(--width-x-large);
   .interface-wysiwyg.editor__content {
     width: 100%;
     min-height: inherit;

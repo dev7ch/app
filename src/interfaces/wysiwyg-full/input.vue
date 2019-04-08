@@ -78,6 +78,9 @@ export default {
 
   methods: {
     init() {
+      if (!this.options.toolbarOptions) {
+        this.options.toolbarOptions = [];
+      }
       const ext = [
         this.options.toolbarOptions.includes("Blockquote")
           ? new Blockquote()

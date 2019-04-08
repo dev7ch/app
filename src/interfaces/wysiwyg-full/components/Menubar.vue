@@ -189,7 +189,11 @@
         </button>
         <div
           class="options-fixed"
-          v-if="isActive.table()"
+          v-if="
+            $parent.options.toolbarOptions.includes('Table')
+              ? isActive.table()
+              : false
+          "
           :class="{ 'is-open': isActive.table() }"
         >
           <button class="menubar__button" @click="commands.deleteTable">

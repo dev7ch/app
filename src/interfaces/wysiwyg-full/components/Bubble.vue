@@ -30,6 +30,7 @@
 
       <template v-else>
         <button
+          v-if="$parent.options.toolbarOptions.includes('Link')"
           class="menububble__button"
           @click="showLinkMenu(getMarkAttrs('link'))"
           :class="{ 'is-active': isActive.link() }"

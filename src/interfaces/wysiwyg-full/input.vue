@@ -11,13 +11,14 @@
       <!-- WYSIWYG Editor  -->
       <editor-content
         id="wysiwyg-full"
-        ref="editor"
+        :ref="editor"
         :class="[
           'interface-wysiwyg editor__content',
           readonly ? 'readonly' : '',
           { hidden: showSource }
         ]"
         :editor="editor"
+        type="textarea"
       />
     </div>
     <!-- Unformatted raw html view -->
@@ -29,7 +30,6 @@
         :name="name"
       />
     </template>
-    <!-- raw html view toggler -->
   </div>
 </template>
 <script>
@@ -149,17 +149,13 @@ export default {
 
       this.editor = new Editor({
         extensions: ext,
-        content: ""
+        content: this.value ? this.value : ""
       });
-
-      if (this.value) {
-        this.editor.setContent(this.value);
-      }
     },
 
     updateText($text) {
       if (this.showSource) {
-        this.editor.view.dom.innerHTML = this.editorText;
+        this.editor.setContent(this.editorText);
       } else {
         this.editorText = $text;
       }

@@ -4,7 +4,7 @@
       <div
         class="menubar"
         slot-scope="{ commands, isActive }"
-        :class="{ 'options-is-open': isActive.table() }"
+        :class="{ 'options-is-open': ($parent.options.toolbarOptions.includes('Table') ? isActive.table() : false)}"
       >
         <button
           v-if="$parent.$parent.options.toolbarOptions.includes('Bold')"
@@ -56,6 +56,16 @@
           :style="{ order: $parent.options.toolbarOptions.indexOf('Code') }"
         >
           <icon name="code" />
+        </button>
+
+        <button
+            v-if="$parent.options.toolbarOptions.includes('CodeBlock')"
+            class="menubar__button"
+            :class="{ 'is-active': isActive.code_block() }"
+            @click="commands.code_block"
+            :style="{ order: $parent.options.toolbarOptions.indexOf('CodeBlock') }"
+        >
+          <icon name="settings_ethernet" />
         </button>
 
         <button
@@ -159,6 +169,7 @@
         <button
           v-if="$parent.options.toolbarOptions.includes('Table')"
           class="menubar__button"
+          :class="{ 'is-active': isActive.table() }"
           :style="{ order: $parent.options.toolbarOptions.indexOf('Table') }"
           @click="
             commands.createTable({

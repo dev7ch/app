@@ -24,10 +24,7 @@
               </label>
             </div>
           </template>
-          <small
-            v-if="!readonly && field.note"
-            v-html="$helpers.snarkdown(field.note)"
-          />
+          <small v-if="field.note" v-html="$helpers.snarkdown(field.note)" />
         </div>
         <div class="field-wrapper">
           <v-ext-input
@@ -45,20 +42,16 @@
             :length="field.length"
             :new-item="newItem"
             @input="
-              readonly
-                ? null
-                : $emit('stage-value', {
-                    field: field.field,
-                    value: $event
-                  })
+              $emit('stage-value', {
+                field: field.field,
+                value: $event
+              })
             "
             @setfield="
-              readonly
-                ? null
-                : $emit('stage-value', {
-                    field: $event.field,
-                    value: $event.value
-                  })
+              $emit('stage-value', {
+                field: $event.field,
+                value: $event.value
+              })
             "
           />
           <div

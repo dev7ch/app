@@ -78,8 +78,24 @@ export default {
 
   methods: {
     init() {
-      if (!this.options.toolbarOptions) {
-        this.options.toolbarOptions = [];
+      if (
+        !this.options.toolbarOptions ||
+        (this.options.toolbarOptions !== null &&
+          this.options.toolbarOptions.length === 0)
+      ) {
+        this.options.toolbarOptions = [
+          "Paragraph",
+          "Bold",
+          "Strike",
+          "Underline",
+          "Italic",
+          "ListItem",
+          "BulletList",
+          "OrderedList",
+          "Table",
+          "Image",
+          "History"
+        ];
       }
       const ext = [
         this.options.toolbarOptions.includes("Blockquote")
@@ -131,13 +147,13 @@ export default {
         this.options.toolbarOptions.includes("Table")
           ? new Table()
           : "disabled",
-        this.options.toolbarOptions.includes("TableHeader")
+        this.options.toolbarOptions.includes("Table")
           ? new TableHeader()
           : "disabled",
-        this.options.toolbarOptions.includes("TableCell")
+        this.options.toolbarOptions.includes("Table")
           ? new TableCell()
           : "disabled",
-        this.options.toolbarOptions.includes("TableRow")
+        this.options.toolbarOptions.includes("Table")
           ? new TableRow()
           : "disabled"
       ];

@@ -11,7 +11,7 @@
         }"
       >
         <button
-          v-if="$parent.$parent.options.toolbarOptions.includes('Bold')"
+          v-if="$parent.options.toolbarOptions.includes('Bold')"
           class="menubar__button"
           :class="{ 'is-active': isActive.bold() }"
           @click="commands.bold"

@@ -2,7 +2,7 @@
   <div class="interface-code">
     <codemirror
       ref="codemirrorEl"
-      :options="cmOptions"
+      :options="altOptions ? altOptions : cmOptions"
       :value="stringValue"
       @input="onInput"
     ></codemirror>
@@ -66,6 +66,11 @@ export default {
   mixins: [mixin],
   components: {
     codemirror
+  },
+  props: {
+    altOptions: {
+      type: Object
+    }
   },
   data() {
     return {

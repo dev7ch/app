@@ -77,5 +77,6 @@
       "custom_url": "URL base for images",
       "custom_url_comment": "Optional custom URL base for images including last '/'"
     }
-  }
+  },
+  "author": "Silvan Hahn <silvan@dev7.ch>"
 }

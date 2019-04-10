@@ -15,7 +15,7 @@
       <i class="material-icons">playlist_add</i>
     </button>
 
-    <small class="line-count">
+    <small class="line-count" v-if="language">
       {{
         $tc("interfaces-code-loc", lineCount, {
           count: lineCount,

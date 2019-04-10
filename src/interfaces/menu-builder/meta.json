@@ -9,6 +9,7 @@
       "comment": "$t:cm_options_comment",
       "interface": "code",
       "options": {
+        "language": "application/json",
         "default": {
           "tabSize": 2,
           "autoRefresh": true,
@@ -22,7 +23,7 @@
           },
           "lineNumbers": true,
           "lineWrapping": true,
-          "mode": "text/javascript",
+          "mode": "application/json",
           "matchBrackets": true,
           "showCursorWhenSelecting": true,
           "theme": "default",
@@ -37,7 +38,7 @@
     "en-US": {
       "json_menu_builder": "JSON Menu Builder",
       "cm_options": "CodeMirror Settings",
-      "cm_options_comment": "Define the interface appearance of the editor",
+      "cm_options_comment": "Define the interface appearance of the editor.",
       "template_comment": "Provide a template the user can use to get started with",
       "lineNumber": "Line Number",
       "lineNumber_comment": "Show line numbers",

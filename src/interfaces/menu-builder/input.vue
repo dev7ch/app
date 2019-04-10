@@ -1,5 +1,6 @@
 <template>
   <div class="interfacer-menu-builder">
+    {{ this.$children.language }}
     <CodeMirror
         :placeholder="'test'"
         class="textarea code"
@@ -22,11 +23,12 @@
     mixins: [mixin],
     methods: {
       emitValue(event) {
-          try {
+
+        try {
             const value = JSON.parse(event)
             this.$emit("input", value);
           } catch (e) {
-            console.log("No valid json string found:", e.message)
+            console.log("No valid json string found: ", e.message)
           }
       }
     },

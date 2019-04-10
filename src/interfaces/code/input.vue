@@ -2,7 +2,7 @@
   <div class="interface-code">
     <codemirror
       ref="codemirrorEl"
-      :options="cmOptions"
+      :options="altOptions ? altOptions : cmOptions"
       :value="stringValue"
       @input="onInput"
     ></codemirror>
@@ -67,10 +67,15 @@ export default {
   components: {
     codemirror
   },
+
+  props: {
+    altOptions: {
+      type: Object
+    }
+  },
   data() {
     return {
       lineCount: 0,
-
       cmOptions: {
         tabSize: 4,
         autoRefresh: true,

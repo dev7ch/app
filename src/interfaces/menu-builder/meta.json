@@ -4,6 +4,35 @@
   "icon": "menu",
   "types": ["json"],
   "options": {
+    "template": {
+      "name": "$t:menu_template",
+      "comment": "$t:menu_template_comment",
+      "interface": "code",
+      "default": {
+        "item_1": {
+          "label": "Menu Label",
+          "url": "/your/relative/url"
+        },
+        "item_2": {
+          "label": "Menu Label",
+          "url": "/your/relative/url"
+        },
+        "item_3": {
+          "label": "Menu Label",
+          "url": "/your/relative/url",
+          "children": [
+            {
+              "label": "test",
+              "url": "/your/relative/url"
+            },
+            {
+              "label": "test",
+              "url": "/your/relative/url"
+            }
+          ]
+        }
+      }
+    },
     "codeMirrorOptions": {
       "name": "$t:cm_options",
       "comment": "$t:cm_options_comment",
@@ -11,6 +40,27 @@
       "options": {
         "language": "application/json",
         "default": {
+          "tabSize": 2,
+          "autoRefresh": true,
+          "indentUnit": 2,
+          "styleActiveLine": true,
+          "readOnly": false,
+          "styleSelectedText": true,
+          "line": true,
+          "hintOptions": {
+            "completeSingle": false
+          },
+          "lineNumbers": true,
+          "lineWrapping": true,
+          "mode": "application/json",
+          "matchBrackets": true,
+          "showCursorWhenSelecting": true,
+          "theme": "default",
+          "extraKeys": {
+            "Ctrl": "autocomplete"
+          }
+        },
+        "template": {
           "tabSize": 2,
           "autoRefresh": true,
           "indentUnit": 2,
@@ -38,7 +88,9 @@
     "en-US": {
       "json_menu_builder": "JSON Menu Builder",
       "cm_options": "CodeMirror Settings",
-      "cm_options_comment": "Define the interface appearance of the editor.",
+      "cm_options_comment": "Define the interface appearance an behaviours of the CodeMirror editor.",
+      "menu_template": "Menu Template",
+      "menu_template_comment": "Define a template for the menu structure.",
       "template_comment": "Provide a template the user can use to get started with",
       "lineNumber": "Line Number",
       "lineNumber_comment": "Show line numbers",

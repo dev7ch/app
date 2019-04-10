@@ -127,11 +127,9 @@ export default {
     },
     stringValue() {
       if (this.value == null) return null;
-
       if (typeof this.value === "object") {
         return JSON.stringify(this.value, null, 4);
       }
-
       return this.value;
     },
     mode() {

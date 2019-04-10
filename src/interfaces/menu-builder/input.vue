@@ -1,10 +1,10 @@
 <template>
   <div class="interfacer-menu-builder">
-    {{ this.$children.language }}
     <CodeMirror
         :placeholder="'test'"
         class="textarea code"
         :id="id + '-raw-formatted'"
+        :options="options"
         :alt-options="options.codeMirrorOptions"
         :value="value"
         @input="emitValue"

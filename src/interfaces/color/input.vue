@@ -34,6 +34,7 @@
       <template v-for="(label, idx) in rgbLabels">
         <label
           class="slider-label"
+          :key="'label' + idx"
           v-if="
             rawValue[idx] ||
               rawValue[idx] === 0 ||
@@ -51,21 +52,31 @@
           :max="256"
           :alwaysShowOutput="true"
           class="slider"
-          v-model="rawValue[idx]"
+          v-model.lazy="rawValue[idx]"
         ></v-slider>
-        <v-slider
+        <span
+          :key="'hidden-model-fix' + idx"
           v-if="options.allowAlpha && label === 'A'"
+          style="display: none; visibility: hidden; opacity: 0"
+          >{{
+            rawValue[idx] === undefined ? (rawValue[idx] = 1) : rawValue[idx]
+          }}</span
+        >
+        <v-slider
+          v-if="
+            options.allowAlpha && label === 'A' && rawValue[idx] === undefined
+              ? (rawValue[idx] = 1)
+              : rawValue[idx]
+          "
           :key="idx"
           :min="0"
           :max="1"
           :step="0.01"
           :alwaysShowOutput="true"
           class="slider"
-          v-model="
-            rawValue[idx] === undefined ? (rawValue[idx] = 1) : rawValue[idx]
-          "
+          v-model.lazy="rawValue[idx]"
         ></v-slider>
-        <br />
+        <br :key="'break-' + idx" />
       </template>
     </div>
     <div
@@ -77,7 +88,12 @@
       <template v-for="(label, idx) in hslLabels">
         <label
           class="slider-label"
-          v-if="rawValue[idx] || options.allowAlpha"
+          :key="'label' + idx"
+          v-if="
+            rawValue[idx] ||
+              rawValue[idx] === 0 ||
+              (options.allowAlpha && rawValue[idx] === undefined)
+          "
           >{{ label }}</label
         >
         <v-slider
@@ -90,8 +106,16 @@
           :max="idx < 1 ? 100 : 360"
           :alwaysShowOutput="true"
           class="slider"
-          v-model="rawValue[idx]"
+          v-model.lazy="rawValue[idx]"
         ></v-slider>
+        <span
+          :key="'hidden-model-fix' + idx"
+          v-if="options.allowAlpha && label === 'A'"
+          style="display: none; visibility: hidden; opacity: 0"
+          >{{
+            rawValue[idx] === undefined ? (rawValue[idx] = 1) : rawValue[idx]
+          }}</span
+        >
         <v-slider
           v-if="options.allowAlpha && label === 'A'"
           :key="idx"
@@ -100,11 +124,9 @@
           :step="0.01"
           :alwaysShowOutput="true"
           class="slider"
-          v-model="
-            rawValue[idx] === undefined ? (rawValue[idx] = 1) : rawValue[idx]
-          "
+          v-model.lazy="rawValue[idx]"
         ></v-slider>
-        <br />
+        <br :key="'break-' + idx" />
       </template>
     </div>
     <div
@@ -116,6 +138,7 @@
       <template v-for="(label, idx) in cmykLabels">
         <label
           class="slider-label"
+          :key="'label' + idx"
           v-if="
             rawValue[idx] ||
               rawValue[idx] === 0 ||
@@ -135,6 +158,14 @@
           class="slider"
           v-model="rawValue[idx]"
         ></v-slider>
+        <span
+          :key="'hidden-model-fix' + idx"
+          v-if="options.allowAlpha && label === 'A'"
+          style="display: none; visibility: hidden; opacity: 0"
+          >{{
+            rawValue[idx] === undefined ? (rawValue[idx] = 1) : rawValue[idx]
+          }}</span
+        >
         <v-slider
           v-if="options.allowAlpha && label === 'A'"
           :key="idx"
@@ -143,11 +174,9 @@
           :step="0.01"
           :alwaysShowOutput="true"
           class="slider"
-          v-model="
-            rawValue[idx] === undefined ? (rawValue[idx] = 1) : rawValue[idx]
-          "
+          v-model.lazy="rawValue[idx]"
         ></v-slider>
-        <br />
+        <br :key="'break-' + idx" />
       </template>
     </div>
     <div
@@ -229,7 +258,7 @@ export default {
           return Math.round(num);
         });
       }
-      if (!!value) {
+      if (value) {
         this.$emit("input", value);
       }
     },

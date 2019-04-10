@@ -10,23 +10,23 @@
       "interface": "code",
       "default": {
         "item_1": {
-          "label": "Menu Label",
+          "label": "Menu Label 1",
           "url": "/your/relative/url"
         },
         "item_2": {
-          "label": "Menu Label",
+          "label": "Menu Label 2",
           "url": "/your/relative/url"
         },
         "item_3": {
-          "label": "Menu Label",
+          "label": "Menu Label 3",
           "url": "/your/relative/url",
           "children": [
             {
-              "label": "test",
+              "label": "Sub Menu Label 1",
               "url": "/your/relative/url"
             },
             {
-              "label": "test",
+              "label": "Sub Menu Label 1",
               "url": "/your/relative/url"
             }
           ]

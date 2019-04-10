@@ -6,7 +6,7 @@
         :id="id + '-raw-formatted'"
         :options="options"
         :alt-options="options.codeMirrorOptions"
-        :value="value"
+        :value="value ? value : {}"
         @input="emitValue"
         name="json"
         type="textarea"

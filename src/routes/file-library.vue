@@ -9,9 +9,9 @@
           class="bookmark"
           @click="bookmarkModal = true"
         >
-          <i class="material-icons">
-            {{ currentBookmark ? "bookmark" : "bookmark_border" }}
-          </i>
+          <i class="material-icons">{{
+            currentBookmark ? "bookmark" : "bookmark_border"
+          }}</i>
         </button>
         <div v-if="currentBookmark" class="bookmark-name no-wrap">
           ({{ currentBookmark.title }})
@@ -21,7 +21,7 @@
         v-show="selection.length === 0 && !emptyCollection"
         :filters="filters"
         :search-query="searchQuery"
-        :field-names="fieldNames"
+        :field-names="filterableFieldNames"
         :placeholder="resultCopy"
         @filter="updatePreferences('filters', $event)"
         @search="updatePreferences('search_query', $event)"
@@ -187,12 +187,10 @@ export default {
     },
     fields() {
       const fields = this.$store.state.collections[this.collection].fields;
-      return Object.values(fields)
-        .filter(field => field.datatype)
-        .map(field => ({
-          ...field,
-          name: this.$helpers.formatTitle(field.field)
-        }));
+      return Object.values(fields).map(field => ({
+        ...field,
+        name: this.$helpers.formatTitle(field.field)
+      }));
     },
     currentBookmark() {
       if (!this.preferences) return;
@@ -269,8 +267,10 @@ export default {
             count: this.$n(this.meta.total_count)
           });
     },
-    fieldNames() {
-      return this.fields.map(field => field.field);
+    filterableFieldNames() {
+      return this.fields
+        .filter(field => field.datatype)
+        .map(field => field.field);
     },
     layoutNames() {
       if (!this.$store.state.extensions.layouts) return {};

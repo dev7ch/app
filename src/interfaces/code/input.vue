@@ -15,7 +15,7 @@
       <i class="material-icons">playlist_add</i>
     </button>
 
-    <small class="line-count">
+    <small class="line-count" v-if="language">
       {{
         $tc("interfaces-code-loc", lineCount, {
           count: lineCount,
@@ -77,7 +77,6 @@ export default {
   data() {
     return {
       lineCount: 0,
-
       cmOptions: {
         tabSize: 4,
         autoRefresh: true,
@@ -129,11 +128,9 @@ export default {
     },
     stringValue() {
       if (this.value == null) return null;
-
       if (typeof this.value === "object") {
         return JSON.stringify(this.value, null, 4);
       }
-
       return this.value;
     },
     mode() {

@@ -1,0 +1,101 @@
+{
+  "name": "$t:json_menu_builder",
+  "version": "1.0.0",
+  "icon": "menu",
+  "types": ["json"],
+  "options": {
+    "template": {
+      "name": "$t:menu_template",
+      "comment": "$t:menu_template_comment",
+      "interface": "code",
+      "default": {
+        "item_1": {
+          "label": "Menu Label 1",
+          "url": "/your/relative/url"
+        },
+        "item_2": {
+          "label": "Menu Label 2",
+          "url": "/your/relative/url"
+        },
+        "item_3": {
+          "label": "Menu Label 3",
+          "url": "/your/relative/url",
+          "children": [
+            {
+              "label": "Sub Menu Label 1",
+              "url": "/your/relative/url"
+            },
+            {
+              "label": "Sub Menu Label 1",
+              "url": "/your/relative/url"
+            }
+          ]
+        }
+      }
+    },
+    "codeMirrorOptions": {
+      "name": "$t:cm_options",
+      "comment": "$t:cm_options_comment",
+      "interface": "code",
+      "options": {
+        "language": "application/json",
+        "default": {
+          "tabSize": 2,
+          "autoRefresh": true,
+          "indentUnit": 2,
+          "styleActiveLine": true,
+          "readOnly": false,
+          "styleSelectedText": true,
+          "line": true,
+          "hintOptions": {
+            "completeSingle": false
+          },
+          "lineNumbers": true,
+          "lineWrapping": true,
+          "mode": "application/json",
+          "matchBrackets": true,
+          "showCursorWhenSelecting": true,
+          "theme": "default",
+          "extraKeys": {
+            "Ctrl": "autocomplete"
+          }
+        },
+        "template": {
+          "tabSize": 2,
+          "autoRefresh": true,
+          "indentUnit": 2,
+          "styleActiveLine": true,
+          "readOnly": false,
+          "styleSelectedText": true,
+          "line": true,
+          "hintOptions": {
+            "completeSingle": false
+          },
+          "lineNumbers": true,
+          "lineWrapping": true,
+          "mode": "application/json",
+          "matchBrackets": true,
+          "showCursorWhenSelecting": true,
+          "theme": "default",
+          "extraKeys": {
+            "Ctrl": "autocomplete"
+          }
+        }
+      }
+    }
+  },
+  "translation": {
+    "en-US": {
+      "json_menu_builder": "JSON Menu Builder",
+      "cm_options": "CodeMirror Settings",
+      "cm_options_comment": "Define the interface appearance an behaviours of the CodeMirror editor.",
+      "menu_template": "Menu Template",
+      "menu_template_comment": "Define a template for the menu structure.",
+      "template_comment": "Provide a template the user can use to get started with",
+      "lineNumber": "Line Number",
+      "lineNumber_comment": "Show line numbers",
+      "loc": "No lines of {lang} | One line of {lang} | {count} lines of {lang}"
+    }
+  },
+  "author": "Silvan Hahn <silvan@dev7.ch>"
+}

@@ -188,6 +188,9 @@
             }
           }
         }
+        .selectedCell {
+          background-color: var(--lightest-gray);
+        }
       }
 
       .options-fixed {
@@ -199,11 +202,8 @@
         background-color: var(--lightest-gray);
         width: 100%;
         border: var(--input-border-width) solid var(--lighter-gray);
-        border-radius: var(--border-radius);
-        border-bottom-right-radius: 0;
-        border-bottom-left-radius: 0;
+        border-radius: var(--border-radius) var(--border-radius) 0 0;
         border-bottom-color: var(--lighter-gray);
-        border-bottom-width: 1px;
         color: var(--gray);
         left: 0;
         transition: var(--fast) var(--transition);

@@ -1,6 +1,7 @@
 <template>
   <div class="editor__raw" v-show="showSource">
     <v-textarea
+      @input="$emit('input', $event.target)"
       v-if="showSource && showRaw"
       v-model.lazy="$parent.editorText"
       class="textarea"
@@ -22,6 +23,7 @@
       v-model.lazy="$parent.editorText"
       :name="'htmlmixed'"
       type="textarea"
+      @input="$emit('input', $event.target)"
     >
     </CodeMirror>
     <!-- formatted / unformatted  view toggler -->
@@ -44,15 +46,6 @@
 import CodeMirror from "../../code/input";
 export default {
   props: ["showSource", "options", "editor", "id", "name"],
-  watch: {
-    value(newVal) {
-      if (newVal && !this.$parent.showSource) {
-        this.$parent.editorText = newVal;
-      } else {
-        this.$emit("input", this.$parent.editorText);
-      }
-    }
-  },
   components: {
     CodeMirror
   },

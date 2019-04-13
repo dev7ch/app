@@ -238,3 +238,13 @@ export default {
 <style lang="scss">
 @import "assets/scss/editor";
 </style>
+
+<style lang="scss" scoped>
+.interface-wysiwyg-container {
+  max-width: var(--width-x-large);
+}
+
+.material-icons {
+  font-size: 20px;
+}
+</style>

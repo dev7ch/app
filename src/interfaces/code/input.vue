@@ -67,11 +67,9 @@ export default {
   components: {
     codemirror
   },
-
   props: {
     altOptions: {
-      type: Object,
-      default: null
+      type: Object
     }
   },
   data() {

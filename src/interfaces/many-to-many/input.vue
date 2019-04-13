@@ -75,7 +75,7 @@
         :title="$t('select_existing')"
         :buttons="{
           save: {
-            text: 'save',
+            text: 'Save',
             color: 'accent',
             loading: selectionSaving
           }
@@ -112,7 +112,7 @@
         :title="$t('editing_item')"
         :buttons="{
           save: {
-            text: 'save',
+            text: 'Save',
             color: 'accent',
             loading: selectionSaving
           }
@@ -135,7 +135,7 @@
         :title="$t('creating_item')"
         :buttons="{
           save: {
-            text: 'save',
+            text: 'Save',
             color: 'accent',
             loading: selectionSaving
           }
@@ -594,7 +594,7 @@ export default {
 }
 
 button.select {
-  background-color: var(--accent);
+  background-color: var(--darker-gray);
   border-radius: var(--border-radius);
   height: var(--input-height);
   padding: 0 10px;
@@ -609,7 +609,7 @@ button.select {
 
   &:hover {
     transition: none;
-    background-color: var(--accent-dark);
+    background-color: var(--darkest-gray);
   }
 }
 

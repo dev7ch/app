@@ -360,14 +360,14 @@ export default {
     .search {
       width: 100%;
       height: var(--input-height);
-      border-radius: 20px;
+      border-radius: 22px;
       display: block;
       border: 2px solid var(--lighter-gray);
       color: var(--gray);
       padding: 10px;
       line-height: 1.5;
       transition: var(--fast) var(--transition);
-      transition-property: color, border-color, padding;
+      transition-property: color, border-color, padding, border-radius;
       height: var(--input-height);
       padding-left: 40px;
       padding-right: 40px;

@@ -107,7 +107,7 @@ export default {
     },
     color: {
       type: String,
-      default: "lighter-gray"
+      default: "gray"
     },
     src: {
       type: String,
@@ -223,7 +223,7 @@ export default {
   &:not(.disabled):hover,
   &:not(.disabled).selected {
     .header {
-      background-color: var(--light-gray) !important;
+      background-color: var(--dark-gray) !important;
     }
   }
 
@@ -308,11 +308,15 @@ export default {
   }
 
   &.disabled {
-    opacity: 0.5;
     cursor: not-allowed;
 
     & .header {
       background-color: var(--lighter-gray) !important;
+
+      & .icon,
+      & .custom-icon {
+        opacity: 0.4;
+      }
     }
   }
 

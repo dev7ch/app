@@ -8,7 +8,7 @@
     api: {
       "https://demo-api.directus.app/_/": "Directus Demo API",
       "https://d7api.campusderkuenste.ch/llad/" : "LLAD Test",
-      "http://hgk.dev7.ch/act/" : "ACT Test (Cyon)"
+      "https://hgk.dev7.ch/act/" : "ACT Test (Cyon)"
     },
 
     // Allow the user to connect to any API by entering a URL in a text field

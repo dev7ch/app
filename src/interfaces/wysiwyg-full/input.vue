@@ -71,6 +71,7 @@ export default {
       if (newVal && !this.showSource) {
         this.editorText = newVal;
       } else {
+        console.log(newVal);
         this.$emit("input", this.editorText);
       }
     }

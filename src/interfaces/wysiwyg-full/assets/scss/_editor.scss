@@ -192,14 +192,22 @@
 
       .options-fixed {
         position: absolute;
-        top: -5px;
+        margin-bottom: -2px;
         transform: translateY(-100%);
         opacity: 0;
-        transition: opacity 0.3s ease-in-out;
         z-index: 1;
         background-color: var(--lightest-gray);
         width: 100%;
+        border: var(--input-border-width) solid var(--lighter-gray);
         border-radius: var(--border-radius);
+        border-bottom-right-radius: 0;
+        border-bottom-left-radius: 0;
+        border-bottom-color: var(--lighter-gray);
+        border-bottom-width: 1px;
+        color: var(--gray);
+        left: 0;
+        transition: var(--fast) var(--transition);
+        transition-property: color, border-color;
 
         .menubar__button {
           margin-left: 1px;

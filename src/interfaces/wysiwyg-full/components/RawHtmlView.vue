@@ -20,10 +20,10 @@
       v-if="$parent.showSource && !showRaw"
       :alt-options="$parent.options.codeMirrorOptions"
       :value="$parent.editor.view.dom.innerHTML"
-      v-model.lazy="$parent.editorText"
+      v-model="$parent.editorText"
       :name="'htmlmixed'"
       type="textarea"
-      @input="$emit('input', $event.target)"
+      @keypress="$emit('input', $event)"
     >
     </CodeMirror>
     <!-- formatted / unformatted  view toggler -->

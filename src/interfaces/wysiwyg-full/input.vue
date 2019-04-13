@@ -168,7 +168,10 @@ export default {
 
       this.editor = new Editor({
         extensions: ext,
-        content: this.value ? this.value : ""
+        content: this.value ? this.value : "",
+        onUpdate: ({ getHTML }) => {
+          this.$emit("input", getHTML());
+        }
       });
     },
 

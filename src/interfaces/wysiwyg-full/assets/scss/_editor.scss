@@ -178,13 +178,18 @@
         overflow-x: auto;
         table {
           background-color: var(--white);
-          border: solid var(--gray) 1px;
+          border: solid var(--lighter-gray) 1px;
           width: 100%;
           tbody {
             tr,
             td {
               min-width: 70px;
-              border: 1px solid var(--light-gray);
+              border: 1px solid var(--lighter-gray);
+              transition: var(--slow) var(--transition);
+              transition-property: border-color;
+              &:focus, &:active, &:focus-within {
+                border-color: var(--black);
+              }
             }
           }
           border-spacing: 0;

@@ -369,6 +369,16 @@ export default {
     showSource: {
       type: Boolean,
       default: false
+    },
+    tablePosition: {
+      x: {
+        type: Number,
+        defaultValue: 0
+      },
+      y: {
+        type: Number,
+        defaultValue: 0
+      }
     }
   },
   data() {

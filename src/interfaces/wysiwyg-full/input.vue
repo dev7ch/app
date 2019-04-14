@@ -7,18 +7,21 @@
   >
     <div class="editor__inner" :class="{ shrinked: showSource }">
       <!-- WYSIWYG Editor Menubar and Bubble components -->
-      <Menubar :options="options" v-if="editor" />
+      <Menubar
+        :options="options"
+        :table-position="!tablePosition ? { y: 0, x: 0 } : tablePosition"
+        v-if="editor"
+      />
       <!-- WYSIWYG Editor  -->
       <editor-content
         id="wysiwyg-full"
-        :ref="editor"
+        ref="editor"
         :class="[
           'interface-wysiwyg editor__content',
           readonly ? 'readonly' : '',
           { hidden: showSource }
         ]"
         :editor="editor"
-        type="textarea"
       />
     </div>
     <!-- Unformatted raw html view -->
@@ -29,6 +32,20 @@
         :show-source="showSource"
         :name="name"
       />
+    </template>
+    <br />
+    <template v-if="selectionPosition.target">
+      {{ selectionPosition.target.src }}
+    </template>
+    <template>
+      <div
+        class="image-options"
+        v-if="selectionPosition.pos || selectionPosition.target"
+      >
+        <pre v-for="(pos, idx) in selectionPosition.pos" :key="idx">
+          {{ pos }}
+        </pre>
+      </div>
     </template>
   </div>
 </template>
@@ -56,12 +73,13 @@ import {
   Strike,
   Underline,
   History,
-  Image,
   Table,
   TableHeader,
   TableRow,
   TableCell
 } from "tiptap-extensions";
+
+import { Image } from "./extensions";
 
 export default {
   name: "interface-wysiwyg",
@@ -178,7 +196,7 @@ export default {
 
     updateText($text) {
       if (this.showSource) {
-        this.editor.setContent(this.editorText);
+        this.editor.view.dom.innerHTML = this.editorText;
       } else {
         this.editorText = $text;
       }
@@ -225,16 +243,50 @@ export default {
       linkUrl: null,
       linkMenuIsActive: false,
       lineCount: 0,
-      codeMirrorOptions: {}
+      codeMirrorOptions: {},
+      tablePosition: null,
+      selectionPosition: {
+        pos: null,
+        target: null
+      },
+      isImageSelection: false
     };
   },
 
   mounted() {
     this.init();
-    //console.log(this.editor)
+    this.observer = new MutationObserver(mutations => {
+      for (const m of mutations) {
+        if (
+          m.type === "attributes" &&
+          m.target.localName === "img" &&
+          m.target.src
+        ) {
+          //this.selectionPosition.target.className = 'dddd'
+          this.selectionPosition = {
+            pos: m.target.getBoundingClientRect(),
+            target: m.target
+          };
+          this.isImageSelection = true;
+          console.log(this.selectionPosition.target.classList);
+        }
+      }
+    });
+
+    if (this.$refs.editor.$el) {
+      this.observer.observe(this.$refs.editor.$el, {
+        nodeList: false,
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeOldValue: true,
+        attributeFilter: ["class"]
+      });
+    }
   },
   beforeDestroy() {
     this.editor.destroy();
+    this.observer.disconnect();
   }
 };
 </script>

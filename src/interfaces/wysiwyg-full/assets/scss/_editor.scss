@@ -288,15 +288,37 @@
     .editor__button, .editor__rawformat {
       cursor: pointer;
     }
+
+    img.ProseMirror-selectednode {
+      //border: var(--input-border-width) solid var(--lighter-gray);
+      cursor: grab;
+      box-shadow: 0 0 1px var(--lighter-gray);
+
+      &:active {
+        cursor: grabbing;
+      }
+    }
   }
 }
 
 .modal-container {
   .interface-wysiwyg-modal-url-input {
-    margin: 20px;
+    margin: var(--page-padding);
 
     &.is-active {
       height: 100%;
+    }
+
+      + .layout-cards {
+      .toolbar {
+        display: none !important;
+      }
+
+        .cards {
+          padding-top: 0;
+        }
+
+      max-height: calc(100% - 128px);
     }
 
   }

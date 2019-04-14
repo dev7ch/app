@@ -340,6 +340,7 @@
           v-if="imageUrlRaw === ''"
           collection="directus_files"
           view-type="cards"
+          :filters="viewOptions.defaultFilters"
           :selection="[]"
           :view-options="viewOptions"
           @select="insertItem($event[0])"
@@ -380,7 +381,14 @@ export default {
         title: "title",
         subtitle: "type",
         content: "description",
-        src: "data"
+        src: "data",
+        defaultFilters: [
+          {
+            field: "type",
+            operator: "contains",
+            value: "image"
+          }
+        ]
       }
     };
   },
@@ -399,7 +407,6 @@ export default {
         this.chooseImage = false;
       }
     },
-
     insertItem(item) {
       let url = item.data.full_url;
       if (this.$parent.options.custom_url) {
@@ -407,6 +414,7 @@ export default {
       }
       // @todo implement image source base url
       // const index = (this.editor.getSelection() || {}).index || this.editor.getLength();
+
       this.addImageCommand(url);
     },
 

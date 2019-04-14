@@ -96,8 +96,8 @@
             "hintOptions": {
               "completeSingle": true
             },
-            "lineNumbers": false,
-            "lineWrapping": true,
+            "lineNumbers": true,
+            "lineWrapping": false,
             "mode": "text/html",
             "matchBrackets": true,
             "showCursorWhenSelecting": true,
@@ -134,10 +134,6 @@
           "styleActiveLine": true,
           "readOnly": false,
           "styleSelectedText": true,
-          "line": true,
-          "hintOptions": {
-            "completeSingle": false
-          },
           "lineNumbers": true,
           "lineWrapping": true,
           "mode": "text/html",

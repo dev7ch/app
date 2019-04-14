@@ -18,7 +18,11 @@
       class="textarea code"
       :id="id + '-raw-formatted'"
       v-if="$parent.showSource && !showRaw"
-      :alt-options="$parent.options.codeMirrorOptions"
+      :alt-options="
+        $parent.options.codeMirrorOptions
+          ? $parent.options.codeMirrorOptions
+          : codeMirrorDefaults
+      "
       :value="$parent.editor.view.dom.innerHTML"
       v-model="$parent.editorText"
       :name="'htmlmixed'"
@@ -44,6 +48,7 @@
 </template>
 <script>
 import CodeMirror from "../../code/input";
+
 export default {
   props: ["showSource", "options", "editor", "id", "name"],
   components: {
@@ -51,7 +56,24 @@ export default {
   },
   data() {
     return {
-      showRaw: false
+      showRaw: false,
+      codeMirrorDefaults: {
+        tabSize: 2,
+        autoRefresh: true,
+        indentUnit: 2,
+        styleActiveLine: true,
+        readOnly: false,
+        styleSelectedText: true,
+        lineNumbers: true,
+        lineWrapping: true,
+        mode: "text/html",
+        matchBrackets: true,
+        showCursorWhenSelecting: true,
+        theme: "default",
+        extraKeys: {
+          Ctrl: "autocomplete"
+        }
+      }
     };
   }
 };

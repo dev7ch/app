@@ -190,7 +190,8 @@
         <div
           class="options-fixed"
           v-if="
-            $parent.options.toolbarOptions.includes('Table')
+            $parent.options.toolbarOptions.includes('Table') &&
+            !$parent.showSource
               ? isActive.table()
               : false
           "

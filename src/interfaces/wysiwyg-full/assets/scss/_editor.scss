@@ -306,7 +306,8 @@
     img.ProseMirror-selectednode {
       //border: var(--input-border-width) solid var(--lighter-gray);
       cursor: grab;
-      box-shadow: 0 0 1px var(--lighter-gray);
+      border: 1px solid var(--lighter-gray);
+      box-shadow: 0 0 3px var(--lighter-gray);
 
       &:active {
         cursor: grabbing;
@@ -335,7 +336,6 @@
         .cards {
           padding-top: 0;
         }
-
       max-height: calc(100% - 128px);
     }
 

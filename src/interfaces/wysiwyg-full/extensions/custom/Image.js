@@ -9,13 +9,21 @@ export default class Image extends Node {
     return {
       inline: true,
       attrs: {
-        class: {},
+        class: {
+          default: null
+        },
         src: {},
         alt: {
-          default: null
+          default: ""
         },
         title: {
           default: null
+        },
+        width: {
+          default: "100%"
+        },
+        height: {
+          default: "auto"
         }
       },
       group: "inline",
@@ -27,7 +35,9 @@ export default class Image extends Node {
             class: dom.getAttribute("class"),
             src: dom.getAttribute("src"),
             title: dom.getAttribute("title"),
-            alt: dom.getAttribute("alt")
+            alt: dom.getAttribute("alt"),
+            width: dom.getAttribute("width"),
+            height: dom.getAttribute("height")
           })
         }
       ],

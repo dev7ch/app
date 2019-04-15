@@ -34,19 +34,7 @@
       />
     </template>
     <br />
-    <template v-if="selectionPosition.target">
-      {{ selectionPosition.target.src }}
-    </template>
-    <template>
-      <div
-        class="image-options"
-        v-if="selectionPosition.pos || selectionPosition.target"
-      >
-        <pre v-for="(pos, idx) in selectionPosition.pos" :key="idx">
-          {{ pos }}
-        </pre>
-      </div>
-    </template>
+    <ImageEdit />
   </div>
 </template>
 <script>
@@ -54,6 +42,7 @@ import mixin from "@directus/extension-toolkit/mixins/interface";
 import { Editor, EditorContent } from "tiptap";
 const Menubar = () => import("./components/Menubar");
 const RawHtmlView = () => import("./components/RawHtmlView");
+import ImageEdit from "./components/ImageEdit";
 
 import {
   Blockquote,
@@ -89,7 +78,6 @@ export default {
       if (newVal && !this.showSource) {
         this.editorText = newVal;
       } else {
-        console.log(newVal);
         this.$emit("input", this.editorText);
       }
     }
@@ -219,6 +207,16 @@ export default {
       this.editor.focus();
     },
 
+    setClasses($target, $val) {
+      if ($target.className) {
+        return ($target.className = $val);
+      }
+    },
+    setAltText($target, $val) {
+      if ($target.alt || $target) {
+        return ($target.alt = $val);
+      }
+    },
     destroy() {
       this.editor.destroy();
     }
@@ -226,7 +224,8 @@ export default {
   components: {
     EditorContent,
     Menubar,
-    RawHtmlView
+    RawHtmlView,
+    ImageEdit
   },
 
   data() {
@@ -247,6 +246,10 @@ export default {
       tablePosition: null,
       selectionPosition: {
         pos: null,
+        editorPos: null,
+        alt: {
+          value: null
+        },
         target: null
       },
       isImageSelection: false
@@ -255,33 +258,39 @@ export default {
 
   mounted() {
     this.init();
-    this.observer = new MutationObserver(mutations => {
-      for (const m of mutations) {
-        if (
-          m.type === "attributes" &&
-          m.target.localName === "img" &&
-          m.target.src
-        ) {
-          //this.selectionPosition.target.className = 'dddd'
-          this.selectionPosition = {
-            pos: m.target.getBoundingClientRect(),
-            target: m.target
-          };
-          this.isImageSelection = true;
-          console.log(this.selectionPosition.target.classList);
+    {
+      this.observer = new MutationObserver(mutations => {
+        for (const m of mutations) {
+          if (
+            m.type === "attributes" &&
+            m.target.localName === "img" &&
+            !!m.target.src
+          ) {
+            this.selectionPosition = {
+              alt: m.target.attributes.alt ? m.target.attributes.alt.value : "",
+              target: m.target,
+              classes: m.target.className,
+              height: m.target.height,
+              width: m.target.width
+            };
+            this.isImageSelection = true;
+          }
+          if (m.type === "childList" && m.target.localName && !!m.target) {
+            this.isImageSelection = false;
+          }
         }
-      }
-    });
-
-    if (this.$refs.editor.$el) {
-      this.observer.observe(this.$refs.editor.$el, {
-        nodeList: false,
-        childList: true,
-        subtree: true,
-        attributes: true,
-        attributeOldValue: true,
-        attributeFilter: ["class"]
       });
+
+      if (this.$refs.editor.$el) {
+        this.observer.observe(this.$refs.editor.$el, {
+          nodeList: false,
+          childList: true,
+          subtree: true,
+          attributes: true,
+          attributeOldValue: false,
+          attributeFilter: ["class", "attribute"]
+        });
+      }
     }
   },
   beforeDestroy() {

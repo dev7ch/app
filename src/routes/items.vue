@@ -15,9 +15,7 @@
           class="bookmark"
           @click="bookmarkModal = true"
         >
-          <i class="material-icons">
-            {{ currentBookmark ? "bookmark" : "bookmark_border" }}
-          </i>
+          <v-icon :name="currentBookmark ? 'bookmark' : 'bookmark_border'" />
         </button>
       </template>
       <v-search-filter
@@ -81,13 +79,18 @@
 
     <v-info-sidebar v-if="preferences">
       <template slot="system">
-        <v-select
-          id="layout"
-          :options="layoutNames"
-          :value="viewType"
-          name="layout"
-          @input="updatePreferences('view_type', $event)"
-        />
+        <div class="layout-picker">
+          <select @input="updatePreferences('view_type', $event.target.value)" :value="viewType">
+            <option v-for="(name, val) in layoutNames" :value="val" :key="val">
+              {{ name }}
+            </option>
+          </select>
+          <div class="preview">
+            <v-icon :name="layoutIcons[viewType]" color="light-gray" />
+            <span>{{ layoutNames[viewType] }}</span>
+            <v-icon name="expand_more" color="light-gray" />
+          </div>
+        </div>
       </template>
       <v-ext-layout-options
         :key="`${collection}-${viewType}`"
@@ -101,6 +104,13 @@
         @query="setViewQuery"
         @options="setViewOptions"
       />
+
+      <router-link to="/activity" class="notifications" v-if="canReadActivity">
+        <div class="preview">
+          <v-icon name="notifications" color="light-gray" />
+          <span>{{ $t("notifications") }}</span>
+        </div>
+      </router-link>
     </v-info-sidebar>
 
     <portal to="modal" v-if="confirmRemove">
@@ -265,9 +275,7 @@ export default {
       if (!this.preferences) return {};
 
       const viewQuery =
-        (this.preferences.view_query &&
-          this.preferences.view_query[this.viewType]) ||
-        {};
+        (this.preferences.view_query && this.preferences.view_query[this.viewType]) || {};
 
       // Filter out the fieldnames of fields that don't exist anymore
       // Sorting / querying fields that don't exist anymore will return
@@ -299,11 +307,7 @@ export default {
     },
     viewOptions() {
       if (!this.preferences) return {};
-      return (
-        (this.preferences.view_options &&
-          this.preferences.view_options[this.viewType]) ||
-        {}
-      );
+      return (this.preferences.view_options && this.preferences.view_options[this.viewType]) || {};
     },
     resultCopy() {
       if (!this.meta || !this.preferences) return this.$t("loading");
@@ -322,9 +326,7 @@ export default {
           });
     },
     filterableFieldNames() {
-      return this.fields
-        .filter(field => field.datatype)
-        .map(field => field.field);
+      return this.fields.filter(field => field.datatype).map(field => field.field);
     },
     layoutNames() {
       if (!this.$store.state.extensions.layouts) return {};
@@ -334,9 +336,16 @@ export default {
       });
       return translatedNames;
     },
+    layoutIcons() {
+      if (!this.$store.state.extensions.layouts) return {};
+      const icons = {};
+      Object.keys(this.$store.state.extensions.layouts).forEach(id => {
+        icons[id] = this.$store.state.extensions.layouts[id].icon;
+      });
+      return icons;
+    },
     statusField() {
       if (!this.fields) return null;
-
       return (
         this.$lodash.find(
           Object.values(this.fields),
@@ -349,13 +358,12 @@ export default {
     // This will make the delete button update the item to the hidden status
     // instead of deleting it completely from the database
     softDeleteStatus() {
-      if (!this.collectionInfo.status_mapping) return null;
+      if (!this.collectionInfo.status_mapping || !this.statusField) return null;
 
       const statusKeys = Object.keys(this.collectionInfo.status_mapping);
-      const index = this.$lodash.findIndex(
-        Object.values(this.collectionInfo.status_mapping),
-        { soft_delete: true }
-      );
+      const index = this.$lodash.findIndex(Object.values(this.collectionInfo.status_mapping), {
+        soft_delete: true
+      });
       return statusKeys[index];
     },
 
@@ -373,8 +381,14 @@ export default {
       if (!this.fields) return null;
       return this.$lodash.find(this.fields, { primary_key: true }).field;
     },
+    permissions() {
+      return this.$store.state.permissions;
+    },
     permission() {
-      return this.$store.state.permissions[this.collection];
+      return this.permissions[this.collection];
+    },
+    canReadActivity() {
+      return this.permissions.directus_activity.read !== "none";
     },
     addButton() {
       if (this.$store.state.currentUser.admin) return true;
@@ -401,9 +415,7 @@ export default {
 
       this.selection.forEach(item => {
         const status = this.statusField ? item[this.statusField] : null;
-        const permission = this.statusField
-          ? this.permission.statuses[status]
-          : this.permission;
+        const permission = this.statusField ? this.permission.statuses[status] : this.permission;
         const userID = item[this.userCreatedField];
 
         if (permission.delete === "none") {
@@ -441,9 +453,7 @@ export default {
 
       this.selection.forEach(item => {
         const status = this.statusField ? item[this.statusField] : null;
-        const permission = this.statusField
-          ? this.permission.statuses[status]
-          : this.permission;
+        const permission = this.statusField ? this.permission.statuses[status] : this.permission;
         const userID = item[this.userCreatedField];
 
         if (permission.update === "none") {
@@ -634,10 +644,7 @@ export default {
 
     const collectionInfo = store.state.collections[collection] || null;
 
-    if (
-      collection.startsWith("directus_") === false &&
-      collectionInfo === null
-    ) {
+    if (collection.startsWith("directus_") === false && collectionInfo === null) {
       return next(vm => (vm.notFound = true));
     }
 
@@ -674,10 +681,7 @@ export default {
 
     const collectionInfo = this.$store.state.collections[collection] || null;
 
-    if (
-      collection.startsWith("directus_") === false &&
-      collectionInfo === null
-    ) {
+    if (collection.startsWith("directus_") === false && collectionInfo === null) {
       this.notFound = true;
       return next();
     }
@@ -736,5 +740,43 @@ label.style-4 {
   i {
     color: var(--accent);
   }
+}
+
+.layout-picker,
+.notifications {
+  margin: -20px;
+  padding: 20px;
+  background-color: #dde3e6;
+  position: relative;
+  display: block;
+
+  .preview {
+    display: flex;
+    align-items: center;
+
+    span {
+      flex-grow: 1;
+      margin-left: 10px;
+    }
+  }
+
+  select {
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    cursor: pointer;
+  }
+}
+
+.notifications {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  margin: 0;
+  text-decoration: none;
 }
 </style>

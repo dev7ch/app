@@ -17,7 +17,7 @@
           @click="commands.bold"
           :style="{ order: $parent.options.toolbarOptions.indexOf('Bold') }"
         >
-          <icon name="format_bold" />
+          <v-icon class="icon" name="format_bold" />
         </button>
 
         <button
@@ -27,7 +27,7 @@
           @click="commands.italic"
           :style="{ order: $parent.options.toolbarOptions.indexOf('Italic') }"
         >
-          <icon name="format_italic" title="Italic" />
+          <v-icon class="icon" name="format_italic" title="Italic" />
         </button>
 
         <button
@@ -37,7 +37,7 @@
           @click="commands.strike"
           :style="{ order: $parent.options.toolbarOptions.indexOf('Strike') }"
         >
-          <icon name="format_strikethrough" />
+          <v-icon class="icon" name="format_strikethrough" />
         </button>
 
         <button
@@ -49,7 +49,7 @@
             order: $parent.options.toolbarOptions.indexOf('Underline')
           }"
         >
-          <icon name="format_underline" />
+          <v-icon class="icon" name="format_underline" />
         </button>
 
         <button
@@ -59,7 +59,7 @@
           @click="commands.code"
           :style="{ order: $parent.options.toolbarOptions.indexOf('Code') }"
         >
-          <icon name="code" />
+          <v-icon class="icon" name="code" />
         </button>
 
         <button
@@ -71,7 +71,7 @@
             order: $parent.options.toolbarOptions.indexOf('CodeBlock')
           }"
         >
-          <icon name="settings_ethernet" />
+          <v-icon class="icon" name="settings_ethernet" />
         </button>
 
         <button
@@ -83,7 +83,7 @@
             order: $parent.options.toolbarOptions.indexOf('Paragraph')
           }"
         >
-          <icon name="subject" />
+          <v-icon class="icon" name="subject" />
         </button>
 
         <button
@@ -94,7 +94,7 @@
           :style="{ order: $parent.options.toolbarOptions.indexOf('h1') }"
         >
           <span class="label">H1</span>
-          <icon name="crop_square" />
+          <v-icon class="icon" name="crop_square" />
         </button>
 
         <button
@@ -105,7 +105,7 @@
           :style="{ order: $parent.options.toolbarOptions.indexOf('h2') }"
         >
           <span class="label">H2</span>
-          <icon name="crop_square" />
+          <v-icon class="icon" name="crop_square" />
         </button>
 
         <button
@@ -116,7 +116,7 @@
           :style="{ order: $parent.options.toolbarOptions.indexOf('h3') }"
         >
           <span class="label">H3</span>
-          <icon name="crop_square" />
+          <v-icon class="icon" name="crop_square" />
         </button>
 
         <button
@@ -128,7 +128,7 @@
             order: $parent.options.toolbarOptions.indexOf('BulletList')
           }"
         >
-          <icon name="format_list_bulleted" />
+          <v-icon class="icon" name="format_list_bulleted" />
         </button>
 
         <button
@@ -140,7 +140,7 @@
             order: $parent.options.toolbarOptions.indexOf('OrderedList')
           }"
         >
-          <icon name="format_list_numbered" />
+          <v-icon class="icon" name="format_list_numbered" />
         </button>
 
         <button
@@ -152,7 +152,7 @@
             order: $parent.options.toolbarOptions.indexOf('Blockquote')
           }"
         >
-          <icon name="format_quote" />
+          <v-icon class="icon" name="format_quote" />
         </button>
 
         <button
@@ -162,7 +162,7 @@
           @click="setLink()"
           :style="{ order: $parent.options.toolbarOptions.indexOf('Link') }"
         >
-          <icon name="link" />
+          <v-icon class="icon" name="link" />
         </button>
         <button
           v-if="$parent.options.toolbarOptions.includes('Image')"
@@ -170,7 +170,7 @@
           @click="chooseImage = !chooseImage"
           :style="{ order: $parent.options.toolbarOptions.indexOf('Image') }"
         >
-          <icon name="image" />
+          <v-icon class="icon" name="image" />
         </button>
         <button
           v-if="$parent.options.toolbarOptions.includes('Table')"
@@ -185,13 +185,12 @@
             })
           "
         >
-          <icon name="table_chart" />
+          <v-icon class="icon" name="table_chart" />
         </button>
         <div
           class="options-fixed"
           v-if="
-            $parent.options.toolbarOptions.includes('Table') &&
-            !$parent.showSource
+            $parent.options.toolbarOptions.includes('Table') && !$parent.showSource
               ? isActive.table()
               : false
           "
@@ -199,9 +198,9 @@
         >
           <button class="menubar__button" @click="commands.deleteTable">
             <span class="sup remove">
-              <icon name="remove_circle" />
+              <v-icon class="icon" name="remove_circle" />
             </span>
-            <icon name="table_chart" />
+            <v-icon class="icon" name="table_chart" />
           </button>
           <button
             title="Insert before column"
@@ -209,9 +208,9 @@
             @click="commands.addColumnBefore"
           >
             <span class="sup add">
-              <icon name="add_circle" />
+              <v-icon class="icon" name="add_circle" />
             </span>
-            <icon name="tab" />
+            <v-icon class="icon" name="tab" />
           </button>
           <button
             title="Insert after column"
@@ -219,44 +218,36 @@
             @click="commands.addColumnAfter"
           >
             <span class="sup add">
-              <icon name="add_circle" />
+              <v-icon class="icon" name="add_circle" />
             </span>
-            <icon name="tab" />
+            <v-icon class="icon" name="tab" />
           </button>
-          <button
-            title="Delete column"
-            class="menubar__button"
-            @click="commands.deleteColumn"
-          >
+          <button title="Delete column" class="menubar__button" @click="commands.deleteColumn">
             <span class="sup remove">
-              <icon name="remove_circle" />
+              <v-icon class="icon" name="remove_circle" />
             </span>
-            <icon name="tab" />
+            <v-icon class="icon" name="tab" />
           </button>
-          <button
-            title="Add row before"
-            class="menubar__button"
-            @click="commands.addRowBefore"
-          >
+          <button title="Add row before" class="menubar__button" @click="commands.addRowBefore">
             <span class="sup add">
-              <icon name="add_circle" />
+              <v-icon class="icon" name="add_circle" />
             </span>
-            <icon name="border_top" />
+            <v-icon class="icon" name="border_top" />
           </button>
           <button class="menubar__button" @click="commands.addRowAfter">
             <span class="sup add">
-              <icon name="add_circle" />
+              <v-icon class="icon" name="add_circle" />
             </span>
-            <icon name="border_bottom" />
+            <v-icon class="icon" name="border_bottom" />
           </button>
           <button class="menubar__button" @click="commands.deleteRow">
             <span class="sup remove">
-              <icon name="remove_circle" />
+              <v-icon class="icon" name="remove_circle" />
             </span>
-            <icon name="border_horizontal" />
+            <v-icon class="icon" name="border_horizontal" />
           </button>
           <button class="menubar__button" @click="commands.toggleCellMerge">
-            <icon name="merge_type" />
+            <v-icon class="icon" name="merge_type" />
           </button>
         </div>
         <button
@@ -267,7 +258,7 @@
           class="menubar__button"
           @click="commands.horizontal_rule"
         >
-          <icon name="maximize" />
+          <v-icon class="icon" name="maximize" />
         </button>
         <div
           class="history__actions"
@@ -277,10 +268,10 @@
           }"
         >
           <button class="menubar__button" @click="commands.undo">
-            <icon name="undo" />
+            <v-icon class="icon" name="undo" />
           </button>
           <button class="menubar__button" @click="commands.redo">
-            <icon name="redo" />
+            <v-icon class="icon" name="redo" />
           </button>
         </div>
         <button
@@ -296,11 +287,7 @@
         ></button>
       </div>
     </editor-menu-bar>
-    <Bubble
-      :options="options"
-      :editor="$parent.editor"
-      :class="{ visible: linkBubble }"
-    />
+    <Bubble :options="options" :editor="$parent.editor" :class="{ visible: linkBubble }" />
     <!-- image selection modal interface  -->
     <portal to="modal" v-if="chooseImage">
       <v-modal
@@ -315,19 +302,14 @@
         @close="chooseImage = false"
         @done="insertImageUrl(imageUrlRaw)"
       >
-        <div
-          class="interface-wysiwyg-modal-url-input"
-          :class="{ 'is-active': imageUrlRaw }"
-        >
+        <div class="interface-wysiwyg-modal-url-input" :class="{ 'is-active': imageUrlRaw }">
           <v-input
             v-model="imageUrlRaw"
             placeholder="Paste url to image or select an existing"
             @input="imageUrlRawBroken = false"
           ></v-input>
           <div class="interface-wysiwyg-modal-url-preview" v-if="imageUrlRaw">
-            <i v-if="imageUrlRawBroken" class="material-icons error icon"
-              >broken_image</i
-            >
+            <i v-if="imageUrlRawBroken" class="material-icons error icon">broken_image</i>
             <img
               v-else
               :src="imageUrlRaw"
@@ -345,15 +327,13 @@
           :selection="[]"
           :view-options="viewOptions"
           @select="insertItem($event[0])"
-        >
-        </v-items>
+        ></v-items>
       </v-modal>
     </portal>
   </div>
 </template>
 <script>
 import { EditorMenuBar } from "tiptap";
-import Icon from "./Icon";
 import Bubble from "./Bubble";
 
 export default {
@@ -438,7 +418,6 @@ export default {
   },
   components: {
     EditorMenuBar,
-    Icon,
     Bubble
   }
 };

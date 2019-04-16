@@ -19,12 +19,8 @@
           ref="linkInput"
           @keydown.esc="hideLinkMenu"
         />
-        <button
-          class="menububble__button"
-          @click="setLinkUrl(commands.link, null)"
-          type="button"
-        >
-          <icon name="close" />
+        <button class="menububble__button" @click="setLinkUrl(commands.link, null)" type="button">
+          <v-icon name="close" />
         </button>
       </form>
 
@@ -35,10 +31,8 @@
           @click="showLinkMenu(getMarkAttrs('link'))"
           :class="{ 'is-active': isActive.link() }"
         >
-          <span
-            v-text="isActive.link() ? $t('edit_link') : $t('add_link')"
-          ></span>
-          <icon name="link" />
+          <span v-text="isActive.link() ? $t('edit_link') : $t('add_link')"></span>
+          <v-icon name="link" />
         </button>
       </template>
     </div>
@@ -46,7 +40,6 @@
 </template>
 <script>
 import { EditorMenuBubble } from "tiptap";
-import Icon from "./Icon";
 export default {
   props: {
     options: {
@@ -83,8 +76,7 @@ export default {
   },
 
   components: {
-    EditorMenuBubble,
-    Icon
+    EditorMenuBubble
   },
 
   data() {

@@ -1,8 +1,5 @@
 <template>
-  <div
-    :class="{ 'icon-left': iconLeft, 'icon-right': iconRight }"
-    class="v-input"
-  >
+  <div :class="{ 'icon-left': iconLeft, 'icon-right': iconRight }" class="v-input">
     <!-- Far from ideal, but it does the trick -->
 
     <input
@@ -52,12 +49,9 @@
       @input="$emit('input', $event.target.value)"
     />
 
-    <i v-if="iconLeft" :class="iconLeftColor" class="material-icons">{{
-      iconLeft
-    }}</i>
-    <i v-if="iconRight" :class="iconRightColor" class="material-icons">{{
-      iconRight
-    }}</i>
+    <v-icon v-if="iconLeft" :name="iconLeft" :color="iconLeftColor" />
+    <v-icon v-if="iconRight" :name="iconRight" :color="iconRightColor" />
+
     <span v-if="charactercount">{{ charsRemaining }}</span>
   </div>
 </template>
@@ -278,7 +272,7 @@ export default {
     font-size: 24px;
 
     &.accent {
-      color: var(--accent);
+      color: var(--darkest-gray);
     }
 
     &.secondary {

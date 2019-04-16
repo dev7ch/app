@@ -10,9 +10,7 @@
       @click="$emit('input', color)"
     >
       <template v-if="value === color">
-        <i :class="{ dark: useDarkIconColor(color) }" class="material-icons"
-          >check</i
-        >
+        <v-icon name="check" :class="{ dark: useDarkIconColor(color) }" size="18" />
       </template>
     </button>
   </div>
@@ -48,8 +46,7 @@ export default {
           return Math.pow((val + 0.055) / 1.055, 2.4);
         });
 
-      const lightness =
-        0.2126 * colors[0] + 0.7152 * colors[1] + 0.0722 * colors[2];
+      const lightness = 0.2126 * colors[0] + 0.7152 * colors[1] + 0.0722 * colors[2];
 
       return lightness > 0.25;
     }
@@ -84,7 +81,6 @@ export default {
     }
 
     i {
-      font-size: 18px;
       margin-top: -3px;
       color: var(--white);
 

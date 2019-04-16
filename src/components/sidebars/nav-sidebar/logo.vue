@@ -1,12 +1,7 @@
 <template>
   <div class="v-logo">
     <img v-if="customLogoExists" :src="customLogoPath" :alt="projectName" />
-    <div
-      v-else
-      class="logo"
-      :class="{ running }"
-      @animationiteration="checkRunning"
-    />
+    <div v-else class="logo" :class="{ running }" @animationiteration="checkRunning" />
   </div>
 </template>
 
@@ -66,7 +61,7 @@ export default {
 <style lang="scss" scoped>
 .v-logo {
   height: var(--header-height);
-  background-color: var(--darkest-gray);
+  background-color: var(--brand);
   padding: 12px;
   display: grid;
   position: relative;

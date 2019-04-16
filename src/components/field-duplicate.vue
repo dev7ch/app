@@ -1,19 +1,14 @@
 <template>
   <v-modal
-    :title="
-      $t('duplicating_field') + ': ' + $helpers.formatTitle(fieldInfo.field)
-    "
+    :title="$t('duplicating_field') + ': ' + $helpers.formatTitle(fieldInfo.field)"
     :buttons="buttons"
     @save="saveField()"
     @close="$emit('close')"
   >
     <form @submit.prevent class="options">
       <div class="options">
-        <label
-          >{{ $t("collection")
-          }}<i v-tooltip="$t('required')" class="material-icons required"
-            >star</i
-          >
+        <label>
+          {{ $t("collection") }}
           <v-simple-select required v-model="selectedCollection">
             <option
               v-for="collection in Object.keys(this.collections)"
@@ -27,11 +22,8 @@
         </label>
       </div>
       <div class="options">
-        <label
-          >{{ $t("field") + " " + $t("name")
-          }}<i v-tooltip="$t('required')" class="material-icons required"
-            >star</i
-          >
+        <label>
+          {{ $t("field") + " " + $t("name") }}
           <v-input
             required
             v-model="field"
@@ -89,21 +81,18 @@ export default {
     },
     isFieldValid() {
       let isValid = true;
-      Object.keys(this.collections[this.selectedCollection].fields).forEach(
-        field => {
-          if (field === this.field) {
-            isValid = false;
-          }
+      Object.keys(this.collections[this.selectedCollection].fields).forEach(field => {
+        if (field === this.field) {
+          isValid = false;
         }
-      );
+      });
       if (isValid) {
         return true;
       }
       return false;
     },
     collectionFieldCount() {
-      return Object.keys(this.collections[this.selectedCollection].fields)
-        .length;
+      return Object.keys(this.collections[this.selectedCollection].fields).length;
     },
     collections() {
       const collections = Object.assign({}, this.$store.state.collections);
@@ -174,7 +163,7 @@ form.options {
   }
 
   .required {
-    color: var(--accent);
+    color: var(--darkest-gray);
     vertical-align: super;
     font-size: 7px;
   }

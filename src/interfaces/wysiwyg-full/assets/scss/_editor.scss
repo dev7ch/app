@@ -150,11 +150,12 @@
       .menubar__button {
         position: relative;
         min-height: 30px;
+        min-width: 30px;
         span,
-        i {
+        .icon {
           position: absolute;
           left: 50%;
-          top: 60%;
+          top: 50%;
           transform: translate(-50%, -50%);
           color:  var(--light-gray);
           transition: color .15s ease-in-out;

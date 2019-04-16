@@ -10,15 +10,12 @@
             : false
         }"
       >
-        <button
-          v-if="$parent.options.toolbarOptions.includes('Bold')"
-          class="menubar__button"
-          :class="{ 'is-active': isActive.bold() }"
-          @click="commands.bold"
-          :style="{ order: $parent.options.toolbarOptions.indexOf('Bold') }"
-        >
-          <v-icon class="icon" name="format_bold" />
-        </button>
+        <MenuButton
+          plugin-name="Bold"
+          icon="format_bold"
+          :command="commands.bold"
+          :active-condition="isActive.bold()"
+        />
 
         <button
           v-if="$parent.options.toolbarOptions.includes('Italic')"
@@ -333,6 +330,7 @@
   </div>
 </template>
 <script>
+import MenuButton from "./MenuBarButton";
 import { EditorMenuBar } from "tiptap";
 import Bubble from "./Bubble";
 
@@ -418,6 +416,7 @@ export default {
   },
   components: {
     EditorMenuBar,
+    MenuButton,
     Bubble
   }
 };

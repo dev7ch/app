@@ -165,16 +165,6 @@ export default {
       this.editor.focus();
     },
 
-    setClasses($target, $val) {
-      if ($target.className) {
-        return ($target.className = $val);
-      }
-    },
-    setAltText($target, $val) {
-      if ($target.alt || $target) {
-        return ($target.alt = $val);
-      }
-    },
     destroy() {
       this.editor.destroy();
     }
@@ -208,6 +198,7 @@ export default {
         alt: {
           value: null
         },
+        src: null,
         target: null
       },
       isImageSelection: false
@@ -223,7 +214,10 @@ export default {
             this.selectionPosition = {
               alt: m.target.attributes.alt ? m.target.attributes.alt.value : "",
               target: m.target,
-              classes: m.target.className,
+              src: m.target.src,
+              classes: m.target.className.includes("ProseMirror-selectednode")
+                ? m.target.className.replace(/ProseMirror-selectednode/gi, "")
+                : m.target.className,
               height: m.target.height,
               width: m.target.width
             };

@@ -220,7 +220,11 @@
             @input="imageUrlRawBroken = false"
           ></v-input>
           <div class="interface-wysiwyg-modal-url-preview" v-if="imageUrlRaw">
-            <i v-if="imageUrlRawBroken" class="material-icons error icon">broken_image</i>
+            <v-icon
+              v-if="imageUrlRawBroken"
+              class="material-icons error icon"
+              name="broken_image"
+            ></v-icon>
             <img
               v-else
               :src="imageUrlRaw"

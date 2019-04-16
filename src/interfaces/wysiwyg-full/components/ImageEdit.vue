@@ -4,49 +4,82 @@
     :class="{ loaded: $parent.isImageSelection }"
     v-if="$parent.selectionPosition.target"
   >
-    <v-input
-      v-if="!!$parent.selectionPosition.target"
-      class="image-options-item half"
-      ref="editedTitle"
-      :placeholder="$t('image_title')"
-      v-model.lazy="$parent.selectionPosition.target.title"
-      :value="$parent.selectionPosition.target.title"
-    />
-    <v-input
-      v-if="!!$parent.selectionPosition.target"
-      ref="editedAlt"
-      :placeholder="$t('alt_text')"
-      class="image-options-item half"
-      :value="$parent.selectionPosition.target.alt"
-      v-model.lazy="$parent.selectionPosition.target.alt"
-    />
-    <div class="v-input image-options-item dimension">
-      <!--<label class=""><small>Width</small></label>-->
-      <v-input
-        v-if="!!$parent.selectionPosition"
-        ref="editedClasses"
-        :placeholder="$t('width_px')"
-        class="image-options-item"
-        :value="trimDimension($parent.selectionPosition.target.width.toString())"
-        v-model.lazy="$parent.selectionPosition.target.width"
+    <h1 class="title image-options-item">Edit image attributes</h1>
+    <button
+      type="button"
+      class="top-close"
+      :disabled="false"
+      @click="$parent.isImageSelection = false"
+    >
+      <v-icon name="close" />
+    </button>
+    <div class="image-options-preview image-options-item half" v-if="$parent.selectionPosition.src">
+      <v-icon
+        v-if="!$parent.selectionPosition.src || imageUrlRawBroken"
+        class="material-icons error icon"
+        name="broken_image"
+      ></v-icon>
+      <img
+        v-else
+        :src="$parent.selectionPosition.src"
+        alt="image-options-preview"
+        class="image"
+        @error="imageUrlRawBroken = true"
       />
-      <!--<label><small>Height</small></label>-->
+    </div>
+    <div class="image-options-item half">
       <v-input
-        v-if="!!$parent.selectionPosition"
-        ref="editedClasses"
-        :placeholder="$t('height_px')"
+        v-if="!!$parent.selectionPosition.target"
         class="image-options-item"
-        :disabled="true"
-        :value="'auto (' + $parent.selectionPosition.target.height + 'px)'"
+        ref="editedTitle"
+        :placeholder="$t('image_title')"
+        v-model.lazy="$parent.selectionPosition.target.title"
+        :value="$parent.selectionPosition.target.title"
       />
+      <v-input
+        v-if="!!$parent.selectionPosition.target"
+        ref="editedAlt"
+        :placeholder="$t('alt_text')"
+        class="image-options-item"
+        :value="$parent.selectionPosition.alt"
+        v-model.lazy="$parent.selectionPosition.alt"
+      />
+      <div class="v-input image-options-item dimension">
+        <div class="image-options-item quart">
+          <label class="">
+            <small>{{ $t("width_px") }}</small>
+          </label>
+          <v-input
+            v-if="!!$parent.selectionPosition"
+            ref="editedClasses"
+            :placeholder="$t('width_px')"
+            :value="trimDimension($parent.selectionPosition.target.width.toString())"
+            v-model.lazy="$parent.selectionPosition.target.width"
+          />
+        </div>
+        <div class="image-options-item quart">
+          <label>
+            <small>{{ $t("height_px") }}</small>
+          </label>
+          <v-input
+            v-if="!!$parent.selectionPosition"
+            ref="editedClasses"
+            :placeholder="$t('height_px')"
+            class="image-options-item quart"
+            :disabled="true"
+            :value="'auto (' + $parent.selectionPosition.target.height + 'px)'"
+          />
+        </div>
+      </div>
     </div>
     <v-input
       v-if="!!$parent.selectionPosition.target"
       class="image-options-item"
       ref="editedSource"
+      @input="imageUrlRawBroken = false"
       :placeholder="$t('image_source')"
-      v-model.lazy="$parent.selectionPosition.target.src"
-      :value="$parent.selectionPosition.target.src"
+      v-model.lazy="$parent.selectionPosition.src"
+      :value="$parent.selectionPosition.src"
     />
     <v-input
       v-if="!!$parent.selectionPosition"
@@ -54,17 +87,17 @@
       :placeholder="$t('css_classes')"
       class="image-options-item"
       :value="$parent.selectionPosition.target.className"
-      v-model.lazy="$parent.selectionPosition.target.className"
+      v-model.lazy="$parent.selectionPosition.classes"
     />
     <div class="image-options-footer">
-      <button type="button" :disabled="false" @click="$parent.isImageSelection = false">
-        <i class="material-icons">close</i>
+      <v-button type="button" :disabled="false" @click="$parent.isImageSelection = false">
+        <v-icon name="close" />
         {{ $t("cancel") }}
-      </button>
-      <button type="button" :disabled="$parent.readonly" @click="setAll()">
-        <i class="material-icons">check</i>
+      </v-button>
+      <v-button type="button" :disabled="$parent.readonly" @click="setAll()">
+        <v-icon name="check" />
         {{ $t("confirm") }}
-      </button>
+      </v-button>
     </div>
   </div>
 </template>
@@ -72,7 +105,8 @@
 export default {
   data() {
     return {
-      loaded: false
+      loaded: false,
+      imageUrlRawBroken: false
     };
   },
   methods: {
@@ -83,14 +117,9 @@ export default {
     },
 
     setAll() {
-      this.$parent.setClasses(
-        this.$parent.selectionPosition.target,
-        this.$parent.selectionPosition.target.className
-      ) &&
-        this.$parent.setAltText(
-          this.$parent.selectionPosition.target,
-          this.$parent.selectionPosition.target.alt
-        );
+      this.$parent.selectionPosition.target.className = this.$parent.selectionPosition.classes;
+      this.$parent.selectionPosition.target.alt = this.$parent.selectionPosition.alt;
+      this.$parent.selectionPosition.target.src = this.$parent.selectionPosition.src;
     }
   },
   mounted() {
@@ -100,17 +129,29 @@ export default {
 </script>
 <style lang="scss" scoped>
 .image-options {
-  display: none;
+  display: flex;
+  flex-flow: row wrap;
   background-color: var(--lightest-gray);
   padding: calc(var(--page-padding) / 2);
   position: absolute;
-  width: calc(100% - var(--page-padding) * 2);
+  width: 100%;
   max-width: 100%;
   top: calc(50% + 15px);
   transform: translateY(-50%);
-  margin: var(--page-padding);
+  margin-top: var(--page-padding);
   border-radius: var(--border-radius);
   border: 2px solid var(--lighter-gray);
+
+  .title {
+    font-size: var(--size-2);
+    margin-bottom: 10px;
+    color: var(--darkest-gray);
+  }
+
+  @media (min-width: 480px) {
+    width: calc(100% - var(--page-padding) * 2);
+    margin: var(--page-padding);
+  }
 
   opacity: 0;
   animation: FadeOutImageEdit 0.2s ease-in-out;
@@ -118,6 +159,7 @@ export default {
 }
 
 .v-input {
+  width: initial;
   padding-bottom: calc(var(--page-padding) / 2);
   &:last-of-type {
     padding-bottom: 0;
@@ -125,39 +167,96 @@ export default {
 }
 
 .loaded {
-  display: block;
+  display: flex;
   max-height: 100vh;
   opacity: 1;
   animation: FadeInImageEdit 0.3s ease-in-out;
 }
 
-.dimension {
-  max-width: 120px;
-  margin-left: auto;
-  float: right;
-  .image-options-item {
-    display: inline-flex;
-  }
+.top-close {
+  position: absolute;
+  right: calc(var(--page-padding) / 2);
+  top: calc(var(--page-padding) / 3.25);
 }
+
 .image-options-item {
+  flex: 1 0 100%;
   &.half {
-    display: inline-flex;
+    //width: calc(100% - 180px);
+    //display: flex;
+    flex: 1 0 100%;
+    @media (min-width: 480px) {
+      flex: 1 0 40%;
+    }
+
     &:first-child {
-      margin-right: calc(var(--page-padding) / 2);
+      //margin-right: calc(var(--page-padding) / 2);
+    }
+  }
+
+  .dimension {
+    display: inline-flex;
+    margin-bottom: calc(var(--page-padding) / 2);
+    .quart {
+      flex: 1 0 20%;
+      float: left;
+      margin-right: 10px;
+
+      &:last-of-type {
+        margin-right: 0;
+      }
     }
   }
 }
 
-.dimension {
+.image-options-preview {
+  //float: left;
+  width: 100%;
+  position: relative;
+  height: 180px;
+  background-color: var(--off-white);
+  margin-bottom: calc(var(--page-padding) / 2);
+  @media (min-width: 480px) {
+    width: 40%;
+    margin-right: calc(var(--page-padding) / 2);
+  }
+  img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 180px;
+    height: 180px;
+    object-fit: contain;
+    max-width: 100%;
+  }
 }
 
 .image-options-footer {
-  display: flex;
+  display: block;
+  @media (min-width: 480px) {
+    display: inline-flex;
+  }
+
+  width: 100%;
   //padding-top: calc(var(--page-padding) / 2);
   button {
-    padding-right: 10px;
+    padding-right: calc(var(--page-padding) / 2);
+    margin-bottom: calc(var(--page-padding) / 2);
+    width: 100%;
+
     &:last-of-type {
-      margin-left: auto;
+      margin-bottom: 0;
+    }
+
+    @media (min-width: 480px) {
+      width: auto;
+      margin-bottom: 0;
+      &:last-of-type {
+        margin-left: auto;
+        float: right;
+        align-self: end;
+      }
     }
   }
 }

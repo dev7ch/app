@@ -27,9 +27,7 @@
         ref="editedClasses"
         :placeholder="$t('width_px')"
         class="image-options-item"
-        :value="
-          trimDimension($parent.selectionPosition.target.width.toString())
-        "
+        :value="trimDimension($parent.selectionPosition.target.width.toString())"
         v-model.lazy="$parent.selectionPosition.target.width"
       />
       <!--<label><small>Height</small></label>-->
@@ -59,15 +57,13 @@
       v-model.lazy="$parent.selectionPosition.target.className"
     />
     <div class="image-options-footer">
-      <button
-        type="button"
-        :disabled="false"
-        @click="$parent.isImageSelection = false"
-      >
-        <i class="material-icons">close</i>{{ $t("cancel") }}
+      <button type="button" :disabled="false" @click="$parent.isImageSelection = false">
+        <i class="material-icons">close</i>
+        {{ $t("cancel") }}
       </button>
       <button type="button" :disabled="$parent.readonly" @click="setAll()">
-        <i class="material-icons">check</i> {{ $t("confirm") }}
+        <i class="material-icons">check</i>
+        {{ $t("confirm") }}
       </button>
     </div>
   </div>

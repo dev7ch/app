@@ -26,12 +26,7 @@
     </div>
     <!-- Unformatted raw html view -->
     <template v-if="showSource">
-      <RawHtmlView
-        :id="name + '-raw'"
-        :options="options"
-        :show-source="showSource"
-        :name="name"
-      />
+      <RawHtmlView :id="name + '-raw'" :options="options" :show-source="showSource" :name="name" />
     </template>
     <br />
     <ImageEdit />
@@ -40,7 +35,7 @@
 <script>
 import mixin from "@directus/extension-toolkit/mixins/interface";
 import { Editor, EditorContent } from "tiptap";
-const Menubar = () => import("./components/Menubar");
+const Menubar = () => import("./components/MenuBar");
 const RawHtmlView = () => import("./components/RawHtmlView");
 import ImageEdit from "./components/ImageEdit";
 
@@ -87,8 +82,7 @@ export default {
     init() {
       if (
         !this.options.toolbarOptions ||
-        (this.options.toolbarOptions !== null &&
-          this.options.toolbarOptions.length === 0)
+        (this.options.toolbarOptions !== null && this.options.toolbarOptions.length === 0)
       ) {
         this.options.toolbarOptions = [
           "Paragraph",
@@ -105,64 +99,28 @@ export default {
         ];
       }
       const ext = [
-        this.options.toolbarOptions.includes("Blockquote")
-          ? new Blockquote()
-          : "disabled",
-        this.options.toolbarOptions.includes("BulletList")
-          ? new BulletList()
-          : "disabled",
-        this.options.toolbarOptions.includes("CodeBlock")
-          ? new CodeBlock()
-          : "disabled",
-        this.options.toolbarOptions.includes("HardBreak")
-          ? new HardBreak()
-          : "disabled",
+        this.options.toolbarOptions.includes("Blockquote") ? new Blockquote() : "disabled",
+        this.options.toolbarOptions.includes("BulletList") ? new BulletList() : "disabled",
+        this.options.toolbarOptions.includes("CodeBlock") ? new CodeBlock() : "disabled",
+        this.options.toolbarOptions.includes("HardBreak") ? new HardBreak() : "disabled",
         new Heading({ levels: [1, 2, 3, 4, 5] }),
-        this.options.toolbarOptions.includes("HorizontalRule")
-          ? new HorizontalRule()
-          : "disabled",
-        this.options.toolbarOptions.includes("ListItem")
-          ? new ListItem()
-          : "disabled",
-        this.options.toolbarOptions.includes("OrderedList")
-          ? new OrderedList()
-          : "disabled",
-        this.options.toolbarOptions.includes("TodoItem")
-          ? new TodoItem()
-          : "disabled",
-        this.options.toolbarOptions.includes("TodoList")
-          ? new TodoList()
-          : "disabled",
+        this.options.toolbarOptions.includes("HorizontalRule") ? new HorizontalRule() : "disabled",
+        this.options.toolbarOptions.includes("ListItem") ? new ListItem() : "disabled",
+        this.options.toolbarOptions.includes("OrderedList") ? new OrderedList() : "disabled",
+        this.options.toolbarOptions.includes("TodoItem") ? new TodoItem() : "disabled",
+        this.options.toolbarOptions.includes("TodoList") ? new TodoList() : "disabled",
         this.options.toolbarOptions.includes("Bold") ? new Bold() : "disabled",
-        this.options.toolbarOptions.includes("Image")
-          ? new Image()
-          : "disabled",
+        this.options.toolbarOptions.includes("Image") ? new Image() : "disabled",
         this.options.toolbarOptions.includes("Code") ? new Code() : "disabled",
-        this.options.toolbarOptions.includes("Italic")
-          ? new Italic()
-          : "disabled",
+        this.options.toolbarOptions.includes("Italic") ? new Italic() : "disabled",
         this.options.toolbarOptions.includes("Link") ? new Link() : "disabled",
-        this.options.toolbarOptions.includes("Strike")
-          ? new Strike()
-          : "disabled",
-        this.options.toolbarOptions.includes("Underline")
-          ? new Underline()
-          : "disabled",
-        this.options.toolbarOptions.includes("History")
-          ? new History()
-          : "disabled",
-        this.options.toolbarOptions.includes("Table")
-          ? new Table()
-          : "disabled",
-        this.options.toolbarOptions.includes("Table")
-          ? new TableHeader()
-          : "disabled",
-        this.options.toolbarOptions.includes("Table")
-          ? new TableCell()
-          : "disabled",
-        this.options.toolbarOptions.includes("Table")
-          ? new TableRow()
-          : "disabled"
+        this.options.toolbarOptions.includes("Strike") ? new Strike() : "disabled",
+        this.options.toolbarOptions.includes("Underline") ? new Underline() : "disabled",
+        this.options.toolbarOptions.includes("History") ? new History() : "disabled",
+        this.options.toolbarOptions.includes("Table") ? new Table() : "disabled",
+        this.options.toolbarOptions.includes("Table") ? new TableHeader() : "disabled",
+        this.options.toolbarOptions.includes("Table") ? new TableCell() : "disabled",
+        this.options.toolbarOptions.includes("Table") ? new TableRow() : "disabled"
       ];
 
       const search_term = "disabled";
@@ -261,11 +219,7 @@ export default {
     {
       this.observer = new MutationObserver(mutations => {
         for (const m of mutations) {
-          if (
-            m.type === "attributes" &&
-            m.target.localName === "img" &&
-            !!m.target.src
-          ) {
+          if (m.type === "attributes" && m.target.localName === "img" && !!m.target.src) {
             this.selectionPosition = {
               alt: m.target.attributes.alt ? m.target.attributes.alt.value : "",
               target: m.target,

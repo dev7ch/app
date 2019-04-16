@@ -48,9 +48,7 @@ export default class Image extends Node {
   commands({ type }) {
     return attrs => (state, dispatch) => {
       const { selection } = state;
-      const position = selection.$cursor
-        ? selection.$cursor.pos
-        : selection.$to.pos;
+      const position = selection.$cursor ? selection.$cursor.pos : selection.$to.pos;
       const node = type.create(attrs);
       const transaction = state.tr.insert(position, node);
       dispatch(transaction);
@@ -64,9 +62,7 @@ export default class Image extends Node {
           handleDOMEvents: {
             drop(view, event) {
               const hasFiles =
-                event.dataTransfer &&
-                event.dataTransfer.files &&
-                event.dataTransfer.files.length;
+                event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files.length;
 
               if (!hasFiles) {
                 return;
@@ -95,10 +91,7 @@ export default class Image extends Node {
                   const node = schema.nodes.image.create({
                     src: readerEvent.target.result
                   });
-                  const transaction = view.state.tr.insert(
-                    coordinates.pos,
-                    node
-                  );
+                  const transaction = view.state.tr.insert(coordinates.pos, node);
                   view.dispatch(transaction);
                 };
                 reader.readAsDataURL(image);

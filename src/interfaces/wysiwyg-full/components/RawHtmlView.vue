@@ -19,30 +19,19 @@
       :id="id + '-raw-formatted'"
       v-if="$parent.showSource && !showRaw"
       :alt-options="
-        $parent.options.codeMirrorOptions
-          ? $parent.options.codeMirrorOptions
-          : codeMirrorDefaults
+        $parent.options.codeMirrorOptions ? $parent.options.codeMirrorOptions : codeMirrorDefaults
       "
       :value="$parent.editor.view.dom.innerHTML"
       v-model="$parent.editorText"
       :name="'htmlmixed'"
       type="textarea"
       @keypress="$emit('input', $event)"
-    >
-    </CodeMirror>
+    ></CodeMirror>
     <!-- formatted / unformatted  view toggler -->
-    <div
-      class="editor__rawformat"
-      v-if="showSource"
-      @click="showRaw = !showRaw"
-    >
-      <span :style="{ color: !showRaw ? 'var(--accent)' : 'var(--light-gray)' }"
-        >formatted</span
-      >
+    <div class="editor__rawformat" v-if="showSource" @click="showRaw = !showRaw">
+      <span :style="{ color: !showRaw ? 'var(--accent)' : 'var(--light-gray)' }">formatted</span>
       |
-      <span :style="{ color: showRaw ? 'var(--accent)' : 'var(--light-gray)' }"
-        >unformatted</span
-      >
+      <span :style="{ color: showRaw ? 'var(--accent)' : 'var(--light-gray)' }">unformatted</span>
     </div>
   </div>
 </template>

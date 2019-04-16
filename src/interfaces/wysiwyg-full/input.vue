@@ -23,6 +23,13 @@
         ]"
         :editor="editor"
       />
+      <div
+        class="options-toggler"
+        :class="{ active: hasSettings }"
+        @click="isImageSelection = !isImageSelection"
+      >
+        <v-icon name="settings"></v-icon>
+      </div>
     </div>
     <!-- Unformatted raw html view -->
     <template v-if="showSource">
@@ -198,9 +205,11 @@ export default {
         alt: {
           value: null
         },
+        title: null,
         src: null,
         target: null
       },
+      hasSettings: false,
       isImageSelection: false
     };
   },
@@ -210,8 +219,9 @@ export default {
     {
       this.observer = new MutationObserver(mutations => {
         for (const m of mutations) {
-          if (m.type === "attributes" && m.target.localName === "img" && !!m.target.src) {
+          if (m.type === "attributes" && m.target.localName === "img") {
             this.selectionPosition = {
+              title: m.target.attributes.title ? m.target.attributes.title.value : "",
               alt: m.target.attributes.alt ? m.target.attributes.alt.value : "",
               target: m.target,
               src: m.target.src,
@@ -221,10 +231,12 @@ export default {
               height: m.target.height,
               width: m.target.width
             };
-            this.isImageSelection = true;
-          }
-          if (m.type === "childList" && m.target.localName && !!m.target) {
+            if (m.target.className.includes("ProseMirror-selectednode")) {
+              this.hasSettings = true;
+            }
+          } else if (m.type === "childList") {
             this.isImageSelection = false;
+            this.hasSettings = false;
           }
         }
       });
@@ -234,9 +246,7 @@ export default {
           nodeList: false,
           childList: true,
           subtree: true,
-          attributes: true,
-          attributeOldValue: false,
-          attributeFilter: ["class", "attribute"]
+          attributeFilter: ["class"]
         });
       }
     }
@@ -257,7 +267,25 @@ export default {
   max-width: var(--width-x-large);
 }
 
-.material-icons {
-  font-size: 20px;
+.options-toggler {
+  position: absolute;
+  cursor: pointer;
+  opacity: 0;
+  z-index: 0;
+  right: -50px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: var(--lightest-gray);
+  border: var(--input-border-width) solid var(--lighter-gray);
+  border-radius: var(--border-radius);
+  color: var(--gray);
+  padding: calc(var(--page-padding) / 4);
+  transition: opacity 0.3s ease-in-out, right 0.2s ease-in-out;
+
+  &.active {
+    z-index: 0;
+    opacity: 1;
+    right: 0;
+  }
 }
 </style>

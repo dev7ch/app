@@ -1,6 +1,7 @@
 <template>
   <div
     class="image-options"
+    v-show="$parent.isImageSelection"
     :class="{ loaded: $parent.isImageSelection }"
     v-if="$parent.selectionPosition.target"
   >
@@ -9,7 +10,7 @@
       type="button"
       class="top-close"
       :disabled="false"
-      @click="$parent.isImageSelection = false"
+      @click="($parent.isImageSelection = false), ($parent.hasSettings = false)"
     >
       <v-icon name="close" />
     </button>
@@ -33,8 +34,8 @@
         class="image-options-item"
         ref="editedTitle"
         :placeholder="$t('image_title')"
-        v-model.lazy="$parent.selectionPosition.target.title"
-        :value="$parent.selectionPosition.target.title"
+        v-model.lazy="$parent.selectionPosition.title"
+        :value="$parent.selectionPosition.title"
       />
       <v-input
         v-if="!!$parent.selectionPosition.target"
@@ -86,11 +87,15 @@
       ref="editedClasses"
       :placeholder="$t('css_classes')"
       class="image-options-item"
-      :value="$parent.selectionPosition.target.className"
+      :value="$parent.selectionPosition.classes"
       v-model.lazy="$parent.selectionPosition.classes"
     />
     <div class="image-options-footer">
-      <v-button type="button" :disabled="false" @click="$parent.isImageSelection = false">
+      <v-button
+        type="button"
+        :disabled="false"
+        @click="($parent.isImageSelection = false), ($parent.hasSettings = false)"
+      >
         <v-icon name="close" />
         {{ $t("cancel") }}
       </v-button>
@@ -112,7 +117,7 @@ export default {
   methods: {
     trimDimension($str) {
       const regexStr = $str.match(/[a-z%]+|[^a-z%]+/gi);
-      console.log(regexStr);
+      // console.log(regexStr);
       return regexStr;
     },
 
@@ -120,6 +125,7 @@ export default {
       this.$parent.selectionPosition.target.className = this.$parent.selectionPosition.classes;
       this.$parent.selectionPosition.target.alt = this.$parent.selectionPosition.alt;
       this.$parent.selectionPosition.target.src = this.$parent.selectionPosition.src;
+      this.$parent.selectionPosition.target.title = this.$parent.selectionPosition.title;
     }
   },
   mounted() {
@@ -170,6 +176,7 @@ export default {
   display: flex;
   max-height: 100vh;
   opacity: 1;
+  z-index: 1;
   animation: FadeInImageEdit 0.3s ease-in-out;
 }
 
@@ -210,12 +217,12 @@ export default {
 }
 
 .image-options-preview {
-  //float: left;
   width: 100%;
   position: relative;
   height: 180px;
   background-color: var(--off-white);
   margin-bottom: calc(var(--page-padding) / 2);
+
   @media (min-width: 480px) {
     width: 40%;
     margin-right: calc(var(--page-padding) / 2);
@@ -230,6 +237,14 @@ export default {
     object-fit: contain;
     max-width: 100%;
   }
+
+  .icon {
+    color: var(--lightest-gray);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(4);
+  }
 }
 
 .image-options-footer {
@@ -241,7 +256,6 @@ export default {
   width: 100%;
   //padding-top: calc(var(--page-padding) / 2);
   button {
-    padding-right: calc(var(--page-padding) / 2);
     margin-bottom: calc(var(--page-padding) / 2);
     width: 100%;
 

@@ -6,7 +6,8 @@
     v-if="$parent.selectionPosition.target"
     :style="{
       top: $parent.getTopPosition($parent.selectionPosition.target),
-      left: 0
+      left: getEditorPos($parent.$refs.editor.$el).left,
+      width: getEditorPos($parent.$refs.editor.$el).width
     }"
   >
     <h1 class="title image-options-item">Edit image attributes</h1>
@@ -119,6 +120,12 @@ export default {
     };
   },
   methods: {
+    getEditorPos($elem) {
+      return {
+        left: $elem.getBoundingClientRect().x - 10 + "px",
+        width: $elem.getBoundingClientRect().width - 45 + "px"
+      };
+    },
     trimDimension($str) {
       const regexStr = $str.match(/[a-z%]+|[^a-z%]+/gi);
       // console.log(regexStr);
@@ -147,7 +154,7 @@ export default {
   width: 100%;
   max-width: 100%;
   top: calc(50% + 15px);
-  transform: translateY(-100%);
+  transform: translateY(-100vh);
   margin-top: var(--page-padding);
   border-radius: var(--border-radius);
   border: 2px solid var(--lighter-gray);

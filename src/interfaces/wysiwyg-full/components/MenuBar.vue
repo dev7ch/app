@@ -191,11 +191,13 @@
             $parent.updateText($parent.editor.view.dom.innerHTML),
               ($parent.showSource = !$parent.showSource)
           "
-          v-html="$parent.showSource ? 'WYSIWYG' : 'Code'"
           :style="{
             order: 99
           }"
-        ></button>
+        >
+          <v-icon name="code" v-if="!$parent.showSource" />
+          <v-icon v-else name="arrow_back" />
+        </button>
       </div>
     </editor-menu-bar>
     <Bubble :options="options" :editor="$parent.editor" :class="{ visible: linkBubble }" />
@@ -359,10 +361,19 @@ export default {
   margin-bottom: -5px;
   padding-top: 0;
 
+  .menubar {
+    min-height: 34px;
+  }
+
   .toggler {
+    height: 31px;
     margin-left: auto;
     padding-right: 5px;
-    transform: translateY(-2px);
+    //transform: translateY(-2px);
+    background-color: var(--action);
+    i {
+      color: var(--white);
+    }
   }
 }
 </style>

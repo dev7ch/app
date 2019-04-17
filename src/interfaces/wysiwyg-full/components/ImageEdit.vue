@@ -4,6 +4,10 @@
     v-show="$parent.isImageSelection"
     :class="{ loaded: $parent.isImageSelection }"
     v-if="$parent.selectionPosition.target"
+    :style="{
+      top: $parent.getTopPosition($parent.selectionPosition.target),
+      left: 0
+    }"
   >
     <h1 class="title image-options-item">Edit image attributes</h1>
     <button
@@ -139,11 +143,11 @@ export default {
   flex-flow: row wrap;
   background-color: var(--lightest-gray);
   padding: calc(var(--page-padding) / 2);
-  position: absolute;
+  position: fixed;
   width: 100%;
   max-width: 100%;
   top: calc(50% + 15px);
-  transform: translateY(-50%);
+  transform: translateY(-100%);
   margin-top: var(--page-padding);
   border-radius: var(--border-radius);
   border: 2px solid var(--lighter-gray);

@@ -10,7 +10,7 @@
   >
     <span v-if="supIcon || supType" :class="'sup ' + supType">
       <v-icon
-        class="icon"
+        class="small"
         :name="supType === 'add' && !supIcon ? 'add_circle' : 'remove_circle' || supIcon"
       />
     </span>

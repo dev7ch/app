@@ -5,9 +5,12 @@
   .interface-wysiwyg.editor__content {
     width: 100%;
     min-height: inherit;
+    //max-height: calc(100vh - var(--header-height) * 2);
+    //overflow-y: auto;
 
     > *[contenteditable="true"],
     > *[contenteditable] {
+
       code {
         display: inline-block;
         padding: 0 3px;
@@ -72,6 +75,8 @@
       }
 
       min-height: inherit;
+      max-height: calc((100vh - var(--header-height) * 3));
+      overflow-y: auto;
       border: var(--input-border-width) solid var(--lighter-gray);
       border-radius: var(--border-radius);
       color: var(--gray);
@@ -89,7 +94,6 @@
 
     .editor__inner {
       min-height: inherit;
-      //ransition: min-height .2s ease-in-out;
 
       &.shrinked {
         min-height: 0;
@@ -147,7 +151,7 @@
         right: 0;
       }
 
-      .menubar__button {
+      .menubar__button:not(.toggler) {
         position: relative;
         min-height: 30px;
         min-width: 30px;
@@ -305,7 +309,6 @@
     }
 
     img.ProseMirror-selectednode {
-      //border: var(--input-border-width) solid var(--lighter-gray);
       cursor: grab;
       border: 1px solid var(--lighter-gray);
       box-shadow: 0 0 3px var(--lighter-gray);
@@ -314,10 +317,9 @@
         cursor: grabbing;
       }
     }
-    .ProseMirror {
-      //max-height: calc(100vh - 300px);
-      overflow-y: auto;
-    }
+    //.ProseMirror {
+    //  overflow-y: auto;
+    //}
   }
 }
 

@@ -367,13 +367,12 @@ export default {
 
   .toggler {
     height: 31px;
+    padding-left: 5px;
     margin-left: auto;
     padding-right: 5px;
     //transform: translateY(-2px);
     background-color: var(--action);
-    i {
-      color: var(--white);
-    }
+    color: var(--white);
   }
 }
 </style>

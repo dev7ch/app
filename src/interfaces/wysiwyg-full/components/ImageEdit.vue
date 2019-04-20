@@ -5,8 +5,7 @@
     :class="{ loaded: $parent.isImageSelection }"
     v-if="$parent.selectionPosition.target"
     :style="{
-      top: $parent.getTopPosition($parent.selectionPosition.target),
-      left: getEditorPos($parent.$refs.editor.$el).left,
+      top: '50%',
       width: getEditorPos($parent.$refs.editor.$el).width
     }"
   >
@@ -151,13 +150,19 @@ export default {
   background-color: var(--lightest-gray);
   padding: calc(var(--page-padding) / 2);
   position: fixed;
-  width: 100%;
+  left: 50%;
+  right: 30px;
+  margin-left: var(--nav-sidebar-width);
   max-width: 100%;
-  top: calc(50% + 15px);
-  transform: translateY(-100vh);
-  margin-top: var(--page-padding);
+  width: 100%;
+  overflow-y: auto;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  margin-top: var(--header-height);
   border-radius: var(--border-radius);
   border: 2px solid var(--lighter-gray);
+  opacity: 0;
+  animation: FadeOutImageEdit 0.2s ease-in-out;
 
   .title {
     font-size: var(--size-2);
@@ -167,12 +172,12 @@ export default {
 
   @media (min-width: 480px) {
     width: calc(100% - var(--page-padding) * 2);
-    margin: var(--page-padding);
+    //padding: var(--page-padding);
   }
 
-  opacity: 0;
-  animation: FadeOutImageEdit 0.2s ease-in-out;
-  overflow-y: auto;
+  @media (min-width: 800px) {
+    left: calc(50% - var(--nav-sidebar-width));
+  }
 }
 
 .v-input {

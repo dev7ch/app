@@ -23,7 +23,7 @@
     />
   </svg>
 
-  <i v-else class="icon" :style="iconStyle">{{ name }}</i>
+  <i v-else :style="iconStyle">{{ name }}</i>
 </template>
 
 <script>
@@ -45,7 +45,8 @@ export default {
 
         // These values are the recommended MD icon sizes. Any alternate size will render the icons
         // fuzzy. See https://google.github.io/material-design-icons/#sizing
-        const valid = [18, 24, 36, 48].includes(numberValue);
+        // .... except for 16, but we need that size for inside of checkboxes (permissions)
+        const valid = [16, 18, 24, 36, 48].includes(numberValue);
 
         if (!valid) {
           console.warn("[v-icon]: Icon size has to be 18, 24, 36, or 48.");
@@ -93,7 +94,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.icon {
+i {
   font-family: "Material Icons";
   font-weight: normal;
   font-style: normal;
@@ -104,6 +105,11 @@ export default {
   word-wrap: normal;
   white-space: nowrap;
   font-feature-settings: "liga";
+  vertical-align: middle;
+}
+
+svg {
+  display: inline-block;
   vertical-align: middle;
 }
 </style>

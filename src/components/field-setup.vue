@@ -21,7 +21,7 @@
           v-for="group in interfacesGrouped"
           :title="group.title"
           :key="group.title"
-          :open="1"
+          :open="true"
         >
           <div class="interfaces">
             <article
@@ -47,7 +47,7 @@
     <template slot="schema" v-if="interfaceName">
       <template v-if="!existing">
         <h1 class="style-0">
-          {{ $t("name_field", { field: $helpers.formatTitle(interfaceName) }) }}
+          {{ $t("name_field", { field: $helpers.formatTitle(interfaces[interfaceName].name) }) }}
         </h1>
         <p class="subtext">{{ $t("intelligent_defaults") }}</p>
       </template>
@@ -61,7 +61,14 @@
               :placeholder="$t('db_column_name')"
               class="name-input"
               :disabled="existing"
+              :icon-right="iconToShow.icon"
+              :icon-right-color="iconToShow.color"
+              :icon-right-tooltip="iconToShow.tooltip"
             />
+            <p class="small-text">
+              {{ $t("display_name") }}:
+              <b>{{ $helpers.formatTitle(field || "...") }}</b>
+            </p>
           </label>
           <label>
             {{ $t("default_value") }}
@@ -80,7 +87,7 @@
 
         <div class="toggles">
           <label class="toggle" v-if="type !== 'alias'">
-            <v-toggle v-model="required" />
+            <v-toggle v-model="required" :disabled="fieldInfo.primary_key" />
             {{ $t("required") }}
           </label>
           <label class="toggle">
@@ -107,7 +114,11 @@
               <small class="description">{{ fieldTypeDescription }}</small>
             </label>
             <label>
-              {{ $t("db_datatype", { db: $helpers.formatTitle(databaseVendor) }) }}
+              {{
+                $t("db_datatype", {
+                  db: $helpers.formatTitle(databaseVendor)
+                })
+              }}
               <v-simple-select v-model="datatype">
                 <option
                   v-for="typeOption in availableDatatypes"
@@ -119,7 +130,7 @@
                 </option>
               </v-simple-select>
               <small class="description">
-                {{ selectedDatatypeInfo && selectedDatatypeInfo.description }}
+                {{ selectedDatatypeInfo && $t(selectedDatatypeInfo.description) }}
               </small>
             </label>
             <label>
@@ -390,7 +401,7 @@
           @change="createM2Mjunction = !createM2Mjunction"
         />
 
-        <v-icon="arrow_backward" />
+        <v-icon name="arrow_backward" />
 
         <p>{{ $t("related_collection") }}</p>
 
@@ -541,6 +552,7 @@ export default {
       sort: null,
 
       field: null,
+      isFieldValid: null,
       datatype: null,
       type: null,
       interfaceName: null,
@@ -597,6 +609,19 @@ export default {
     };
   },
   computed: {
+    iconToShow() {
+      if (!this.field || this.existing) {
+        return { icon: null, color: null };
+      }
+      if (this.isFieldValid) {
+        return { icon: "done", color: "success" };
+      }
+      return {
+        icon: "error",
+        color: "danger",
+        tooltip: this.$t("field_already_exists", { field: "'" + this.field + "'" })
+      };
+    },
     collections() {
       return Object.assign({}, this.$store.state.collections);
     },
@@ -750,7 +775,7 @@ export default {
     fieldTypeDescription() {
       if (!this.type) return null;
 
-      return mapping[this.type] && mapping[this.type].description;
+      return mapping[this.type] && this.$t(mapping[this.type].description);
     },
     lengthDisabled() {
       if (this.selectedDatatypeInfo && this.selectedDatatypeInfo.length === true) {
@@ -779,6 +804,9 @@ export default {
         disabled = true;
       }
       if (this.activeTab === "schema" && !this.field) {
+        disabled = true;
+      }
+      if (!this.isFieldValid && !this.existing) {
         disabled = true;
       }
 
@@ -818,7 +846,10 @@ export default {
         };
       }
 
-      if (this.interfaceName && Object.keys(this.selectedInterfaceInfo.options).length > 0) {
+      const interfaceOptions =
+        (this.selectedInterfaceInfo && this.selectedInterfaceInfo.options) || {};
+
+      if (this.interfaceName && Object.keys(interfaceOptions).length > 0) {
         let disabled = this.schemaDisabled === true || !this.field;
         tabs.options = {
           text: this.$t("options"),
@@ -829,8 +860,10 @@ export default {
       return tabs;
     },
     hasOptions() {
-      if (this.interfaceName && Object.keys(this.interfaces[this.interfaceName].options).length > 0)
-        return true;
+      const interfaceOptions =
+        (this.selectedInterfaceInfo && this.selectedInterfaceInfo.options) || {};
+
+      if (this.interfaceName && Object.keys(interfaceOptions).length > 0) return true;
 
       return false;
     },
@@ -928,7 +961,7 @@ export default {
         return;
       }
 
-      if (this.selectedDatatypeInfo.length) {
+      if (this.selectedDatatypeInfo && this.selectedDatatypeInfo.length) {
         this.length = this.selectedDatatypeInfo.defaultLength;
 
         if (mapping[this.type][this.databaseVendor].length) {
@@ -948,6 +981,8 @@ export default {
     },
     field(val) {
       this.field = this.validateFieldName(val);
+
+      this.isFieldValid = !Object.keys(this.collectionInfo.fields).includes(val);
 
       if (this.relation) {
         if (this.relation === "m2o") {
@@ -1465,6 +1500,17 @@ p {
 
 .currently-selected {
   margin-bottom: 40px;
+}
+
+.small-text {
+  margin-top: 4px;
+  font-style: italic;
+  font-size: 12px;
+  line-height: 1.5em;
+  color: var(--light-gray);
+  & b {
+    font-weight: 600;
+  }
 }
 
 .note {

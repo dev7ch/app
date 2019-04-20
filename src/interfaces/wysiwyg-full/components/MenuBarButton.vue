@@ -47,8 +47,7 @@ export default {
       default: () => {}
     },
     activeCondition: {
-      type: Boolean,
-      default: false
+      type: Boolean
     }
   }
 };

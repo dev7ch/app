@@ -87,6 +87,13 @@
         @input="postComment"
         @revert="revertActivity = $event"
       />
+
+      <router-link to="/activity" class="notifications" v-if="canReadActivity">
+        <div class="preview">
+          <v-icon name="notifications" color="light-gray" />
+          <span>{{ $t("notifications") }}</span>
+        </div>
+      </router-link>
     </v-info-sidebar>
 
     <v-form
@@ -152,10 +159,10 @@
         @close="revertActivity = false"
       >
         <div class="revert">
-          <p class="notice">
+          <v-notice color="warning">
             {{ $t("revert_copy", { date: $d(revertActivity.date, "long") }) }}
-          </p>
-          <v-form readonly :values="revertActivity.revision.data" :fields="fields" />
+          </v-notice>
+          <v-form readonly :values="revertActivity.revision.data" :fields="fields" full-width />
         </div>
       </v-modal>
     </portal>
@@ -466,6 +473,12 @@ export default {
       }
 
       return permission;
+    },
+    permissions() {
+      return this.$store.state.permissions;
+    },
+    canReadActivity() {
+      return this.permissions.directus_activity.read !== "none";
     },
     readonly() {
       return this.permission.update === "none";
@@ -1012,11 +1025,8 @@ export default {
 .revert {
   padding: 20px;
 
-  p.notice {
-    margin-bottom: 20px;
-    padding-bottom: 20px;
-    border-bottom: 1px dotted var(--lighter-gray);
-    color: var(--warning);
+  .notice {
+    margin-bottom: 40px;
   }
 }
 
@@ -1026,5 +1036,38 @@ export default {
   border-radius: 5px;
   margin-left: 8px;
   margin-top: 1px;
+}
+
+.notifications {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  margin: 0;
+  text-decoration: none;
+  padding: 20px;
+  background-color: #dde3e6;
+  color: var(--darker-gray);
+  display: block;
+
+  .preview {
+    display: flex;
+    align-items: center;
+
+    span {
+      flex-grow: 1;
+      margin-left: 10px;
+    }
+  }
+
+  select {
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    cursor: pointer;
+  }
 }
 </style>

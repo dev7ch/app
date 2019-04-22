@@ -49,7 +49,8 @@ export default {
   .before {
     position: relative;
     color: var(--danger);
-    background-color: #fdefed;
+    background-color: var(--white);
+    border-bottom: 2px solid var(--lightest-gray);
     &:after {
       content: "close";
       position: absolute;
@@ -57,6 +58,7 @@ export default {
       top: 50%;
       transform: translateY(-50%);
       font-family: "Material Icons";
+      font-feature-settings: "liga";
       color: var(--danger);
       display: inline-block;
       vertical-align: middle;
@@ -67,7 +69,7 @@ export default {
   .after {
     position: relative;
     color: var(--success);
-    background-color: #f6faf0;
+    background-color: var(--white);
     &:after {
       content: "check";
       position: absolute;
@@ -75,6 +77,7 @@ export default {
       top: 50%;
       transform: translateY(-50%);
       font-family: "Material Icons";
+      font-feature-settings: "liga";
       color: var(--success);
       display: inline-block;
       vertical-align: middle;
@@ -83,8 +86,8 @@ export default {
   }
 
   .empty {
-    color: var(--gray);
-    background-color: var(--lightest-gray);
+    color: var(--lighter-gray);
+    background-color: var(--white);
     &:after {
       content: "block";
       position: absolute;
@@ -92,7 +95,8 @@ export default {
       top: 50%;
       transform: translateY(-50%);
       font-family: "Material Icons";
-      color: var(--gray);
+      font-feature-settings: "liga";
+      color: var(--lighter-gray);
       display: inline-block;
       vertical-align: middle;
       margin: 0 5px;

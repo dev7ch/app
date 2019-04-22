@@ -1,5 +1,5 @@
 <template>
-  <div class="form">
+  <div class="form" :class="{ 'full-width': fullWidth }">
     <v-field
       v-for="field in filteredFields"
       :class="field.width"
@@ -51,6 +51,10 @@ export default {
     newItem: {
       type: Boolean,
       default: false
+    },
+    fullWidth: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
@@ -96,6 +100,7 @@ export default {
         const fieldName = fieldInfo.field;
 
         if (
+          this.readonly ||
           fieldInfo.readonly === true ||
           fieldInfo.readonly === "1" ||
           fieldInfo.readonly === 1 ||
@@ -156,10 +161,16 @@ export default {
 
   @media (min-width: 1000px) {
     display: grid;
-    grid-gap: var(--gap-width);
+    gap: var(--gap-width);
     grid-template-columns:
       [start] minmax(0, var(--column-width)) [half] minmax(0, var(--column-width))
       [full] 1fr [fill];
+  }
+}
+
+.form.full-width {
+  @media (min-width: 1000px) {
+    grid-template-columns: [start] minmax(0, 1fr) [half] minmax(0, 1fr) [full];
   }
 }
 
@@ -184,5 +195,9 @@ export default {
 
 .form > .fill {
   grid-column: start / fill;
+}
+
+.form.full-width > .fill {
+  grid-column: start / full;
 }
 </style>

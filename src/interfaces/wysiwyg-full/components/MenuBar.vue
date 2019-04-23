@@ -41,12 +41,12 @@
           :active-condition="isActive.code()"
         />
 
-        <!--<MenuButton-->
-        <!--plugin-name="CodeBlock"-->
-        <!--icon="code"-->
-        <!--:command="commands.code_block"-->
-        <!--:active-condition="isActive.code_block()"-->
-        <!--/>-->
+        <MenuButton
+          plugin-name="CodeBlock"
+          icon="code"
+          :command="commands.code_block"
+          :active-condition="isActive.code_block()"
+        />
 
         <MenuButton
           plugin-name="Paragraph"

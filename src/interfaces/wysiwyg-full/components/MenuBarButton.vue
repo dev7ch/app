@@ -1,12 +1,11 @@
-<template>
+<template v-if="$parent.$parent.options.toolbarOptions.includes(pluginName)">
   <button
-    v-if="$parent.$parent.options.toolbarOptions.includes(pluginName)"
     :style="{
       order: $parent.$parent.options.toolbarOptions.indexOf(pluginName)
     }"
     class="menubar__button"
-    :class="{ 'is-active': activeCondition }"
-    @click="command"
+    :class="{ 'is-active': !!activeCondition }"
+    @click="command ? command : null"
   >
     <span v-if="supIcon || supType" :class="'sup ' + supType">
       <v-icon

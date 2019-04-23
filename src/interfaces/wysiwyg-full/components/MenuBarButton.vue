@@ -1,4 +1,4 @@
-<template v-if="$parent.$parent.options.toolbarOptions.includes(pluginName)">
+<template v-if="!!$parent.$parent.options.toolbarOptions.includes(pluginName)">
   <button
     :style="{
       order: $parent.$parent.options.toolbarOptions.indexOf(pluginName)
@@ -39,7 +39,7 @@ export default {
     },
     pluginName: {
       type: String,
-      default: ""
+      default: null
     },
     command: {
       type: Function

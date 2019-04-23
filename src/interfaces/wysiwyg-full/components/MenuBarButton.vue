@@ -43,8 +43,7 @@ export default {
       default: ""
     },
     command: {
-      type: Function,
-      default: () => {}
+      type: Function
     },
     activeCondition: {
       type: Boolean

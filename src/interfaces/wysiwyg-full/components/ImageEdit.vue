@@ -146,13 +146,13 @@ export default {
 <style lang="scss" scoped>
 .image-options {
   display: flex;
+  z-index: 99;
   flex-flow: row wrap;
   background-color: var(--lightest-gray);
   padding: calc(var(--page-padding) / 2);
   position: fixed;
   left: 50%;
   right: 30px;
-  margin-left: var(--nav-sidebar-width);
   max-width: 100%;
   width: 100%;
   overflow-y: auto;
@@ -176,6 +176,7 @@ export default {
   }
 
   @media (min-width: 800px) {
+    margin-left: var(--nav-sidebar-width);
     left: calc(50% - var(--nav-sidebar-width));
   }
 }
@@ -192,7 +193,7 @@ export default {
   display: flex;
   max-height: 100vh;
   opacity: 1;
-  z-index: 1;
+  z-index: 99;
   animation: FadeInImageEdit 0.3s ease-in-out;
 }
 

@@ -1,4 +1,4 @@
-<template v-if="!!$parent.$parent.options.toolbarOptions.includes(pluginName)">
+<template v-if="$parent.$parent.options.toolbarOptions.includes(pluginName)">
   <button
     :style="{
       order: $parent.$parent.options.toolbarOptions.indexOf(pluginName)
@@ -45,7 +45,8 @@ export default {
       type: Function
     },
     activeCondition: {
-      type: Boolean
+      type: Boolean,
+      default: false
     }
   }
 };

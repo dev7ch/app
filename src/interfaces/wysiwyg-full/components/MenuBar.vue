@@ -9,18 +9,21 @@
         }"
       >
         <MenuButton
+          v-if="optionsInclude('Bold')"
           plugin-name="Bold"
           icon="format_bold"
           :command="commands.bold"
           :active-condition="isActive.bold()"
         />
         <MenuButton
+          v-if="optionsInclude('Italic')"
           plugin-name="Italic"
           icon="format_italic"
           :command="commands.italic"
           :active-condition="isActive.italic()"
         />
         <MenuButton
+          v-if="optionsInclude('Strike')"
           plugin-name="Strike"
           icon="format_strikethrough"
           :command="commands.strike"
@@ -28,6 +31,7 @@
         />
 
         <MenuButton
+          v-if="optionsInclude('Underline')"
           plugin-name="Underline"
           icon="format_underline"
           :command="commands.underline"
@@ -35,6 +39,7 @@
         />
 
         <MenuButton
+          v-if="optionsInclude('Code')"
           plugin-name="Code"
           icon="code"
           :command="commands.code"
@@ -42,6 +47,7 @@
         />
 
         <MenuButton
+          v-if="optionsInclude('CodeBlock')"
           plugin-name="CodeBlock"
           icon="code"
           :command="commands.code_block"
@@ -49,6 +55,7 @@
         />
 
         <MenuButton
+          v-if="optionsInclude('Paragraph')"
           plugin-name="Paragraph"
           icon="subject"
           :command="commands.paragraph"
@@ -56,6 +63,7 @@
         />
 
         <MenuButton
+          v-if="optionsInclude('BulletList')"
           plugin-name="BulletList"
           icon="format_list_bulleted"
           :command="commands.bullet_list"
@@ -63,12 +71,14 @@
         />
 
         <MenuButton
+          v-if="optionsInclude('OrderedList')"
           plugin-name="OrderedList"
           icon="format_list_numbered"
           :command="commands.ordered_list"
           :active-condition="isActive.ordered_list()"
         />
         <MenuButton
+          v-if="optionsInclude('Blockquote')"
           plugin-name="Blockquote"
           icon="format_quote"
           :command="commands.blockquote"
@@ -76,6 +86,7 @@
         />
 
         <MenuButton
+          v-if="optionsInclude('Link')"
           plugin-name="Link"
           icon="link"
           :command="setLink"
@@ -83,6 +94,7 @@
         />
 
         <MenuButton
+          v-if="optionsInclude('Image')"
           plugin-name="Image"
           icon="image"
           :command="() => (chooseImage = !chooseImage)"
@@ -91,6 +103,7 @@
         <template v-for="n in 6">
           <MenuButton
             :key="n"
+            v-if="optionsInclude('h' + n)"
             :plugin-name="'h' + n"
             icon="crop_square"
             :label="'H' + n"
@@ -100,6 +113,7 @@
         </template>
 
         <MenuButton
+          v-if="optionsInclude('Table')"
           plugin-name="Table"
           icon="table_chart"
           :command="
@@ -119,6 +133,7 @@
           :class="{ 'is-open': isActive.table() }"
         >
           <MenuButton
+            v-if="optionsInclude('Table')"
             plugin-name="Table"
             icon="table_chart"
             :command="commands.deleteTable"
@@ -126,6 +141,7 @@
           />
 
           <MenuButton
+            v-if="optionsInclude('Table')"
             plugin-name="Table"
             icon="border_left"
             :command="commands.addColumnBefore"
@@ -133,6 +149,7 @@
           />
 
           <MenuButton
+            v-if="optionsInclude('Table')"
             plugin-name="Table"
             icon="border_right"
             sup-type="add"
@@ -140,6 +157,7 @@
           />
 
           <MenuButton
+            v-if="optionsInclude('Table')"
             plugin-name="Table"
             icon="border_outer"
             sup-type="remove"
@@ -147,6 +165,7 @@
           />
 
           <MenuButton
+            v-if="optionsInclude('Table')"
             plugin-name="Table"
             icon="border_top"
             sup-type="add"
@@ -154,6 +173,7 @@
           />
 
           <MenuButton
+            v-if="optionsInclude('Table')"
             plugin-name="Table"
             icon="border_bottom"
             sup-type="add"
@@ -161,15 +181,22 @@
           />
 
           <MenuButton
+            v-if="optionsInclude('Table')"
             plugin-name="Table"
             icon="border_horizontal"
             sup-type="remove"
             :command="commands.deleteRow"
           />
 
-          <MenuButton plugin-name="Table" icon="merge_type" :command="commands.toggleCellMerge" />
+          <MenuButton
+            v-if="optionsInclude('Table')"
+            plugin-name="Table"
+            icon="merge_type"
+            :command="commands.toggleCellMerge"
+          />
         </div>
         <MenuButton
+          v-if="optionsInclude('HorizontalRule')"
           plugin-name="HorizontalRule"
           icon="maximize"
           :command="commands.horizontal_rule"
@@ -178,12 +205,13 @@
         <div
           class="history__actions"
           v-if="optionsInclude('History')"
+          plugin-name="History"
           :style="{
             order: optionsIndex('History')
           }"
         >
-          <MenuButton plugin-name="History" icon="undo" :command="commands.undo" />
-          <MenuButton plugin-name="History" icon="redo" :command="commands.redo" />
+          <MenuButton v-if="optionsInclude('History')" icon="undo" :command="commands.undo" />
+          <MenuButton v-if="optionsInclude('History')" icon="redo" :command="commands.redo" />
         </div>
         <button
           class="menubar__button toggler"

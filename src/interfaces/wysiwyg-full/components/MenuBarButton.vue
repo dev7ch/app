@@ -10,6 +10,7 @@
     <span v-if="supIcon || supType" :class="'sup ' + supType">
       <v-icon
         class="small"
+        :size="16"
         :name="supType === 'add' && !supIcon ? 'add_circle' : 'remove_circle' || supIcon"
       />
     </span>
@@ -51,3 +52,12 @@ export default {
   }
 };
 </script>
+<style lang="scss" scoped>
+.menubar__button {
+  .sup {
+    i {
+      font-size: 12px;
+    }
+  }
+}
+</style>

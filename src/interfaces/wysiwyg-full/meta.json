@@ -50,9 +50,6 @@
           "Link",
           "Code",
           "Table",
-          "TableHeader",
-          "TableCell",
-          "TableRow",
           "History"
         ]
       },
@@ -72,9 +69,6 @@
         "Link",
         "Code",
         "Table",
-        "TableHeader",
-        "TableCell",
-        "TableRow",
         "History"
       ]
     },

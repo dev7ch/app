@@ -29,13 +29,16 @@
           <input type="url" :placeholder="$t('embed_placeholder')" v-model="embedLink" />
           <button type="submit">Save</button>
         </form>
-        <v-icon name="link" v-tooltip="$t('embed')" @click="embed = !embed" class="select" />
-        <v-icon
-          v-tooltip="$t('select_from_device')"
-          @click="$refs.select.click()"
-          class="material-icons select"
-          name="devices"
-        />
+        <button @click="embed = !embed">
+          <v-icon name="link" v-tooltip="$t('embed')" class="select" />
+        </button>
+        <button @click="$refs.select.click()">
+          <v-icon
+            v-tooltip="$t('select_from_device')"
+            class="material-icons select"
+            name="devices"
+          />
+        </button>
       </div>
     </div>
     <transition-group tag="ol" name="list">
@@ -253,7 +256,7 @@ export default {
 
 .dropzone {
   position: relative;
-  padding: 100px 0;
+  padding: 0;
 
   .buttons {
     position: absolute;

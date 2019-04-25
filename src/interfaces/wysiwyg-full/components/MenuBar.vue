@@ -398,9 +398,18 @@ export default {
     padding-left: 5px;
     margin-left: auto;
     padding-right: 5px;
+    border-radius: var(--border-radius);
+    border: var(--input-border-width) solid var(--lightest-gray);
+
     //transform: translateY(-2px);
-    background-color: var(--action);
+    transition: background-color ease-in-out 0.2s;
+    background-color: var(--gray);
     color: var(--white);
+
+    &:hover,
+    &:focus {
+      background-color: var(--action);
+    }
   }
 }
 </style>

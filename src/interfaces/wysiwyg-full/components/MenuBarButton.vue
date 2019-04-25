@@ -7,7 +7,7 @@
     :class="{ 'is-active': !!activeCondition }"
     @click="command"
   >
-    <span v-if="supIcon || supType" :class="'sup ' + supType">
+    <span v-if="!!supIcon || !!supType" :class="'sup ' + supType">
       <v-icon
         class="small"
         :size="16"
@@ -15,7 +15,7 @@
       />
     </span>
     <span v-if="label" class="label">{{ label }}</span>
-    <v-icon class="icon" :name="icon" />
+    <v-icon v-if="!!icon" class="icon" :name="icon" />
   </button>
 </template>
 <script>

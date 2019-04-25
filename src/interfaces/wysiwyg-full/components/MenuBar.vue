@@ -14,13 +14,15 @@
           icon="format_bold"
           :command="commands.bold"
           :active-condition="isActive.bold()"
-        />
+          :disabled="!!$parent.showSource"
+        ></MenuButton>
         <MenuButton
           v-if="optionsInclude('Italic')"
           plugin-name="Italic"
           icon="format_italic"
           :command="commands.italic"
           :active-condition="isActive.italic()"
+          :disabled="!!$parent.showSource"
         />
         <MenuButton
           v-if="optionsInclude('Strike')"
@@ -28,6 +30,7 @@
           icon="format_strikethrough"
           :command="commands.strike"
           :active-condition="isActive.strike()"
+          :disabled="!!$parent.showSource"
         />
 
         <MenuButton
@@ -36,6 +39,7 @@
           icon="format_underline"
           :command="commands.underline"
           :active-condition="isActive.underline()"
+          :disabled="!!$parent.showSource"
         />
 
         <MenuButton
@@ -44,6 +48,7 @@
           icon="code"
           :command="commands.code"
           :active-condition="isActive.code()"
+          :disabled="!!$parent.showSource"
         />
 
         <MenuButton
@@ -52,6 +57,7 @@
           icon="code"
           :command="commands.code_block"
           :active-condition="isActive.code_block()"
+          :disabled="!!$parent.showSource"
         />
 
         <MenuButton
@@ -60,6 +66,7 @@
           icon="subject"
           :command="commands.paragraph"
           :active-condition="isActive.paragraph()"
+          :disabled="!!$parent.showSource"
         />
 
         <MenuButton
@@ -68,6 +75,7 @@
           icon="format_list_bulleted"
           :command="commands.bullet_list"
           :active-condition="isActive.bullet_list()"
+          :disabled="!!$parent.showSource"
         />
 
         <MenuButton
@@ -76,6 +84,7 @@
           icon="format_list_numbered"
           :command="commands.ordered_list"
           :active-condition="isActive.ordered_list()"
+          :disabled="!!$parent.showSource"
         />
         <MenuButton
           v-if="optionsInclude('Blockquote')"
@@ -83,6 +92,7 @@
           icon="format_quote"
           :command="commands.blockquote"
           :active-condition="isActive.blockquote()"
+          :disabled="!!$parent.showSource"
         />
 
         <MenuButton
@@ -91,6 +101,7 @@
           icon="link"
           :command="setLink"
           :active-condition="linkBubble"
+          :disabled="!!$parent.showSource"
         />
 
         <MenuButton
@@ -99,6 +110,7 @@
           icon="image"
           :command="() => (chooseImage = !chooseImage)"
           :active-condition="chooseImage"
+          :disabled="!!$parent.showSource"
         />
         <template v-for="n in 6">
           <MenuButton
@@ -109,6 +121,7 @@
             :label="'H' + n"
             :command="() => commands.heading({ level: n })"
             :active-condition="isActive.heading({ level: n })"
+            :disabled="!!$parent.showSource"
           />
         </template>
 
@@ -125,6 +138,7 @@
               })
           "
           :active-condition="isActive.table()"
+          :disabled="!!$parent.showSource"
         />
 
         <div
@@ -210,8 +224,18 @@
             order: optionsIndex('History')
           }"
         >
-          <MenuButton v-if="optionsInclude('History')" icon="undo" :command="commands.undo" />
-          <MenuButton v-if="optionsInclude('History')" icon="redo" :command="commands.redo" />
+          <MenuButton
+            v-if="optionsInclude('History')"
+            icon="undo"
+            :command="commands.undo"
+            :disabled="!!$parent.showSource"
+          />
+          <MenuButton
+            v-if="optionsInclude('History')"
+            icon="redo"
+            :command="commands.redo"
+            :disabled="!!$parent.showSource"
+          />
         </div>
         <button
           class="menubar__button toggler"
@@ -448,23 +472,23 @@ export default {
   cursor: pointer;
 }
 
+.layout-cards {
+  .toolbar {
+    display: none !important;
+  }
+
+  .cards {
+    padding-top: 0;
+  }
+  max-height: calc(100% - 128px);
+}
+
 .modal-container {
   .interface-wysiwyg-modal-url-input {
     margin: var(--page-padding);
 
     &.is-active {
       height: 100%;
-    }
-
-    + .layout-cards {
-      .toolbar {
-        display: none !important;
-      }
-
-      .cards {
-        padding-top: 0;
-      }
-      max-height: calc(100% - 128px);
     }
   }
 

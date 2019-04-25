@@ -115,5 +115,13 @@ export default {
       color: var(--dark-gray);
     }
   }
+
+  &[disabled="disabled"] {
+    i {
+      color: var(--lighter-gray);
+      opacity: 0.6;
+    }
+    cursor: no-drop;
+  }
 }
 </style>

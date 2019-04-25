@@ -88,3 +88,26 @@ export default {
   }
 };
 </script>
+<style lang="scss" scoped>
+.menububble {
+  position: absolute;
+  background-color: var(--lightest-gray);
+  padding: 3px 5px 0 5px;
+  visibility: hidden;
+  opacity: 0;
+  transition: top 0.2s ease-in-out, bottom 0.2s ease-in-out, left 0.2s ease-in-out,
+    opacity 0.3s ease-in-out;
+  border-radius: var(--border-radius);
+
+  &.visible {
+    visibility: visible;
+    opacity: 1;
+  }
+}
+
+.menububble__button {
+  .icon {
+    margin-bottom: -5px;
+  }
+}
+</style>

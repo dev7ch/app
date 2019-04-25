@@ -220,7 +220,7 @@
               ($parent.showSource = !$parent.showSource)
           "
           :style="{
-            order: 99
+            order: 999
           }"
         >
           <v-icon name="code" v-if="!$parent.showSource" />
@@ -391,24 +391,99 @@ export default {
 
   .menubar {
     min-height: 34px;
+    display: flex;
+    flex-flow: row wrap;
+    &.options-is-open {
+      + .editor__content {
+        //padding-top: 42px;
+      }
+    }
+  }
+}
+
+.options-fixed {
+  position: absolute;
+  margin-bottom: -2px;
+  transform: translateY(-100%);
+  opacity: 0;
+  z-index: 1;
+  background-color: var(--lightest-gray);
+  width: 100%;
+  border: var(--input-border-width) solid var(--lighter-gray);
+  border-radius: var(--border-radius) var(--border-radius) 0 0;
+  border-bottom-color: var(--lighter-gray);
+  color: var(--gray);
+  left: 0;
+  transition: var(--fast) var(--transition);
+  transition-property: color, border-color;
+
+  .menubar__button {
+    margin-left: 1px;
+    position: relative;
+  }
+  &.is-open {
+    opacity: 1;
+  }
+}
+
+.toggler {
+  height: 31px;
+  padding-left: 5px;
+  margin-left: auto;
+  padding-right: 5px;
+  border-radius: var(--border-radius);
+  border: var(--input-border-width) solid var(--lightest-gray);
+  transition: background-color ease-in-out 0.2s;
+  background-color: var(--gray);
+  color: var(--white);
+
+  &:hover,
+  &:focus {
+    background-color: var(--action);
+  }
+}
+
+.editor__button,
+.editor__rawformat {
+  cursor: pointer;
+}
+
+.modal-container {
+  .interface-wysiwyg-modal-url-input {
+    margin: var(--page-padding);
+
+    &.is-active {
+      height: 100%;
+    }
+
+    + .layout-cards {
+      .toolbar {
+        display: none !important;
+      }
+
+      .cards {
+        padding-top: 0;
+      }
+      max-height: calc(100% - 128px);
+    }
   }
 
-  .toggler {
-    height: 31px;
-    padding-left: 5px;
-    margin-left: auto;
-    padding-right: 5px;
-    border-radius: var(--border-radius);
-    border: var(--input-border-width) solid var(--lightest-gray);
+  .interface-wysiwyg-modal-url-preview {
+    height: inherit;
+    padding-top: 20px;
+    max-height: 100%;
+    img {
+      max-width: 100%;
+    }
 
-    //transform: translateY(-2px);
-    transition: background-color ease-in-out 0.2s;
-    background-color: var(--gray);
-    color: var(--white);
-
-    &:hover,
-    &:focus {
-      background-color: var(--action);
+    .error {
+      margin: auto;
+      position: relative;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -100%);
+      font-size: 90px;
+      color: var(--lightest-gray);
     }
   }
 }

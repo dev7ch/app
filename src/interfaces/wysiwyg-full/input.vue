@@ -282,15 +282,50 @@ export default {
 };
 </script>
 
-<style lang="scss">
-@import "assets/scss/editor";
-</style>
-
 <style lang="scss" scoped>
 .interface-wysiwyg-container {
+  position: relative;
+  width: 100%;
   max-width: var(--width-x-large);
 }
+.interface-wysiwyg {
+  width: 100%;
+  min-height: inherit;
+}
+.editor {
+  position: relative;
+  min-height: 220px;
+  .editor__inner {
+    min-height: inherit;
 
+    &.shrinked {
+      min-height: 0;
+      .menubar__button:not(.toggler) {
+        display: none;
+      }
+    }
+    .editor__content {
+      &.hidden {
+        min-height: 0;
+        display: none;
+      }
+    }
+
+    img {
+      max-width: 100%;
+    }
+  }
+
+  img.ProseMirror-selectednode {
+    cursor: grab;
+    border: 1px solid var(--lighter-gray);
+    box-shadow: 0 0 3px var(--lighter-gray);
+
+    &:active {
+      cursor: grabbing;
+    }
+  }
+}
 .options-toggler {
   position: absolute;
   cursor: pointer;
@@ -326,4 +361,7 @@ export default {
     left: 0;
   }
 }
+</style>
+<style lang="scss">
+@import "assets/scss/editor";
 </style>

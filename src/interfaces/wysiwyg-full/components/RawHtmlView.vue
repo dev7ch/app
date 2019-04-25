@@ -67,3 +67,27 @@ export default {
   }
 };
 </script>
+<style lang="scss" scoped>
+.editor__raw {
+  .CodeMirror {
+    margin-bottom: 5px;
+    min-height: 220px;
+    .line-count {
+      visibility: hidden;
+    }
+  }
+
+  .CodeMirror-scroll {
+    min-height: 220px;
+    padding-bottom: 0;
+  }
+  small.line-count {
+    display: none;
+  }
+}
+.editor__rawformat {
+  position: absolute;
+  top: -17px;
+  right: 0;
+}
+</style>

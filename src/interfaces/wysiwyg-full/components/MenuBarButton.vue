@@ -53,10 +53,66 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.menubar__button {
+.menubar__button:not(.toggler) {
+  position: relative;
+  min-height: 30px;
+  min-width: 30px;
+  span,
+  .icon {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--light-gray);
+    transition: color 0.15s ease-in-out;
+  }
+  .label {
+    top: calc(50%);
+    left: calc(50%);
+    transform: translate(-50%, -50%);
+    font-size: 8px;
+    letter-spacing: -1px;
+  }
+
+  i {
+    top: calc(50% + 4px);
+    left: calc(50% + 2px);
+    color: inherit;
+    position: absolute;
+    transform: translate(-50%, -50%);
+  }
+
   .sup {
+    height: 12px;
+    width: 12px;
+    position: absolute;
+    color: var(--warning);
+    z-index: 1;
+    font-size: 12px;
+    top: 50%;
+    left: 0;
+    transform: translate(0, calc(-50%));
+
+    &.add {
+      color: var(--success);
+    }
+
+    &.remove {
+      color: var(--danger);
+    }
+
     i {
-      font-size: 12px;
+      height: 12px;
+      width: 12px;
+      font-size: 16px;
+    }
+  }
+
+  &.is-active,
+  &:hover,
+  &:focus {
+    i {
+      color: var(--dark-gray);
     }
   }
 }

@@ -45,7 +45,7 @@ export default {
   },
   data() {
     return {
-      showRaw: false,
+      showRaw: true,
       codeMirrorDefaults: {
         tabSize: 2,
         autoRefresh: true,

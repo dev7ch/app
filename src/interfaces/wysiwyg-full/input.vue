@@ -287,7 +287,6 @@ export default {
 .interface-wysiwyg {
   position: relative;
   width: 100%;
-  width: 100%;
   min-height: inherit;
   max-width: var(--width-x-large);
 }
@@ -309,7 +308,6 @@ export default {
         display: none;
       }
     }
-
     img {
       max-width: 100%;
     }

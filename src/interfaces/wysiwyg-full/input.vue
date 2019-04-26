@@ -231,7 +231,7 @@ export default {
   },
   created() {
     if (this.handleScroll) {
-      window.addEventListener("scroll", this.$lodash.debounce(this.handleScroll, 200));
+      window.addEventListener("scroll", this.$lodash.debounce(this.handleScroll, 150));
     }
   },
   destroyed() {

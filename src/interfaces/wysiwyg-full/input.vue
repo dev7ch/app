@@ -25,7 +25,7 @@
       />
       <div
         class="options-toggler"
-        v-if="selectionPosition.target"
+        v-if="selectionPosition.target && hasSettings && !showSource"
         :class="{ active: hasSettings }"
         @click="isImageSelection = !isImageSelection"
         :style="{
@@ -89,7 +89,6 @@ export default {
       }
     }
   },
-
   methods: {
     getTopPosition($elem) {
       let editorTop = this.$refs.editor.$el.getBoundingClientRect().top;
@@ -150,15 +149,12 @@ export default {
         this.options.toolbarOptions.includes("Table") ? new TableCell() : "disabled",
         this.options.toolbarOptions.includes("Table") ? new TableRow() : "disabled"
       ];
-
       const search_term = "disabled";
-
       for (let i = ext.length - 1; i >= 0; i--) {
         if (ext[i] === search_term) {
           ext.splice(i, 1);
         }
       }
-
       this.editor = new Editor({
         extensions: ext,
         content: this.value ? this.value : "",
@@ -167,7 +163,6 @@ export default {
         }
       });
     },
-
     updateText($text) {
       if (this.showSource) {
         this.editor.view.dom.innerHTML = this.editorText;
@@ -175,7 +170,6 @@ export default {
         this.editorText = $text;
       }
     },
-
     showLinkMenu(attrs) {
       this.linkUrl = attrs.href;
       this.linkMenuIsActive = true;
@@ -192,9 +186,11 @@ export default {
       this.hideLinkMenu();
       this.editor.focus();
     },
-
     destroy() {
       this.editor.destroy();
+    },
+    handleScroll() {
+      return (this.hasSettings = false);
     }
   },
   components: {
@@ -203,7 +199,6 @@ export default {
     RawHtmlView,
     ImageEdit
   },
-
   data() {
     return {
       editorExtensions: [],
@@ -234,7 +229,14 @@ export default {
       isImageSelection: false
     };
   },
-
+  created() {
+    if (this.handleScroll) {
+      window.addEventListener("scroll", this.$lodash.debounce(this.handleScroll, 200));
+    }
+  },
+  destroyed() {
+    window.removeEventListener("scroll", this.handleScroll);
+  },
   beforeUpdate() {
     this.observer = new MutationObserver(mutations => {
       for (const m of mutations) {
@@ -260,7 +262,6 @@ export default {
       }
     });
   },
-
   mounted() {
     this.init();
 

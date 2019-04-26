@@ -313,16 +313,6 @@ export default {
       max-width: 100%;
     }
   }
-
-  img.ProseMirror-selectednode {
-    cursor: grab;
-    border: 1px solid var(--lighter-gray);
-    box-shadow: 0 0 3px var(--lighter-gray);
-
-    &:active {
-      cursor: grabbing;
-    }
-  }
 }
 .options-toggler {
   position: absolute;

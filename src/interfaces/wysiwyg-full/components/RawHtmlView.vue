@@ -89,5 +89,9 @@ export default {
   position: absolute;
   top: -17px;
   right: 0;
+
+  span {
+    cursor: pointer;
+  }
 }
 </style>

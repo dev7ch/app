@@ -283,14 +283,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.interface-wysiwyg-container {
+.interface-wysiwyg-container,
+.interface-wysiwyg {
   position: relative;
   width: 100%;
-  max-width: var(--width-x-large);
-}
-.interface-wysiwyg {
   width: 100%;
   min-height: inherit;
+  max-width: var(--width-x-large);
 }
 .editor {
   position: relative;

@@ -467,8 +467,7 @@ export default {
   }
 }
 
-.editor__button,
-.editor__rawformat {
+.editor__button {
   cursor: pointer;
 }
 

@@ -444,17 +444,12 @@ export default {
 
   text-align: center;
   margin-left: auto;
-  //border-radius: 50%;
   border-bottom-left-radius: 50%;
   border-top-left-radius: 50%;
   border: var(--input-border-width) solid var(--lightest-gray);
-  transition: background-color ease-in-out 0.2s;
+  transition: background-color ease-in-out 0.2s, color 0.15s ease-in-out;
   background-color: var(--lightest-gray);
   color: var(--gray);
-
-  i {
-    //transform: scale(0.85);
-  }
 
   &:hover,
   &:focus {

@@ -3,7 +3,7 @@
     > *[contenteditable="true"],
     > *[contenteditable] {
       min-height: inherit;
-      max-height: calc((100vh - var(--header-height) * 3));
+      max-height: 60vh;
       overflow-y: auto;
       border: var(--input-border-width) solid var(--lighter-gray);
       border-radius: var(--border-radius);

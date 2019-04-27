@@ -157,6 +157,7 @@ export default {
           this.$emit("input", getHTML());
         }
       });
+      this.handleEditorScroll();
     },
     updateText($text) {
       if (this.showSource) {
@@ -185,8 +186,10 @@ export default {
     destroy() {
       this.editor.destroy();
     },
-    handleScroll() {
-      return (this.hasSettings = false);
+    handleEditorScroll() {
+      this.editor.view.dom.onscroll = () => {
+        this.hasSettings ? (this.hasSettings = false) : null;
+      };
     }
   },
   components: {
@@ -224,13 +227,9 @@ export default {
       isImageSelection: false
     };
   },
-  created() {
-    if (this.handleScroll) {
-      window.addEventListener("scroll", this.$lodash.debounce(this.handleScroll, 150));
-    }
-  },
+
   destroyed() {
-    window.removeEventListener("scroll", this.handleScroll);
+    window.removeEventListener("scroll", this.handleEditorScroll);
   },
   beforeUpdate() {
     this.observer = new MutationObserver(mutations => {
@@ -259,7 +258,6 @@ export default {
   },
   mounted() {
     this.init();
-
     this.$nextTick(function() {
       if (this.$refs.editor.$el) {
         this.observer.observe(this.$refs.editor.$el, {
@@ -337,7 +335,6 @@ export default {
       transform: translate(-50%, -50%);
     }
   }
-
   &.active {
     z-index: 1;
     opacity: 1;

@@ -7,11 +7,7 @@
   >
     <div class="editor__inner" :class="{ shrinked: showSource }">
       <!-- WYSIWYG Editor Menubar and Bubble components -->
-      <Menubar
-        :options="options"
-        :table-position="!tablePosition ? { y: 0, x: 0 } : tablePosition"
-        v-if="editor"
-      />
+      <Menubar :options="options" v-if="editor" />
       <!-- WYSIWYG Editor  -->
       <editor-content
         id="wysiwyg-full"
@@ -40,7 +36,6 @@
     <template v-if="showSource">
       <RawHtmlView :id="name + '-raw'" :options="options" :show-source="showSource" :name="name" />
     </template>
-    <br />
     <ImageEdit />
   </div>
 </template>
@@ -169,6 +164,7 @@ export default {
       } else {
         this.editorText = $text;
       }
+      this.showSource = !this.showSource;
     },
     showLinkMenu(attrs) {
       this.linkUrl = attrs.href;
@@ -214,7 +210,6 @@ export default {
       linkMenuIsActive: false,
       lineCount: 0,
       codeMirrorOptions: {},
-      tablePosition: null,
       selectionPosition: {
         pos: null,
         editorPos: null,

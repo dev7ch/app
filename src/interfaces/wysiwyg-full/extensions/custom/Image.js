@@ -32,7 +32,7 @@ export default class Image extends Node {
         {
           tag: "img[src]",
           getAttrs: dom => ({
-            class: dom.getAttribute("class"),
+            class: dom.getAttribute("class") !== null ? dom.getAttribute("class") : null,
             src: dom.getAttribute("src"),
             title: dom.getAttribute("title"),
             alt: dom.getAttribute("alt"),

@@ -126,6 +126,14 @@
         </template>
 
         <MenuButton
+          v-if="optionsInclude('HorizontalRule')"
+          plugin-name="HorizontalRule"
+          icon="maximize"
+          :command="commands.horizontal_rule"
+          :disabled="!!$parent.showSource"
+        />
+        <!-- table and table toolbar -->
+        <MenuButton
           v-if="optionsInclude('Table')"
           plugin-name="Table"
           icon="table_chart"
@@ -209,13 +217,7 @@
             :command="commands.toggleCellMerge"
           />
         </div>
-        <MenuButton
-          v-if="optionsInclude('HorizontalRule')"
-          plugin-name="HorizontalRule"
-          icon="maximize"
-          :command="commands.horizontal_rule"
-        />
-
+        <!-- history -->
         <div
           class="history__actions"
           v-if="optionsInclude('History')"
@@ -237,12 +239,10 @@
             :disabled="!!$parent.showSource"
           />
         </div>
+        <!-- menu raw view toggler -->
         <button
           class="menubar__button toggler"
-          @click="
-            $parent.updateText($parent.editor.view.dom.innerHTML),
-              ($parent.showSource = !$parent.showSource)
-          "
+          @click="$parent.updateText($parent.editor.view.dom.innerHTML)"
           :style="{
             order: 999
           }"
@@ -319,16 +319,6 @@ export default {
     showSource: {
       type: Boolean,
       default: false
-    },
-    tablePosition: {
-      x: {
-        type: Number,
-        defaultValue: 0
-      },
-      y: {
-        type: Number,
-        defaultValue: 0
-      }
     }
   },
   data() {

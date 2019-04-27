@@ -102,6 +102,7 @@ export default {
   &.visible {
     visibility: visible;
     opacity: 1;
+    z-index: 1;
   }
 }
 

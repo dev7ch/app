@@ -351,10 +351,10 @@ export default {
       this.linkBubble = !this.linkBubble;
     },
     optionsInclude($val) {
-      return this.$parent.options.toolbarOptions.includes($val);
+      return this.$props.options.toolbarOptions.includes($val);
     },
     optionsIndex($val) {
-      return this.$parent.options.toolbarOptions.indexOf($val);
+      return this.$props.options.toolbarOptions.indexOf($val);
     },
     addImageCommand(data) {
       if (data.command !== null || data.command !== "data") {

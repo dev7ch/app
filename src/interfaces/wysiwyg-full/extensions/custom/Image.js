@@ -20,6 +20,9 @@ export default class Image extends Node {
           default: null
         },
         width: {
+          default: "auto"
+        },
+        maxWidth: {
           default: "100%"
         },
         height: {

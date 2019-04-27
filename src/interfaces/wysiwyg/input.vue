@@ -6,7 +6,7 @@
     @input="$emit('input', $event.target.innerHTML)"
   >
     <Bubble :options="options" :editor="editor" class="visible" />
-    <div class="editor__inner" :class="{ shrinked: showSource }">
+    <div class="editor__inner" :class="{ shrinked: showSource }" v-show="!showSource">
       <!-- WYSIWYG Editor  -->
       <editor-content
         id="wysiwyg"
@@ -17,6 +17,7 @@
           { hidden: showSource }
         ]"
         :editor="editor"
+        v-show="!showSource"
       />
       <div
         class="options-toggler"
@@ -31,10 +32,11 @@
         <v-icon name="settings"></v-icon>
       </div>
     </div>
-    <!-- Unformatted raw html view -->
+
     <template v-if="showSource">
       <RawHtmlView :id="name + '-raw'" :options="options" :show-source="showSource" :name="name" />
     </template>
+
     <ImageEdit />
   </div>
 </template>

@@ -11,7 +11,12 @@
           120}px;`
       "
     >
-      <Menubar :options="options" v-if="$parent.editor" />
+      <Menubar
+        :options="options"
+        v-if="$parent.editor"
+        :editor="$parent.editor"
+        :updates="$parent"
+      />
     </div>
   </editor-menu-bubble>
 </template>
@@ -27,10 +32,6 @@ export default {
     editor: {
       type: Object,
       defaultValue: {}
-    },
-    showSource: {
-      type: Boolean,
-      default: false
     }
   },
 
@@ -60,6 +61,7 @@ export default {
 
   data() {
     return {
+      showSource: false,
       linkUrl: null,
       linkBubble: false,
       linkMenuIsActive: false

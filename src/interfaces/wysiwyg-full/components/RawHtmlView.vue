@@ -19,7 +19,7 @@
       :id="id + '-raw-formatted'"
       v-if="$parent.showSource && !showRaw"
       :alt-options="
-        $parent.options.codeMirrorOptions ? $parent.options.codeMirrorOptions : codeMirrorDefaults
+        $props.options.codeMirrorOptions ? $props.options.codeMirrorOptions : codeMirrorDefaults
       "
       :value="$parent.editor.view.dom.innerHTML"
       v-model="$parent.editorText"

@@ -90,11 +90,7 @@
       v-model.lazy="$parent.selectionPosition.classes"
     />
     <div class="image-options-footer">
-      <v-button
-        type="button"
-        :disabled="false"
-        @click="($parent.isImageSelection = false), ($parent.hasSettings = false)"
-      >
+      <v-button type="button" :disabled="false" @click="quit()">
         <v-icon name="close" />
         {{ $t("cancel") }}
       </v-button>
@@ -121,16 +117,14 @@ export default {
       };
     },
     trimDimension($str) {
-      const regexStr = $str.match(/[a-z%]+|[^a-z%]+/gi);
-      // console.log(regexStr);
-      return regexStr;
+      if ($str) {
+        return $str.match(/[a-z%]+|[^a-z%]+/gi);
+      }
     },
-
     quit() {
       this.$parent.isImageSelection = false;
       this.$parent.hasSettings = false;
     },
-
     setAll() {
       this.$parent.selectionPosition.target.className = this.$parent.selectionPosition.classes;
       this.$parent.selectionPosition.target.alt = this.$parent.selectionPosition.alt;
@@ -208,18 +202,11 @@ export default {
 .image-options-item {
   flex: 1 0 100%;
   &.half {
-    //width: calc(100% - 180px);
-    //display: flex;
     flex: 1 0 100%;
     @media (min-width: 480px) {
       flex: 1 0 40%;
     }
-
-    &:first-child {
-      //margin-right: calc(var(--page-padding) / 2);
-    }
   }
-
   .dimension {
     display: inline-flex;
     margin-bottom: calc(var(--page-padding) / 2);
@@ -271,9 +258,7 @@ export default {
   @media (min-width: 480px) {
     display: inline-flex;
   }
-
   width: 100%;
-  //padding-top: calc(var(--page-padding) / 2);
   button {
     margin-bottom: calc(var(--page-padding) / 2);
     width: 100%;

@@ -84,6 +84,10 @@ export default {
   small.line-count {
     display: none;
   }
+
+  textarea {
+    padding: 0 calc(var(--page-padding) / 2);
+  }
 }
 .editor__rawformat {
   position: absolute;

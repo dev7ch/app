@@ -247,7 +247,7 @@
             order: 999
           }"
         >
-          <v-icon name="code" v-if="!$parent.showSource" />
+          <v-icon name="explore" v-if="!$parent.showSource" />
           <v-icon v-else name="arrow_back" />
         </button>
       </div>
@@ -440,17 +440,25 @@ export default {
 
 .toggler {
   height: 31px;
-  padding-left: 5px;
+  width: 31px;
+
+  text-align: center;
   margin-left: auto;
-  padding-right: 5px;
-  border-radius: var(--border-radius);
+  //border-radius: 50%;
+  border-bottom-left-radius: 50%;
+  border-top-left-radius: 50%;
   border: var(--input-border-width) solid var(--lightest-gray);
   transition: background-color ease-in-out 0.2s;
-  background-color: var(--gray);
-  color: var(--white);
+  background-color: var(--lightest-gray);
+  color: var(--gray);
+
+  i {
+    //transform: scale(0.85);
+  }
 
   &:hover,
   &:focus {
+    color: var(--white);
     background-color: var(--action);
   }
 }

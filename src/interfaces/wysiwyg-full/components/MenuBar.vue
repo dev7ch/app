@@ -252,6 +252,7 @@
         </button>
       </div>
     </editor-menu-bar>
+    <!-- editor bubble for link interface -->
     <Bubble :options="options" :editor="$parent.editor" :class="{ visible: linkBubble }" />
     <!-- image selection modal interface  -->
     <portal to="modal" v-if="chooseImage">
@@ -288,6 +289,7 @@
             />
           </div>
         </div>
+        <!-- @todo make selection better (sorting, file selection, multiples, file upload, upload path) -->
         <v-items
           v-if="imageUrlRaw === ''"
           collection="directus_files"
@@ -348,15 +350,12 @@ export default {
     setLink() {
       this.linkBubble = !this.linkBubble;
     },
-
     optionsInclude($val) {
       return this.$parent.options.toolbarOptions.includes($val);
     },
-
     optionsIndex($val) {
       return this.$parent.options.toolbarOptions.indexOf($val);
     },
-
     addImageCommand(data) {
       if (data.command !== null || data.command !== "data") {
         this.$parent.editor.commands.image({
@@ -373,7 +372,6 @@ export default {
       }
       // @todo implement image source base url
       // const index = (this.editor.getSelection() || {}).index || this.editor.getLength();
-
       this.addImageCommand(url);
     },
 

@@ -10,12 +10,7 @@
     }"
   >
     <h1 class="title image-options-item">Edit image attributes</h1>
-    <button
-      type="button"
-      class="top-close"
-      :disabled="false"
-      @click="($parent.isImageSelection = false), ($parent.hasSettings = false)"
-    >
+    <button type="button" class="top-close" :disabled="false" @click="quit()">
       <v-icon name="close" />
     </button>
     <div class="image-options-preview image-options-item half" v-if="$parent.selectionPosition.src">
@@ -131,11 +126,18 @@ export default {
       return regexStr;
     },
 
+    quit() {
+      this.$parent.isImageSelection = false;
+      this.$parent.hasSettings = false;
+    },
+
     setAll() {
       this.$parent.selectionPosition.target.className = this.$parent.selectionPosition.classes;
       this.$parent.selectionPosition.target.alt = this.$parent.selectionPosition.alt;
       this.$parent.selectionPosition.target.src = this.$parent.selectionPosition.src;
       this.$parent.selectionPosition.target.title = this.$parent.selectionPosition.title;
+      this.$parent.hasSettings = false;
+      this.$parent.isImageSelection = false;
     }
   },
   mounted() {

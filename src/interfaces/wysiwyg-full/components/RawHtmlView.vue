@@ -76,20 +76,18 @@ export default {
       visibility: hidden;
     }
   }
-
-  .CodeMirror-scroll {
-    min-height: 220px;
-    padding-bottom: 0;
-  }
   small.line-count {
     display: none;
   }
 
   textarea {
     padding: 0 calc(var(--page-padding) / 2);
+    min-height: inherit;
   }
 }
+
 .editor__rawformat {
+  transition: min-height 5s ease-in-out;
   position: absolute;
   top: -17px;
   right: 0;

@@ -120,4 +120,14 @@
       }
     }
   }
+  &.fullscreen {
+    .interface-code, .vue-codemirror {
+      min-height: 100vh;
+      .CodeMirror-scroll, .CodeMirror, textarea {
+        background: red;
+        padding-bottom: 0;
+        min-height: inherit;
+      }
+    }
+  }
 }

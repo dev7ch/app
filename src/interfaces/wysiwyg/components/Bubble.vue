@@ -3,12 +3,12 @@
     <div
       slot-scope="{ commands, isActive, getMarkAttrs, menu }"
       class="menububble__item"
-      :class="{ 'is-active': menu.isActive }"
+      :class="{ visible: menu.isActive && !$parent.showSource }"
       :style="
-        `left: 50%; transform:translate(-50%); bottom: ${menu.bottom + 15}px; min-width: ${options
+        `left: 50%; transform:translate(-50%); bottom: ${menu.bottom + 15}px; width: ${options
           .toolbarOptions.length *
           24 +
-          120}px;`
+          120}px; max-width: 100%`
       "
     >
       <Menubar
@@ -74,10 +74,9 @@ export default {
   position: absolute;
   background-color: var(--lightest-gray);
   padding: 0;
-  visibility: hidden;
   opacity: 0;
   transition: top 0.2s ease-in-out, bottom 0.2s ease-in-out, left 0.2s ease-in-out,
-    opacity 0.3s ease-in-out;
+    opacity 0.4s ease-in-out, opacity 0.3s ease-in-out;
   border-radius: var(--border-radius);
 
   &.visible {

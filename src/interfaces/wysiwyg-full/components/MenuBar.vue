@@ -259,13 +259,13 @@
             order: 999
           }"
         >
-          <v-icon name="explore" v-if="!$parent.$parent.showSource || !showSource" />
+          <v-icon name="explore" v-if="!updates.showSource || !showSource" />
           <v-icon v-else name="arrow_back" />
         </button>
       </div>
     </editor-menu-bar>
     <!-- editor bubble for link interface -->
-    <Bubble :options="options" :editor="$parent.editor" :class="{ visible: linkBubble }" />
+    <LinkBubble :options="options" :editor="$parent.editor" :class="{ visible: linkBubble }" />
     <!-- image selection modal interface  -->
     <portal to="modal" v-if="chooseImage">
       <v-modal
@@ -318,7 +318,7 @@
 <script>
 import MenuButton from "./MenuBarButton";
 import { EditorMenuBar } from "tiptap";
-import Bubble from "./Bubble";
+import LinkBubble from "./LinkBubble";
 
 export default {
   props: {
@@ -398,7 +398,7 @@ export default {
   components: {
     EditorMenuBar,
     MenuButton,
-    Bubble
+    LinkBubble
   }
 };
 </script>

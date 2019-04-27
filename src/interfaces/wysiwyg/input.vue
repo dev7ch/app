@@ -1,11 +1,31 @@
 <template>
   <div
     class="interface-wysiwyg-container editor"
+    :class="{ fullscreen: distractionFree }"
     :id="name"
     :name="name"
     @input="$emit('input', $event.target.innerHTML)"
   >
-    <Bubble :options="options" :editor="editor" class="visible" />
+    <Bubble :options="options" :editor="editor" />
+    <div class="options">
+      <button
+        v-if="showSource"
+        v-on:click="showSource = !showSource"
+        type="button"
+        class="back"
+        v-tooltip="$t('interfaces-wysiwyg-back')"
+      >
+        <v-icon name="arrow_back" />
+      </button>
+      <button
+        v-on:click="distractionFree = !distractionFree"
+        type="button"
+        class="fullscreen-toggle"
+        v-tooltip="$t('interfaces-wysiwyg-distraction_free_mode')"
+      >
+        <v-icon :name="!distractionFree ? 'fullscreen' : 'close'" />
+      </button>
+    </div>
     <div class="editor__inner" :class="{ shrinked: showSource }" v-show="!showSource">
       <!-- WYSIWYG Editor  -->
       <editor-content
@@ -32,11 +52,15 @@
         <v-icon name="settings"></v-icon>
       </div>
     </div>
-
     <template v-if="showSource">
-      <RawHtmlView :id="name + '-raw'" :options="options" :show-source="showSource" :name="name" />
+      <RawHtmlView
+        class="raw-editor"
+        :id="name + '-raw'"
+        :options="options"
+        :show-source="showSource"
+        :name="name"
+      />
     </template>
-
     <ImageEdit />
   </div>
 </template>
@@ -202,6 +226,7 @@ export default {
   },
   data() {
     return {
+      distractionFree: false,
       editorExtensions: [],
       editorText: "",
       editor: null,
@@ -285,6 +310,37 @@ export default {
   width: 100%;
   min-height: inherit;
   max-width: var(--width-x-large);
+
+  &.fullscreen {
+    position: fixed;
+    top: 20px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 100;
+    max-width: 100%;
+    max-height: 100%;
+    background-color: var(--body-background);
+
+    .editor__content {
+      min-height: 100vh;
+      textarea {
+        min-height: inherit;
+      }
+    }
+    .raw-editor {
+      min-height: 100vh;
+    }
+    &:after {
+      content: "";
+      z-index: -1;
+      position: absolute;
+      top: -20px;
+      width: 100%;
+      height: 25px;
+      background-color: var(--body-background);
+    }
+  }
 }
 .editor {
   position: relative;
@@ -309,6 +365,17 @@ export default {
     }
   }
 }
+.options {
+  position: absolute;
+  z-index: 9;
+  right: 10px;
+  top: 10px;
+
+  .back {
+    float: left;
+  }
+}
+
 .options-toggler {
   position: absolute;
   cursor: pointer;

@@ -248,8 +248,8 @@
             order: 999
           }"
         >
-          <v-icon name="explore" v-if="!$parent.showSource || !showSource" />
-          <v-icon v-else name="arrow_back" />
+          <v-icon name="explore" v-if="!$parent.showSource" />
+          <v-icon v-else name="explore_off" />
         </button>
         <button
           v-else-if="$props.editor"
@@ -259,8 +259,8 @@
             order: 999
           }"
         >
-          <v-icon name="explore" v-if="!updates.showSource || !showSource" />
-          <v-icon v-else name="arrow_back" />
+          <v-icon name="explore" v-if="!updates.showSource" />
+          <v-icon v-else name="explore_off" />
         </button>
       </div>
     </editor-menu-bar>

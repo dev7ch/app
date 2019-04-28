@@ -23,16 +23,16 @@
         class="back"
         v-tooltip="$t('interfaces-wysiwyg-go_back')"
       >
-        <v-icon name="arrow_back" />
+        <v-icon name="explore_off" />
       </button>
       <button
         v-if="distractionFree"
         type="button"
         class="black-mode"
         @click="blackMode = !blackMode"
-        v-tooltip="$t('interfaces-wysiwyg-go_back')"
+        v-tooltip="$t('interfaces-wysiwyg-dark_mode')"
       >
-        <v-icon name="flip" />
+        <v-icon name="filter_b_and_w" />
       </button>
       <button
         v-on:click="distractionFree = !distractionFree"
@@ -401,6 +401,9 @@ export default {
 
   .back {
     float: left;
+  }
+  > button {
+    min-width: 40px;
   }
 }
 

@@ -17,7 +17,7 @@
     <div class="options">
       <button
         v-if="showSource"
-        v-on:click="showSource = !showSource"
+        v-on:click="updateText(editorText)"
         type="button"
         class="back"
         v-tooltip="$t('interfaces-wysiwyg-back')"
@@ -66,6 +66,8 @@
         :options="options"
         :show-source="showSource"
         :name="name"
+        :editor="editor"
+        :editor-text="editorText"
       />
     </template>
     <ImageEdit />

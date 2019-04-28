@@ -7,7 +7,7 @@
       class="textarea"
       :id="name + '-raw'"
       :value="$parent.editor.view.dom.innerHTML"
-      :placeholder="$parent.options.placeholder"
+      :placeholder="$props.options.placeholder"
       :rows="options.rows ? +options.rows : 10"
     ></v-textarea>
 
@@ -81,6 +81,7 @@ export default {
   }
 
   textarea {
+    padding: calc(var(--page-padding) / 2);
     min-height: inherit;
   }
 }

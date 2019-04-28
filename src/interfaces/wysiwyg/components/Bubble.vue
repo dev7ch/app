@@ -68,6 +68,7 @@ export default {
 
   data() {
     return {
+      editorText: "",
       showSource: false,
       linkUrl: null,
       linkBubble: false,

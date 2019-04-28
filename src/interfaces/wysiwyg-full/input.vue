@@ -34,7 +34,14 @@
     </div>
     <!-- Unformatted raw html view -->
     <template v-if="showSource">
-      <RawHtmlView :id="name + '-raw'" :options="options" :show-source="showSource" :name="name" />
+      <RawHtmlView
+        :id="name + '-raw'"
+        :options="options"
+        :show-source="showSource"
+        :name="name"
+        :editor-text="editorText"
+        :editor="editor"
+      />
     </template>
     <ImageEdit />
   </div>

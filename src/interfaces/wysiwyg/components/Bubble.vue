@@ -2,43 +2,28 @@
   <editor-menu-bubble class="menububble" :editor="editor" @hide="hideLinkMenu">
     <div
       slot-scope="{ commands, isActive, getMarkAttrs, menu }"
-      class="menububble__item"
-      :class="{ 'is-active': menu.isActive }"
-      :style="`left: ${menu.left}px; bottom: ${menu.bottom}px;`"
+      class="menububble__frame"
+      :class="{ visible: menu.isActive && !$parent.showSource }"
+      :style="
+        `left: ${menu.left > calcWidth() / 2 ? menu.left + 'px' : '0'};
+        transform:translateX(${menu.left > calcWidth() / 2 ? '-50%' : '0'});
+        bottom: ${menu.bottom + 10}px;
+        width: ${calcWidth()}px;
+        max-width: 100%;
+        min-width: 220px;`
+      "
     >
-      <form
-        :linkBubbleclass="'menububble__form'"
-        v-if="linkMenuIsActive"
-        @submit.prevent="setLinkUrl(commands.link, linkUrl)"
-      >
-        <input
-          class="menububble__input"
-          type="text"
-          v-model="linkUrl"
-          placeholder="https://"
-          ref="linkInput"
-          @keydown.esc="hideLinkMenu"
-        />
-        <button class="menububble__button" @click="setLinkUrl(commands.link, null)" type="button">
-          <v-icon name="close" />
-        </button>
-      </form>
-
-      <template v-else>
-        <button
-          v-if="$parent.options.toolbarOptions.includes('Link')"
-          class="menububble__button"
-          @click="showLinkMenu(getMarkAttrs('link'))"
-          :class="{ 'is-active': isActive.link() }"
-        >
-          <span v-text="isActive.link() ? $t('edit_link') : $t('add_link')"></span>
-          <v-icon name="link" />
-        </button>
-      </template>
+      <Menubar
+        :options="options"
+        v-if="$parent.editor"
+        :editor="$parent.editor"
+        :updates="$parent"
+      />
     </div>
   </editor-menu-bubble>
 </template>
 <script>
+const Menubar = () => import("./../../wysiwyg-full/components/MenuBar");
 import { EditorMenuBubble } from "tiptap";
 export default {
   props: {
@@ -49,14 +34,15 @@ export default {
     editor: {
       type: Object,
       defaultValue: {}
-    },
-    showSource: {
-      type: Boolean,
-      default: false
     }
   },
 
   methods: {
+    calcWidth() {
+      if (this.$props.options.toolbarOptions) {
+        return this.$props.options.toolbarOptions.length * 24 + 120;
+      }
+    },
     showLinkMenu(attrs) {
       this.linkUrl = attrs.href;
       this.linkMenuIsActive = true;
@@ -76,11 +62,14 @@ export default {
   },
 
   components: {
-    EditorMenuBubble
+    EditorMenuBubble,
+    Menubar
   },
 
   data() {
     return {
+      editorText: "",
+      showSource: false,
       linkUrl: null,
       linkBubble: false,
       linkMenuIsActive: false
@@ -92,23 +81,35 @@ export default {
 .menububble {
   position: absolute;
   background-color: var(--lightest-gray);
-  padding: 3px 5px 0 5px;
-  visibility: hidden;
+  padding: 0;
   opacity: 0;
   transition: top 0.2s ease-in-out, bottom 0.2s ease-in-out, left 0.2s ease-in-out,
-    opacity 0.3s ease-in-out;
+    opacity 0.4s ease-in-out, opacity 0.3s ease-in-out;
   border-radius: var(--border-radius);
 
   &.visible {
     visibility: visible;
     opacity: 1;
-    z-index: 1;
+    z-index: 99;
   }
+
+  .menubar__wrapper {
+    z-index: 99;
+    .menubar {
+      overflow-y: auto;
+    }
+  }
+}
+
+.menubar__button.toggler {
+  min-height: 34px;
+  border-color: var(--darkest-gray);
+  background-color: var(--darker-gray);
 }
 
 .menububble__button {
   .icon {
-    margin-bottom: -5px;
+    //margin-bottom: -5px;
   }
 }
 </style>

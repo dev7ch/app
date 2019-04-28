@@ -1,7 +1,9 @@
 {
   "name": "$t:wysiwyg",
-  "version": "1.0.1",
-  "types": ["string"],
+  "version": "1.1.0",
+  "types": [
+    "string"
+  ],
   "icon": "format_quote",
   "recommended": {
     "length": 65534
@@ -13,32 +15,119 @@
       "interface": "text-input",
       "length": 200
     },
-    "buttons": {
-      "name": "$t:buttons",
-      "comment": "$t:buttons_comment",
-      "interface": "checkboxes",
-      "default": ["bold", "italic", "underline", "anchor", "h2", "h3", "quote"],
+    "upload_files": {
+      "name": "$t:upload_files",
+      "comment": "$t:upload_files_comment",
+      "interface": "toggle",
+      "type": "BOOLEAN",
+      "default": true
+    },
+    "custom_url": {
+      "name": "$t:custom_url",
+      "comment": "$t:custom_url_comment",
+      "interface": "text-input",
+      "default": null,
+      "length": 250
+    },
+    "toolbarOptions": {
+      "name": "$t:toolbar_options",
+      "comment": "$t:toolbar_options_comment",
+      "interface": "json",
       "options": {
-        "wrap": false,
-        "choices": {
-          "bold": "Bold",
-          "italic": "Italic",
-          "underline": "Underline",
-          "strikethrough": "Strikethrough",
-          "subscript": "Subscript",
-          "superscript": "Superscript",
-          "anchor": "Link",
-          "quote": "Quote",
-          "pre": "Pre",
-          "orderedlist": "Ordered List",
-          "unorderedlist": "Unordered List",
-          "h1": "H1",
-          "h2": "H2",
-          "h3": "H3",
-          "h4": "H4",
-          "h5": "H5",
-          "h6": "H6",
-          "removeFormat": "Remove all formatting"
+        "language": "application/json",
+        "template": [
+          "Paragraph",
+          "Bold",
+          "Strike",
+          "Underline",
+          "Italic",
+          "ListItem",
+          "Blockquote",
+          "BulletList",
+          "Link",
+          "Image",
+          "History"
+        ]
+      },
+      "default": [
+        "Paragraph",
+        "Bold",
+        "Strike",
+        "Underline",
+        "Italic",
+        "Blockquote",
+        "ListItem",
+        "BulletList",
+        "Image",
+        "Link",
+        "Code",
+        "History"
+      ]
+    },
+    "codeMirrorOptions": {
+      "name": "$t:toolbar_cm_options",
+      "comment": "$t:toolbar_cm_options_comment",
+      "interface": "code",
+      "options": {
+        "language": "application/json",
+        "template": {
+          "tabSize": 2,
+          "autoRefresh": true,
+          "indentUnit": 2,
+          "styleActiveLine": true,
+          "readOnly": false,
+          "styleSelectedText": true,
+          "line": true,
+          "hintOptions": {
+            "completeSingle": true
+          },
+          "lineNumbers": true,
+          "lineWrapping": false,
+          "mode": "text/html",
+          "matchBrackets": true,
+          "showCursorWhenSelecting": true,
+          "theme": "default",
+          "extraKeys": {
+            "Ctrl": "autocomplete"
+          },
+          "tags": {
+            "style": [
+              [
+                "type",
+                "\/^text\/(x-)?scss$/\"",
+                "text/x-scss"
+              ],
+              [
+                null,
+                null,
+                "css"
+              ]
+            ],
+            "custom": [
+              [
+                null,
+                null,
+                "customMode"
+              ]
+            ]
+          }
+        },
+        "default": {
+          "tabSize": 2,
+          "autoRefresh": true,
+          "indentUnit": 2,
+          "styleActiveLine": true,
+          "readOnly": false,
+          "styleSelectedText": true,
+          "lineNumbers": true,
+          "lineWrapping": true,
+          "mode": "text/html",
+          "matchBrackets": true,
+          "showCursorWhenSelecting": true,
+          "theme": "default",
+          "extraKeys": {
+            "Ctrl": "autocomplete"
+          }
         }
       }
     }
@@ -46,14 +135,30 @@
   "translation": {
     "en-US": {
       "wysiwyg": "WYSIWYG",
+      "go_back": "Go back to WYSIWYG Editor",
+      "toolbar_options": "Editor toolbar options",
+      "toolbar_options_comment": "Enable and sort extensions in the toolbar of ***ADD LINK TO README IN EXTENSION***",
+      "toolbar_cm_options": "Code Mirror Options",
+      "toolbar_cm_options_comment": "Code Mirror Options for the formatted raw view of this editor",
+      "upload_files_comment": "Upload files to directus instead of using Base64 encoded images. Needs 'image' in toolbar.",
+      "custom_url": "URL base for images",
+      "custom_url_comment": "Optional custom URL base for images including last '/'",
       "placeholder": "Placeholder",
       "placeholder_comment": "Enter placeholder text",
       "buttons": "Buttons",
       "buttons_comment": "Choose what buttons to use in the toolbar",
-      "distraction_free_mode": "Distracton Free Mode"
+      "distraction_free_mode": "Distracton Free Mode",
+      "distraction_free_mode_exit": "Close Free Mode"
     },
-	"fr-FR": {
+    "fr-FR": {
       "wysiwyg": "Editeur simplifié de contenu avec présentation « tel écran, tel écrit »",
+      "toolbar_options": "Editor toolbar options",
+      "toolbar_options_comment": "Enable and sort extensions in the toolbar of ***ADD LINK TO README IN EXTENSION***",
+      "toolbar_cm_options": "Code Mirror Options",
+      "toolbar_cm_options_comment": "Code Mirror Options for the formatted raw view of this editor",
+      "upload_files_comment": "Upload files to directus instead of using Base64 encoded images. Needs 'image' in toolbar.",
+      "custom_url": "URL base for images",
+      "custom_url_comment": "Optional custom URL base for images including last '/'",
       "placeholder": "Paramètre fictif",
       "placeholder_comment": "Texte statique qui est affiché avant la sélection d'une valeur",
       "buttons": "Boutons",

@@ -7,7 +7,7 @@
       class="textarea"
       :id="name + '-raw'"
       :value="$parent.editor.view.dom.innerHTML"
-      :placeholder="$parent.options.placeholder"
+      :placeholder="$props.options.placeholder"
       :rows="options.rows ? +options.rows : 10"
     ></v-textarea>
 
@@ -19,7 +19,7 @@
       :id="id + '-raw-formatted'"
       v-if="$parent.showSource && !showRaw"
       :alt-options="
-        $parent.options.codeMirrorOptions ? $parent.options.codeMirrorOptions : codeMirrorDefaults
+        $props.options.codeMirrorOptions ? $props.options.codeMirrorOptions : codeMirrorDefaults
       "
       :value="$parent.editor.view.dom.innerHTML"
       v-model="$parent.editorText"
@@ -76,20 +76,18 @@ export default {
       visibility: hidden;
     }
   }
-
-  .CodeMirror-scroll {
-    min-height: 220px;
-    padding-bottom: 0;
-  }
   small.line-count {
     display: none;
   }
 
   textarea {
-    padding: 0 calc(var(--page-padding) / 2);
+    padding: calc(var(--page-padding) / 2);
+    min-height: inherit;
   }
 }
+
 .editor__rawformat {
+  transition: min-height 5s ease-in-out;
   position: absolute;
   top: -17px;
   right: 0;

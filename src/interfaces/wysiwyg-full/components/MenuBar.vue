@@ -241,6 +241,7 @@
         </div>
         <!-- menu raw view toggler -->
         <button
+          v-if="!$props.editor"
           class="menubar__button toggler"
           @click="$parent.updateText($parent.editor.view.dom.innerHTML)"
           :style="{
@@ -248,12 +249,23 @@
           }"
         >
           <v-icon name="explore" v-if="!$parent.showSource" />
-          <v-icon v-else name="arrow_back" />
+          <v-icon v-else name="explore_off" />
+        </button>
+        <button
+          v-else-if="$props.editor"
+          class="menubar__button toggler"
+          @click="updates.updateText(updates.editor.view.dom.innerHTML)"
+          :style="{
+            order: 999
+          }"
+        >
+          <v-icon name="explore" v-if="!updates.showSource" />
+          <v-icon v-else name="explore_off" />
         </button>
       </div>
     </editor-menu-bar>
     <!-- editor bubble for link interface -->
-    <Bubble :options="options" :editor="$parent.editor" :class="{ visible: linkBubble }" />
+    <LinkBubble :options="options" :editor="$parent.editor" :class="{ visible: linkBubble }" />
     <!-- image selection modal interface  -->
     <portal to="modal" v-if="chooseImage">
       <v-modal
@@ -306,7 +318,7 @@
 <script>
 import MenuButton from "./MenuBarButton";
 import { EditorMenuBar } from "tiptap";
-import Bubble from "./Bubble";
+import LinkBubble from "./LinkBubble";
 
 export default {
   props: {
@@ -318,13 +330,14 @@ export default {
       type: Object,
       defaultValue: {}
     },
-    showSource: {
-      type: Boolean,
-      default: false
+    updates: {
+      type: Object,
+      defaultValue: null
     }
   },
   data() {
     return {
+      showSource: false,
       linkUrl: null,
       linkBubble: false,
       chooseImage: false,
@@ -351,10 +364,10 @@ export default {
       this.linkBubble = !this.linkBubble;
     },
     optionsInclude($val) {
-      return this.$parent.options.toolbarOptions.includes($val);
+      return this.$props.options.toolbarOptions.includes($val);
     },
     optionsIndex($val) {
-      return this.$parent.options.toolbarOptions.indexOf($val);
+      return this.$props.options.toolbarOptions.indexOf($val);
     },
     addImageCommand(data) {
       if (data.command !== null || data.command !== "data") {
@@ -367,8 +380,8 @@ export default {
     },
     insertItem(item) {
       let url = item.data.full_url;
-      if (this.$parent.options.custom_url) {
-        url = `${this.$parent.options.custom_url}${item.filename}`;
+      if (this.$props.options.custom_url) {
+        url = `${this.$props.options.custom_url}${item.filename}`;
       }
       // @todo implement image source base url
       // const index = (this.editor.getSelection() || {}).index || this.editor.getLength();
@@ -385,7 +398,7 @@ export default {
   components: {
     EditorMenuBar,
     MenuButton,
-    Bubble
+    LinkBubble
   }
 };
 </script>

@@ -107,13 +107,100 @@
         background-color: var(--lightest-gray);
       }
     }
-    img.ProseMirror-selectednode {
-      cursor: grab;
-      border: 1px solid var(--lighter-gray);
-      box-shadow: 0 0 3px var(--lighter-gray);
+    img {
+      max-width: 100%;
+      &.ProseMirror-selectednode {
+        cursor: grab;
+        border: 1px solid var(--lighter-gray);
+        box-shadow: 0 0 3px var(--lighter-gray);
 
-      &:active {
-        cursor: grabbing;
+        &:active {
+          cursor: grabbing;
+        }
+      }
+    }
+  }
+  &.fullscreen {
+    .interface-code, .vue-codemirror {
+      min-height: 100vh;
+      .CodeMirror-scroll, .CodeMirror {
+        min-height: inherit;
+        border: 0;
+        //background-color: inherit;
+        > * {
+          max-width: var(--width-x-large);
+        }
+      }
+    }
+    .editor__raw {
+      .textarea, textarea {
+        transition: background-color .4s ease-in-out, color .3s ease-in-out;
+        border: 0;
+      }
+    }
+    .editor__rawformat {
+      left: 5px;
+      top: -24px;
+    }
+    .options {
+      top: -26px
+    }
+    .editor__content {
+      *:not(.ProseMirror) {
+        max-width: 780px;
+        margin-left: auto;
+        margin-right: auto;
+        transition: background-color .4s ease-in-out, color .3s ease-in-out;
+      }
+      .ProseMirror {
+        transition: background-color .4s ease-in-out, color .3s ease-in-out;
+        border-color: transparent;
+      }
+    }
+
+    &.night {
+      .menububble__frame {
+        background-color: var(--darkest-gray);
+        padding: 0;
+        margin: 0;
+        .menubar__wrapper {
+          background-color: var(--darkest-gray);
+          border-color: var(--darker-gray);
+        }
+      }
+      .fullscreen-info {
+        color: var(--lightest-gray);
+        border-bottom: 1px solid var(--darkest-gray);
+      }
+      .editor__raw {
+        .textarea, textarea {
+          border: 0;
+          background-color: var(--black);
+          color: var(--lighter-gray);
+        }
+      }
+      .editor__content {
+        *:not(.ProseMirror) {
+          max-width: 780px;
+          margin-left: auto;
+          margin-right: auto;
+          color: var(--lightest-gray);
+        }
+      }
+      .ProseMirror {
+        border-color: transparent;
+        background-color: var(--black);
+      }
+      .options {
+        i {
+          color: var(--lightest-gray);
+        }
+      }
+
+      .menubar__button.toggler {
+        min-height: 34px;
+        border-color: var(--darkest-gray);
+        background-color: var(--darker-gray);
       }
     }
   }

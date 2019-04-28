@@ -145,6 +145,9 @@
     "en-US": {
       "wysiwyg_full": "Advanced WYSIWYG",
       "placeholder": "Placeholder",
+      "add_link": "Click to add Link",
+      "edit_link": "Edit Link",
+      "add_link_info": "Type link and hit enter ...",
       "placeholder_comment": "Enter placeholder text",
       "toolbar_options": "Editor toolbar options",
       "toolbar_options_comment": "Enable and sort extensions in the toolbar of ***ADD LINK TO README IN EXTENSION***",
@@ -158,6 +161,8 @@
 	"fr-FR": {
       "wysiwyg_full": "Editeur avancé de contenu avec présentation « tel écran, tel écrit »",
       "placeholder": "Paramètre fictif",
+      "add_link": "Click to add Link",
+      "edit_link": "Edit Link",
       "placeholder_comment": "Texte statique qui est affiché avant la sélection d'une valeur",
       "toolbar_options": "Options de la barre d'outils",
       "toolbar_options_comment": "***ADD LINK TO README IN EXTENSION***",

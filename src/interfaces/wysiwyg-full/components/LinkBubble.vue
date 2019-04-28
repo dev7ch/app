@@ -15,7 +15,7 @@
           class="menububble__input"
           type="text"
           v-model="linkUrl"
-          placeholder="https://"
+          :placeholder="$t('interfaces-wysiwyg-full-add_link_info')"
           ref="linkInput"
           @keydown.esc="hideLinkMenu"
         />
@@ -31,7 +31,13 @@
           @click="showLinkMenu(getMarkAttrs('link'))"
           :class="{ 'is-active': isActive.link() }"
         >
-          <span v-text="isActive.link() ? $t('edit_link') : $t('add_link')"></span>
+          <span
+            v-text="
+              isActive.link()
+                ? $t('interfaces-wysiwyg-full-edit_link')
+                : $t('interfaces-wysiwyg-full-add_link')
+            "
+          ></span>
           <v-icon name="link" />
         </button>
       </template>
@@ -107,8 +113,18 @@ export default {
 }
 
 .menububble__button {
-  .icon {
-    margin-bottom: -5px;
+  display: inline;
+}
+
+.form {
+  input {
+    margin: 0;
+    padding: 1px 2px 1px 2px;
   }
+}
+
+.menububble__item {
+  border: var(--input-border-width) solid var(--lighter-gray);
+  border-radius: var(--border-radius);
 }
 </style>

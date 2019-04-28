@@ -135,6 +135,7 @@
   "translation": {
     "en-US": {
       "wysiwyg": "WYSIWYG",
+      "go_back": "Go back to WYSIWYG Editor",
       "toolbar_options": "Editor toolbar options",
       "toolbar_options_comment": "Enable and sort extensions in the toolbar of ***ADD LINK TO README IN EXTENSION***",
       "toolbar_cm_options": "Code Mirror Options",
@@ -146,7 +147,8 @@
       "placeholder_comment": "Enter placeholder text",
       "buttons": "Buttons",
       "buttons_comment": "Choose what buttons to use in the toolbar",
-      "distraction_free_mode": "Distracton Free Mode"
+      "distraction_free_mode": "Distracton Free Mode",
+      "distraction_free_mode_exit": "Close Free Mode"
     },
     "fr-FR": {
       "wysiwyg": "Editeur simplifié de contenu avec présentation « tel écran, tel écrit »",

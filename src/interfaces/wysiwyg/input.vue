@@ -1,7 +1,7 @@
 <template>
   <div
     class="interface-wysiwyg-container editor"
-    :class="{ fullscreen: distractionFree }"
+    :class="{ fullscreen: distractionFree, night: blackMode }"
     :id="name"
     :name="name"
     @input="$emit('input', $event.target.innerHTML)"
@@ -14,21 +14,31 @@
     >
       {{ $parent.$parent.field.name }}
     </p>
+
     <div class="options">
       <button
         v-if="showSource"
-        v-on:click="updateText(editorText)"
+        @click="updateText(editorText)"
         type="button"
         class="back"
-        v-tooltip="$t('interfaces-wysiwyg-back')"
+        v-tooltip="$t('interfaces-wysiwyg-go_back')"
       >
         <v-icon name="arrow_back" />
+      </button>
+      <button
+        v-if="distractionFree"
+        type="button"
+        class="black-mode"
+        @click="blackMode = !blackMode"
+        v-tooltip="$t('interfaces-wysiwyg-go_back')"
+      >
+        <v-icon name="flip" />
       </button>
       <button
         v-on:click="distractionFree = !distractionFree"
         type="button"
         class="fullscreen-toggle"
-        v-tooltip="$t('interfaces-wysiwyg-distraction_free_mode')"
+        v-tooltip="!distractionFree ? $t('interfaces-wysiwyg-distraction_free_mode') : false"
       >
         <v-icon :name="!distractionFree ? 'fullscreen' : 'close'" />
       </button>
@@ -235,6 +245,7 @@ export default {
   },
   data() {
     return {
+      blackMode: false,
       distractionFree: false,
       editorExtensions: [],
       editorText: "",
@@ -330,6 +341,8 @@ export default {
     max-width: 100%;
     max-height: 100%;
     background-color: var(--body-background);
+    transition: background-color 0.4s ease-in-out, color 0.3s ease-in-out,
+      border-bottom 0.35s ease-in-out;
 
     .editor__content {
       min-height: 100vh;
@@ -341,6 +354,7 @@ export default {
       min-height: 100vh;
     }
     &:after {
+      transition: inherit;
       content: "";
       z-index: -1;
       position: absolute;
@@ -348,6 +362,11 @@ export default {
       width: 100%;
       height: 35px;
       background-color: var(--body-background);
+    }
+    &.night {
+      &:after {
+        background-color: var(--black);
+      }
     }
   }
 }
@@ -384,13 +403,20 @@ export default {
     float: left;
   }
 }
+
 .fullscreen-info {
   position: absolute;
-  left: 5px;
+  padding-left: 10px;
   top: -24px;
   z-index: 1;
   width: 100%;
   min-height: 24px;
   max-width: 100%;
+  border-bottom: 1px solid var(--lightest-gray);
+  font-size: var(--size-2);
+  padding-bottom: 6px;
+  color: var(--darkest-gray);
+  transition: background-color 0.4s ease-in-out, color 0.3s ease-in-out,
+    border-bottom 0.35s ease-in-out;
 }
 </style>

@@ -2,7 +2,7 @@
   <editor-menu-bubble class="menububble" :editor="editor" @hide="hideLinkMenu">
     <div
       slot-scope="{ commands, isActive, getMarkAttrs, menu }"
-      class="menububble__item"
+      class="menububble__frame"
       :class="{ visible: menu.isActive && !$parent.showSource }"
       :style="
         `left: ${menu.left > calcWidth() / 2 ? menu.left + 'px' : '0'};
@@ -90,20 +90,26 @@ export default {
   &.visible {
     visibility: visible;
     opacity: 1;
-    z-index: 999;
+    z-index: 99;
   }
 
   .menubar__wrapper {
-    z-index: 999;
+    z-index: 99;
     .menubar {
       overflow-y: auto;
     }
   }
 }
 
+.menubar__button.toggler {
+  min-height: 34px;
+  border-color: var(--darkest-gray);
+  background-color: var(--darker-gray);
+}
+
 .menububble__button {
   .icon {
-    margin-bottom: -5px;
+    //margin-bottom: -5px;
   }
 }
 </style>

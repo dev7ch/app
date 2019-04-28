@@ -11,16 +11,23 @@
         v-if="linkMenuIsActive"
         @submit.prevent="setLinkUrl(commands.link, linkUrl)"
       >
+        <button class="menububble__button left" @click="$parent.setLink()">
+          <v-icon name="close" v-tooltip="$t('cancel')" />
+        </button>
         <input
           class="menububble__input"
           type="text"
           v-model="linkUrl"
-          :placeholder="$t('interfaces-wysiwyg-full-add_link_info')"
+          :placeholder="$t('interfaces-wysiwyg-full-link_info')"
           ref="linkInput"
           @keydown.esc="hideLinkMenu"
         />
-        <button class="menububble__button" @click="setLinkUrl(commands.link, null)" type="button">
-          <v-icon name="close" />
+        <button
+          class="menububble__button danger"
+          @click="setLinkUrl(commands.link, null)"
+          type="button"
+        >
+          <v-icon name="backspace" v-tooltip="$t('interfaces-wysiwyg-full-link_delete')" />
         </button>
       </form>
 
@@ -31,14 +38,22 @@
           @click="showLinkMenu(getMarkAttrs('link'))"
           :class="{ 'is-active': isActive.link() }"
         >
-          <span
+          <p
+            class="button__text"
             v-text="
               isActive.link()
-                ? $t('interfaces-wysiwyg-full-edit_link')
-                : $t('interfaces-wysiwyg-full-add_link')
+                ? $t('interfaces-wysiwyg-full-link_edit')
+                : $t('interfaces-wysiwyg-full-link_add')
             "
-          ></span>
-          <v-icon name="link" />
+          ></p>
+          <v-icon
+            name="link"
+            @click="$parent.setLink()"
+            v-tooltip="$t('interfaces-wysiwyg-full-link_add_or_edit')"
+          />
+        </button>
+        <button class="menububble__button" @click="$parent.setLink()">
+          <v-icon name="close" v-tooltip="$t('cancel')" />
         </button>
       </template>
     </div>
@@ -46,6 +61,7 @@
 </template>
 <script>
 import { EditorMenuBubble } from "tiptap";
+
 export default {
   props: {
     options: {
@@ -97,8 +113,10 @@ export default {
 <style lang="scss" scoped>
 .menububble {
   position: absolute;
-  background-color: var(--lightest-gray);
-  padding: 3px 5px 0 5px;
+  background-color: var(--lighter-gray);
+  padding: 0;
+  min-height: 24px;
+  line-height: 24px;
   visibility: hidden;
   opacity: 0;
   transition: top 0.2s ease-in-out, bottom 0.2s ease-in-out, left 0.2s ease-in-out,
@@ -112,14 +130,52 @@ export default {
   }
 }
 
+.button__text {
+  display: inline-flex;
+  padding: 2px 18px;
+}
+
 .menububble__button {
-  display: inline;
+  display: inline-flex;
+  color: var(--lightest-gray);
+  background-color: var(--lighter-gray);
+  transition: background-color 0.3s ease-in-out, color ease-in-out 0.2s;
+
+  &:hover {
+    background-color: var(--light-gray);
+  }
+  &.left {
+    margin-right: auto;
+  }
+  &.danger {
+    color: var(--lightest-gray);
+    background-color: var(--lighter-gray);
+    border-color: var(--lighter-gray);
+
+    &:hover {
+      background-color: var(--danger);
+    }
+  }
+  i {
+    color: inherit;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(0.6);
+    position: absolute;
+    background-color: inherit;
+    border-radius: 50%;
+    border: calc(var(--input-border-width) * 2) solid inherit;
+    font-size: 60%;
+    padding: 6px;
+  }
+  span {
+    //min-height: 24px;
+  }
 }
 
 .form {
   input {
-    margin: 0;
-    padding: 1px 2px 1px 2px;
+    padding: 2px 8px;
+    margin: 2px;
   }
 }
 

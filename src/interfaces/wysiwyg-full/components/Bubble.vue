@@ -1,5 +1,10 @@
 <template>
-  <editor-menu-bubble class="menububble" :editor="editor" @hide="hideLinkMenu">
+  <editor-menu-bubble
+    v-if="$parent.editor"
+    class="menububble"
+    :editor="$parent.editor"
+    @hide="hideLinkMenu"
+  >
     <div
       slot-scope="{ commands, isActive, getMarkAttrs, menu }"
       class="menububble__frame"
@@ -13,31 +18,32 @@
         min-width: 220px;`
       "
     >
-      <Menubar
-        :options="options"
-        v-if="$parent.editor"
-        :editor="$parent.editor"
-        :updates="$parent"
-      />
+      <Menubar :options="options" :editor="$parent.editor" :updates="$parent" />
     </div>
   </editor-menu-bubble>
 </template>
 <script>
-const Menubar = () => import("./../../wysiwyg-full/components/MenuBar");
+const Menubar = () => import("./MenuBar");
 import { EditorMenuBubble } from "tiptap";
 export default {
   props: {
     options: {
       type: Object,
       defaultValue: {}
-    },
-    editor: {
-      type: Object,
-      defaultValue: {}
     }
   },
 
   methods: {
+    setEditorfromChild() {
+      if (this.$parent.$children.length) {
+        for (let i = 0; i < this.$parent.$children.length; i++) {
+          if (this.$parent.$children[i].$refs.hasOwnProperty("editor")) {
+            console.log(this.$parent.$children[i].editor);
+            return (this.editor = this.$parent.$children[i].editor);
+          }
+        }
+      }
+    },
     calcWidth() {
       if (this.$props.options.toolbarOptions) {
         return this.$props.options.toolbarOptions.length * 24 + 120;
@@ -68,12 +74,16 @@ export default {
 
   data() {
     return {
+      editor: null,
       editorText: "",
       showSource: false,
       linkUrl: null,
       linkBubble: false,
       linkMenuIsActive: false
     };
+  },
+  mounted() {
+    this.setEditorfromChild();
   }
 };
 </script>

@@ -87,7 +87,7 @@
 <script>
 import mixin from "@directus/extension-toolkit/mixins/interface";
 import { Editor, EditorContent } from "tiptap";
-const Bubble = () => import("./components/Bubble");
+const Bubble = () => import("./../wysiwyg-full/components/Bubble");
 const RawHtmlView = () => import("./../wysiwyg-full/components/RawHtmlView");
 import ImageEdit from "./../wysiwyg-full/components/ImageEdit";
 

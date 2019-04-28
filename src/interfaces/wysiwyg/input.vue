@@ -7,6 +7,13 @@
     @input="$emit('input', $event.target.innerHTML)"
   >
     <Bubble :options="options" :editor="editor" />
+    <p
+      class="fullscreen-info"
+      v-if="$parent.$parent.field.name && distractionFree"
+      v-show="!showSource"
+    >
+      {{ $parent.$parent.field.name }}
+    </p>
     <div class="options">
       <button
         v-if="showSource"
@@ -255,9 +262,6 @@ export default {
     };
   },
 
-  destroyed() {
-    window.removeEventListener("scroll", this.handleEditorScroll);
-  },
   beforeUpdate() {
     this.observer = new MutationObserver(mutations => {
       for (const m of mutations) {
@@ -299,6 +303,9 @@ export default {
   beforeDestroy() {
     this.editor.destroy();
     this.observer.disconnect();
+  },
+  destroyed() {
+    window.removeEventListener("scroll", this.handleEditorScroll);
   }
 };
 </script>
@@ -313,7 +320,7 @@ export default {
 
   &.fullscreen {
     position: fixed;
-    top: 20px;
+    top: 31px;
     left: 0;
     right: 0;
     bottom: 0;
@@ -335,9 +342,9 @@ export default {
       content: "";
       z-index: -1;
       position: absolute;
-      top: -20px;
+      top: -33px;
       width: 100%;
-      height: 25px;
+      height: 35px;
       background-color: var(--body-background);
     }
   }
@@ -375,39 +382,13 @@ export default {
     float: left;
   }
 }
-
-.options-toggler {
+.fullscreen-info {
   position: absolute;
-  cursor: pointer;
-  opacity: 0;
+  left: 5px;
+  top: -24px;
   z-index: 1;
-  transform: translateY(-50%);
-  border: var(--input-border-width) solid var(----accent);
-  border-radius: var(--border-radius);
-  color: var(--off-white);
-  padding: calc(var(--page-padding) / 8);
-  transition: opacity 0.3s ease-in-out, right 0.2s ease-in-out;
-
-  i {
-    background-color: var(--accent);
-    padding: calc(var(--page-padding) / 4);
-    &:after {
-      z-index: -1;
-      content: "";
-      position: absolute;
-      width: 180px;
-      height: 180px;
-      background-color: var(--off-white);
-      opacity: 0.5;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
-  }
-  &.active {
-    z-index: 1;
-    opacity: 1;
-    left: 0;
-  }
+  width: 100%;
+  min-height: 24px;
+  max-width: 100%;
 }
 </style>

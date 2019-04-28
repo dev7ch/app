@@ -81,7 +81,6 @@ export default {
   }
 
   textarea {
-    padding: 0 calc(var(--page-padding) / 2);
     min-height: inherit;
   }
 }

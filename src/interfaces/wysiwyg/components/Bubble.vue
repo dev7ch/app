@@ -5,10 +5,12 @@
       class="menububble__item"
       :class="{ visible: menu.isActive && !$parent.showSource }"
       :style="
-        `left: 50%; transform:translate(-50%); bottom: ${menu.bottom + 15}px; width: ${options
-          .toolbarOptions.length *
-          24 +
-          120}px; max-width: 100%`
+        `left: ${menu.left > calcWidth() / 2 ? menu.left + 'px' : '0'};
+        transform:translateX(${menu.left > calcWidth() / 2 ? '-50%' : '0'});
+        bottom: ${menu.bottom + 10}px;
+        width: ${calcWidth()}px;
+        max-width: 100%;
+        min-width: 220px;`
       "
     >
       <Menubar
@@ -36,6 +38,11 @@ export default {
   },
 
   methods: {
+    calcWidth() {
+      if (this.$props.options.toolbarOptions) {
+        return this.$props.options.toolbarOptions.length * 24 + 120;
+      }
+    },
     showLinkMenu(attrs) {
       this.linkUrl = attrs.href;
       this.linkMenuIsActive = true;
@@ -82,7 +89,14 @@ export default {
   &.visible {
     visibility: visible;
     opacity: 1;
-    z-index: 1;
+    z-index: 999;
+  }
+
+  .menubar__wrapper {
+    z-index: 999;
+    .menubar {
+      overflow-y: auto;
+    }
   }
 }
 

@@ -1,7 +1,9 @@
 {
   "name": "$t:wysiwyg",
   "version": "1.1.0",
-  "types": ["string"],
+  "types": [
+    "string"
+  ],
   "icon": "format_quote",
   "recommended": {
     "length": 65534
@@ -39,7 +41,9 @@
           "Strike",
           "Underline",
           "Italic",
-          "h1","h2", "h3",
+          "h1",
+          "h2",
+          "h3",
           "Blockquote",
           "BulletList",
           "OrderedList",
@@ -59,7 +63,9 @@
         "Strike",
         "Underline",
         "Italic",
-        "h1","h2", "h3",
+        "h1",
+        "h2",
+        "h3",
         "Blockquote",
         "BulletList",
         "OrderedList",
@@ -78,8 +84,7 @@
       "interface": "code",
       "options": {
         "language": "application/json",
-        "template":
-        {
+        "template": {
           "tabSize": 2,
           "autoRefresh": true,
           "indentUnit": 2,
@@ -143,28 +148,34 @@
   },
   "translation": {
     "en-US": {
-      "wysiwyg_full": "WYSIWYG Bubble",
-      "placeholder": "Placeholder",
-      "placeholder_comment": "Enter placeholder text",
+      "wysiwyg": "WYSIWYG",
       "toolbar_options": "Editor toolbar options",
       "toolbar_options_comment": "Enable and sort extensions in the toolbar of ***ADD LINK TO README IN EXTENSION***",
       "toolbar_cm_options": "Code Mirror Options",
       "toolbar_cm_options_comment": "Code Mirror Options for the formatted raw view of this editor",
-      "upload_files": "Upload files",
       "upload_files_comment": "Upload files to directus instead of using Base64 encoded images. Needs 'image' in toolbar.",
       "custom_url": "URL base for images",
-      "custom_url_comment": "Optional custom URL base for images including last '/'"
+      "custom_url_comment": "Optional custom URL base for images including last '/'",
+      "placeholder": "Placeholder",
+      "placeholder_comment": "Enter placeholder text",
+      "buttons": "Buttons",
+      "buttons_comment": "Choose what buttons to use in the toolbar",
+      "distraction_free_mode": "Distracton Free Mode"
     },
     "fr-FR": {
-      "wysiwyg_full": "Editeur avancé de contenu avec présentation « tel écran, tel écrit »",
+      "wysiwyg": "Editeur simplifié de contenu avec présentation « tel écran, tel écrit »",
+      "toolbar_options": "Editor toolbar options",
+      "toolbar_options_comment": "Enable and sort extensions in the toolbar of ***ADD LINK TO README IN EXTENSION***",
+      "toolbar_cm_options": "Code Mirror Options",
+      "toolbar_cm_options_comment": "Code Mirror Options for the formatted raw view of this editor",
+      "upload_files_comment": "Upload files to directus instead of using Base64 encoded images. Needs 'image' in toolbar.",
+      "custom_url": "URL base for images",
+      "custom_url_comment": "Optional custom URL base for images including last '/'",
       "placeholder": "Paramètre fictif",
       "placeholder_comment": "Texte statique qui est affiché avant la sélection d'une valeur",
-      "toolbar_options": "Options de la barre d'outils",
-      "toolbar_options_comment": "***ADD LINK TO README IN EXTENSION***",
-      "upload_files": "Téléverser des fichiers",
-      "upload_files_comment": "Télécharger vers Directus des fichiers plutôt que d'utiliser des images encodées en Base64. Nécessite l'option « image » dans la barre d'outils",
-      "custom_url": "Adresse Web (URL) des images",
-      "custom_url_comment": "URL personnalisée optionnelle des images, incluant la barre verticale oblique (/) finale"
+      "buttons": "Boutons",
+      "buttons_comment": "Choix des boutons utilisables à travers la barre d'outils",
+      "distraction_free_mode": "Mode « non distractif »"
     }
   }
 }

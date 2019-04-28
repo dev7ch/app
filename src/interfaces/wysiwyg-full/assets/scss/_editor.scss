@@ -124,10 +124,31 @@
     .interface-code, .vue-codemirror {
       min-height: 100vh;
       .CodeMirror-scroll, .CodeMirror, textarea {
-        background: red;
-        padding-bottom: 0;
         min-height: inherit;
+        border: 0;
+        border-color: transparent;
+        > * {
+          max-width: var(--width-x-large);
+        }
       }
+
+    }
+    .editor__rawformat {
+      left: 5px;
+      top: -24px
+    }
+    .options {
+      top: -26px
+    }
+      .editor__content {
+         *:not(.ProseMirror) {
+          max-width: 780px;
+           margin-left: auto;
+           margin-right: auto;
+        }
+        .ProseMirror  {
+          border-color: transparent;
+        }
     }
   }
 }

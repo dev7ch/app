@@ -81,9 +81,11 @@ export default {
           "Strike",
           "Underline",
           "Italic",
+          "Blockquote",
           "ListItem",
           "BulletList",
           "OrderedList",
+          "Code",
           "Table",
           "Image",
           "History"

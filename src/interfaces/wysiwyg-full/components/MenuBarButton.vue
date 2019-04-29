@@ -62,7 +62,7 @@ export default {
     position: absolute;
     left: 50%;
     top: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, calc(-50% - 1px));
     color: var(--light-gray);
     transition: color 0.15s ease-in-out;
   }

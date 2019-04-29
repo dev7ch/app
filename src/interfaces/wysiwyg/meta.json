@@ -48,21 +48,7 @@
           "Image",
           "History"
         ]
-      },
-      "default": [
-        "Paragraph",
-        "Bold",
-        "Strike",
-        "Underline",
-        "Italic",
-        "Blockquote",
-        "ListItem",
-        "BulletList",
-        "Image",
-        "Link",
-        "Code",
-        "History"
-      ]
+      }
     },
     "codeMirrorOptions": {
       "name": "$t:toolbar_cm_options",
@@ -71,48 +57,6 @@
       "options": {
         "language": "application/json",
         "template": {
-          "tabSize": 2,
-          "autoRefresh": true,
-          "indentUnit": 2,
-          "styleActiveLine": true,
-          "readOnly": false,
-          "styleSelectedText": true,
-          "line": true,
-          "hintOptions": {
-            "completeSingle": true
-          },
-          "lineNumbers": true,
-          "lineWrapping": false,
-          "mode": "text/html",
-          "matchBrackets": true,
-          "showCursorWhenSelecting": true,
-          "theme": "default",
-          "extraKeys": {
-            "Ctrl": "autocomplete"
-          },
-          "tags": {
-            "style": [
-              [
-                "type",
-                "\/^text\/(x-)?scss$/\"",
-                "text/x-scss"
-              ],
-              [
-                null,
-                null,
-                "css"
-              ]
-            ],
-            "custom": [
-              [
-                null,
-                null,
-                "customMode"
-              ]
-            ]
-          }
-        },
-        "default": {
           "tabSize": 2,
           "autoRefresh": true,
           "indentUnit": 2,

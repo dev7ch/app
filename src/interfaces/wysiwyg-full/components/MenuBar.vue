@@ -221,19 +221,20 @@
         <div
           class="history__actions"
           v-if="optionsInclude('History')"
-          plugin-name="History"
           :style="{
             order: optionsIndex('History')
           }"
         >
           <MenuButton
             v-if="optionsInclude('History')"
+            class="menubar__button"
             icon="undo"
             :command="commands.undo"
             :disabled="!!$parent.showSource"
           />
           <MenuButton
             v-if="optionsInclude('History')"
+            class="menubar__button"
             icon="redo"
             :command="commands.redo"
             :disabled="!!$parent.showSource"
@@ -468,6 +469,15 @@ export default {
   &:focus {
     color: var(--white);
     background-color: var(--action);
+  }
+}
+
+.history__actions {
+  display: inline-flex;
+  margin-left: auto;
+
+  + .toggler {
+    margin-left: initial;
   }
 }
 

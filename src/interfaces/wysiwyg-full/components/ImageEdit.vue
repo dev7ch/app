@@ -33,7 +33,7 @@
         v-if="!!$parent.selectionPosition.target"
         class="image-options-item"
         ref="editedTitle"
-        :placeholder="$t('image_title')"
+        :placeholder="$t('interfaces-wysiwyg-full-image_title')"
         v-model.lazy="$parent.selectionPosition.title"
         :value="$parent.selectionPosition.title"
         @keyup.13="setAll()"
@@ -41,7 +41,7 @@
       <v-input
         v-if="!!$parent.selectionPosition.target"
         ref="editedAlt"
-        :placeholder="$t('alt_text')"
+        :placeholder="$t('interfaces-wysiwyg-full-image_alt')"
         class="image-options-item"
         :value="$parent.selectionPosition.alt"
         v-model.lazy="$parent.selectionPosition.alt"
@@ -50,12 +50,12 @@
       <div class="v-input image-options-item dimension">
         <div class="image-options-item quart">
           <label class="">
-            <small>{{ $t("width_px") }}</small>
+            <small>{{ $t("interfaces-wysiwyg-full-image_width_px") }}</small>
           </label>
           <v-input
             v-if="!!$parent.selectionPosition"
             ref="editedClasses"
-            :placeholder="$t('width_px')"
+            :placeholder="$t('interfaces-wysiwyg-full-image_width_px')"
             :value="trimDimension($parent.selectionPosition.target.width.toString())"
             v-model.lazy="$parent.selectionPosition.target.width"
             @keyup.13="setAll()"
@@ -63,15 +63,15 @@
         </div>
         <div class="image-options-item quart">
           <label>
-            <small>{{ $t("height_px") }}</small>
+            <small>{{ $t("interfaces-wysiwyg-full-image_height_px") }}</small>
           </label>
           <v-input
             v-if="!!$parent.selectionPosition"
             ref="editedClasses"
-            :placeholder="$t('height_px')"
+            :placeholder="$t('interfaces-wysiwyg-full-image_height_px')"
             class="image-options-item quart"
             :disabled="true"
-            :value="'auto (' + $parent.selectionPosition.target.height + 'px)'"
+            :value="$parent.selectionPosition.target.height"
           />
         </div>
       </div>
@@ -81,7 +81,7 @@
       class="image-options-item"
       ref="editedSource"
       @input="imageUrlRawBroken = false"
-      :placeholder="$t('image_source')"
+      :placeholder="$t('interfaces-wysiwyg-full-image_source')"
       v-model.lazy="$parent.selectionPosition.src"
       :value="$parent.selectionPosition.src"
       @keyup.13="setAll()"
@@ -89,7 +89,7 @@
     <v-input
       v-if="!!$parent.selectionPosition"
       ref="editedClasses"
-      :placeholder="$t('css_classes')"
+      :placeholder="$t('interfaces-wysiwyg-full-image_css_classes')"
       class="image-options-item"
       :value="$parent.selectionPosition.classes"
       v-model.lazy="$parent.selectionPosition.classes"

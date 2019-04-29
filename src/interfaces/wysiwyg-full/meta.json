@@ -13,9 +13,9 @@
       "interface": "text-input",
       "length": 200
     },
-    "upload_files": {
-      "name": "$t:upload_files",
-      "comment": "$t:upload_files_comment",
+    "show_history": {
+      "name": "$t:show_history",
+      "comment": "$t:show_history_commet",
       "interface": "toggle",
       "type": "BOOLEAN",
       "default": true
@@ -52,25 +52,7 @@
           "Table",
           "History"
         ]
-      },
-      "default": [
-        "Paragraph",
-        "Bold",
-        "Strike",
-        "Underline",
-        "Italic",
-        "h1","h2", "h3",
-        "Blockquote",
-        "BulletList",
-        "OrderedList",
-        "ListItem",
-        "HardBreak",
-        "Image",
-        "Link",
-        "Code",
-        "Table",
-        "History"
-      ]
+      }
     },
     "codeMirrorOptions": {
       "name": "$t:toolbar_cm_options",
@@ -86,58 +68,16 @@
             "styleActiveLine": true,
             "readOnly": false,
             "styleSelectedText": true,
-            "line": true,
-            "hintOptions": {
-              "completeSingle": true
-            },
             "lineNumbers": true,
-            "lineWrapping": false,
+            "lineWrapping": true,
             "mode": "text/html",
             "matchBrackets": true,
             "showCursorWhenSelecting": true,
             "theme": "default",
             "extraKeys": {
               "Ctrl": "autocomplete"
-            },
-            "tags": {
-              "style": [
-                [
-                  "type",
-                  "\/^text\/(x-)?scss$/\"",
-                  "text/x-scss"
-                ],
-                [
-                  null,
-                  null,
-                  "css"
-                ]
-              ],
-              "custom": [
-                [
-                  null,
-                  null,
-                  "customMode"
-                ]
-              ]
             }
-          },
-        "default": {
-          "tabSize": 2,
-          "autoRefresh": true,
-          "indentUnit": 2,
-          "styleActiveLine": true,
-          "readOnly": false,
-          "styleSelectedText": true,
-          "lineNumbers": true,
-          "lineWrapping": true,
-          "mode": "text/html",
-          "matchBrackets": true,
-          "showCursorWhenSelecting": true,
-          "theme": "default",
-          "extraKeys": {
-            "Ctrl": "autocomplete"
           }
-        }
       }
     }
   },
@@ -145,31 +85,40 @@
     "en-US": {
       "wysiwyg_full": "Advanced WYSIWYG",
       "placeholder": "Placeholder",
+      "placeholder_comment": "Enter placeholder text",
       "link_add": "Click to add Link",
       "link_edit": "Edit Link",
       "link_info": "Type link and hit enter ...",
       "link_delete": "Delete url from current selection",
       "link_add_or_edit": "Add or edit link on selection",
-      "placeholder_comment": "Enter placeholder text",
+      "image_title": "Add image title",
+      "image_css_classes": "Add or edit CSS classes of image",
+      "image_alt": "Alternative image title",
+      "image_source": "Image source",
+      "image_height_px": "Height in px",
+      "image_width_px": "Width in px",
       "toolbar_options": "Editor toolbar options",
       "toolbar_options_comment": "Enable and sort extensions in the toolbar of ***ADD LINK TO README IN EXTENSION***",
       "toolbar_cm_options": "Code Mirror Options",
       "toolbar_cm_options_comment": "Code Mirror Options for the formatted raw view of this editor",
-      "upload_files": "Upload files",
-      "upload_files_comment": "Upload files to directus instead of using Base64 encoded images. Needs 'image' in toolbar.",
+      "show_history": "Show History",
+      "show_history_comment": "Show History in Editor menu toolbar",
       "custom_url": "URL base for images",
       "custom_url_comment": "Optional custom URL base for images including last '/'"
     },
 	"fr-FR": {
       "wysiwyg_full": "Editeur avancé de contenu avec présentation « tel écran, tel écrit »",
       "placeholder": "Paramètre fictif",
-      "add_link": "Click to add Link",
-      "edit_link": "Edit Link",
       "placeholder_comment": "Texte statique qui est affiché avant la sélection d'une valeur",
+      "link_add": "Click to add Link",
+      "link_edit": "Edit Link",
+      "link_info": "Type link and hit enter ...",
+      "link_delete": "Delete url from current selection",
+      "link_add_or_edit": "Add or edit link on selection",
       "toolbar_options": "Options de la barre d'outils",
       "toolbar_options_comment": "***ADD LINK TO README IN EXTENSION***",
-      "upload_files": "Téléverser des fichiers",
-      "upload_files_comment": "Télécharger vers Directus des fichiers plutôt que d'utiliser des images encodées en Base64. Nécessite l'option « image » dans la barre d'outils",
+      "show_history": "Show History",
+      "show_history_comment": "Show History in Editor menu toolbar",
       "custom_url": "Adresse Web (URL) des images",
       "custom_url_comment": "URL personnalisée optionnelle des images, incluant la barre verticale oblique (/) finale"
     }

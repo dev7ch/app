@@ -37,7 +37,6 @@
       ],
       "options": {
         "choices": {
-          "paragraph": "Paragraph",
           "bold": "Bold",
           "strike": "Strike",
           "underline": "Underline",
@@ -47,15 +46,17 @@
           "h3": "Heading 3",
           "h4": "Heading 4",
           "blockquote": "Blockquote",
-          "bulletlist": "Bullet List",
-          "orderedlist": "Ordered List",
-          "hardbreak": "Hard Break",
-          "horizontalrule": "Horizontal Rule",
+          "bullet_list": "Bullet List",
+          "ordered_list": "Ordered List",
+          "hard_break": "Hard Break",
+          "horizontal_rule": "Horizontal Rule",
           "image": "Image",
           "link": "Link",
           "code": "Code",
           "table": "Table",
           "todolist": "Todo list",
+          "code": "Code",
+          "code_block": "Code Block",
           "history": "History (undo / redo)"
         }
       }

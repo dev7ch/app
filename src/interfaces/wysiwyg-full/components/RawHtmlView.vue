@@ -1,5 +1,10 @@
 <template>
-  <codemirror class="editor" v-model="$parent.editorText" :options="cmOptions"></codemirror>
+  <codemirror
+    class="code-editor"
+    :value="value"
+    @input="$emit('input', $event)"
+    :options="cmOptions"
+  ></codemirror>
 </template>
 <script>
 import "codemirror/lib/codemirror.css";
@@ -11,6 +16,12 @@ import { codemirror } from "vue-codemirror";
 export default {
   components: {
     codemirror
+  },
+  props: {
+    value: {
+      type: String,
+      required: true
+    }
   },
   computed: {
     cmOptions() {
@@ -29,8 +40,9 @@ export default {
 </script>
 
 <style lang="scss">
-.editor .CodeMirror {
+.code-editor .CodeMirror {
   padding: calc(var(--page-padding) / 2);
   margin-bottom: 0;
+  border: 0;
 }
 </style>

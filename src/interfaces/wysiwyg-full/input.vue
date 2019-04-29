@@ -1,16 +1,23 @@
 <template>
   <div
-    class="interface-wysiwyg-container editor"
+    class="interface-wysiwyg-full"
     :id="name"
     :name="name"
     @input="$emit('input', $event.target.innerHTML)"
   >
     <!-- WYSIWYG Editor Menubar and Bubble components -->
-    <MenuBar :options="options" v-if="editor" />
-    <!-- WYSIWYG Editor -->
-    <EditorContent :editor="editor" />
+    <MenuBar
+      :buttons="options.extensions"
+      :editor="editor"
+      @toggleSource="showSource = !showSource"
+    />
+
     <!-- Unformatted raw html view -->
-    <RawHtmlView v-if="showSource" />
+    <RawHtmlView v-if="showSource" :value="value" @input="updateValue" />
+
+    <!-- WYSIWYG Editor -->
+    <EditorContent v-else :editor="editor" />
+
     <ImageEdit />
   </div>
 </template>
@@ -23,27 +30,27 @@ import RawHtmlView from "./components/RawHtmlView";
 import ImageEdit from "./components/ImageEdit";
 
 import {
+  Bold,
   Blockquote,
+  BulletList,
+  Code,
   CodeBlock,
   HardBreak,
   Heading,
+  History,
   HorizontalRule,
-  OrderedList,
-  BulletList,
-  ListItem,
-  TodoItem,
-  TodoList,
-  Bold,
-  Code,
   Italic,
   Link,
+  ListItem,
+  OrderedList,
   Strike,
-  Underline,
-  History,
   Table,
+  TableCell,
   TableHeader,
   TableRow,
-  TableCell
+  TodoItem,
+  TodoList,
+  Underline
 } from "tiptap-extensions";
 
 import { Image } from "./extensions";
@@ -51,6 +58,30 @@ import { Image } from "./extensions";
 export default {
   name: "interface-wysiwyg",
   mixins: [mixin],
+  components: {
+    EditorContent,
+    MenuBar,
+    RawHtmlView,
+    ImageEdit
+  },
+  data() {
+    return {
+      editorText: "",
+      editor: null,
+      showSource: false,
+      selectionPosition: {
+        pos: null,
+        editorPos: null,
+        alt: {
+          value: null
+        },
+        title: null,
+        src: null,
+        target: null
+      }
+    };
+  },
+
   watch: {
     value(newVal) {
       if (newVal && !this.showSource) {
@@ -62,132 +93,63 @@ export default {
   },
   methods: {
     init() {
-      if (
-        !this.options.toolbarOptions ||
-        (this.options.toolbarOptions !== null && this.options.toolbarOptions.length === 0)
-      ) {
-        this.options.toolbarOptions = [
-          "Paragraph",
-          "Bold",
-          "Strike",
-          "Underline",
-          "Italic",
-          "Blockquote",
-          "ListItem",
-          "BulletList",
-          "OrderedList",
-          "Code",
-          "Table",
-          "Image",
-          "History"
-        ];
-      }
-      const ext = [
-        this.options.toolbarOptions.includes("Blockquote") ? new Blockquote() : "disabled",
-        this.options.toolbarOptions.includes("BulletList") ? new BulletList() : "disabled",
-        this.options.toolbarOptions.includes("CodeBlock") ? new CodeBlock() : "disabled",
-        this.options.toolbarOptions.includes("HardBreak") ? new HardBreak() : "disabled",
-        new Heading({ levels: [1, 2, 3, 4, 5] }),
-        this.options.toolbarOptions.includes("HorizontalRule") ? new HorizontalRule() : "disabled",
-        this.options.toolbarOptions.includes("ListItem") ? new ListItem() : "disabled",
-        this.options.toolbarOptions.includes("OrderedList") ? new OrderedList() : "disabled",
-        this.options.toolbarOptions.includes("TodoItem") ? new TodoItem() : "disabled",
-        this.options.toolbarOptions.includes("TodoList") ? new TodoList() : "disabled",
-        this.options.toolbarOptions.includes("Bold") ? new Bold() : "disabled",
-        this.options.toolbarOptions.includes("Image") ? new Image() : "disabled",
-        this.options.toolbarOptions.includes("Code") ? new Code() : "disabled",
-        this.options.toolbarOptions.includes("Italic") ? new Italic() : "disabled",
-        this.options.toolbarOptions.includes("Link") ? new Link() : "disabled",
-        this.options.toolbarOptions.includes("Strike") ? new Strike() : "disabled",
-        this.options.toolbarOptions.includes("Underline") ? new Underline() : "disabled",
-        this.options.toolbarOptions.includes("History") ? new History() : "disabled",
-        this.options.toolbarOptions.includes("Table") ? new Table() : "disabled",
-        this.options.toolbarOptions.includes("Table") ? new TableHeader() : "disabled",
-        this.options.toolbarOptions.includes("Table") ? new TableCell() : "disabled",
-        this.options.toolbarOptions.includes("Table") ? new TableRow() : "disabled"
-      ];
-      const search_term = "disabled";
-      for (let i = ext.length - 1; i >= 0; i--) {
-        if (ext[i] === search_term) {
-          ext.splice(i, 1);
-        }
-      }
+      const extensions = this.options.extensions
+        .map(ext => {
+          switch (ext) {
+            case "blockquote":
+              return new Blockquote();
+            case "bold":
+              return new Bold();
+            case "bulletlist":
+              return [new BulletList(), new ListItem()];
+            case "code":
+              return new Code();
+            case "codeblock":
+              return new CodeBlock();
+            case "h1":
+            case "h2":
+            case "h3":
+            case "h4":
+              return new Heading();
+            case "hardbreak":
+              return new HardBreak();
+            case "history":
+              return new History();
+            case "horizontalrule":
+              return new HorizontalRule();
+            case "image":
+              return new Image();
+            case "italic":
+              return new Italic();
+            case "link":
+              return new Link();
+            case "orderedlist":
+              return [new OrderedList(), new ListItem()];
+            case "strike":
+              return new Strike();
+            case "table":
+              return [new Table(), new TableHeader(), new TableCell(), new TableRow()];
+            case "todolist":
+              return [new TodoItem(), new TodoList()];
+            case "underline":
+              return new Underline();
+          }
+        })
+        .filter(ext => ext)
+        .flat();
+
       this.editor = new Editor({
-        extensions: ext,
-        content: this.value ? this.value : "",
+        extensions: extensions,
+        content: this.value || "",
         onUpdate: ({ getHTML }) => {
           this.$emit("input", getHTML());
         }
       });
-      this.handleEditorScroll();
     },
-    updateText($text) {
-      if (this.showSource) {
-        this.editor.view.dom.innerHTML = this.editorText;
-      } else {
-        this.editorText = $text;
-      }
-      this.showSource = !this.showSource;
-    },
-    showLinkMenu(attrs) {
-      this.linkUrl = attrs.href;
-      this.linkMenuIsActive = true;
-      this.$nextTick(() => {
-        this.$refs.linkInput.focus();
-      });
-    },
-    hideLinkMenu() {
-      this.linkUrl = null;
-      this.linkMenuIsActive = false;
-    },
-    setLinkUrl(command, url) {
-      command({ href: url });
-      this.hideLinkMenu();
-      this.editor.focus();
-    },
-    destroy() {
-      this.editor.destroy();
-    },
-    handleEditorScroll() {
-      this.editor.view.dom.onscroll = () => {
-        this.hasSettings ? (this.hasSettings = false) : null;
-      };
+    updateValue(value) {
+      this.$emit("input", value);
+      this.editor.view.dom.innerHTML = value;
     }
-  },
-  components: {
-    EditorContent,
-    MenuBar,
-    RawHtmlView,
-    ImageEdit
-  },
-  data() {
-    return {
-      editorExtensions: [],
-      editorText: "",
-      editor: null,
-      showSource: false,
-      showRaw: false,
-      showTableOptions: false,
-      chooseExisting: false,
-      chooseImage: false,
-      newFile: false,
-      linkUrl: null,
-      linkMenuIsActive: false,
-      lineCount: 0,
-      codeMirrorOptions: {},
-      selectionPosition: {
-        pos: null,
-        editorPos: null,
-        alt: {
-          value: null
-        },
-        title: null,
-        src: null,
-        target: null
-      },
-      hasSettings: false,
-      isImageSelection: false
-    };
   },
 
   mounted() {
@@ -196,9 +158,6 @@ export default {
 
   beforeDestroy() {
     this.editor.destroy();
-  },
-  destroyed() {
-    window.removeEventListener("scroll", this.handleEditorScroll);
   }
 };
 </script>
@@ -208,32 +167,21 @@ export default {
 </style>
 
 <style lang="scss" scoped>
-.interface-wysiwyg-container,
-.interface-wysiwyg {
+.interface-wysiwyg-full {
+  --wysiwyg-padding: calc(var(--page-padding) / 2);
+
   position: relative;
   width: 100%;
-}
-.editor {
-  position: relative;
+  border: var(--input-border-width) solid var(--lighter-gray);
+  border-radius: var(--border-radius);
+  transition: border-color var(--fast) var(--transition);
 
-  .editor__inner {
-    min-height: inherit;
+  &:hover {
+    border-color: var(--light-gray);
+  }
 
-    &.shrinked {
-      min-height: 0;
-      .menubar__button:not(.toggler) {
-        display: none;
-      }
-    }
-    .editor__content {
-      &.hidden {
-        min-height: 0;
-        display: none;
-      }
-    }
-    img {
-      max-width: 100%;
-    }
+  &:focus-within {
+    border-color: var(--dark-gray);
   }
 }
 </style>

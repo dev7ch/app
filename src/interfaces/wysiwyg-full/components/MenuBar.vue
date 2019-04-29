@@ -198,7 +198,11 @@
           </button>
         </div>
 
-        <button class="source-toggle" @click="$emit('toggleSource')">
+        <button
+          class="source-toggle"
+          @click="$emit('toggleSource')"
+          v-tooltip.bottom="$t('editor.view_source')"
+        >
           <v-icon name="code" :color="$parent.showSource ? 'accent' : 'light-gray'" />
         </button>
       </div>
@@ -298,8 +302,8 @@ export default {
   methods: {
     addImageCommand(data) {
       if (data.command !== null || data.command !== "data") {
-        this.$parent.editor.commands.image({
-          src: data
+        this.editor.commands.image({
+          src: data.data.full_url
         });
 
         this.chooseImage = false;

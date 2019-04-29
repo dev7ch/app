@@ -86,7 +86,7 @@
         <button
           v-if="buttons.includes('link')"
           v-tooltip.bottom="$t('editor.link')"
-          :class="{ 'is-active': linkActive || isActive.link() }"
+          :class="{ 'is-active': linkActive }"
           @click="linkActive = !linkActive"
         >
           <v-icon name="link" />
@@ -205,7 +205,7 @@
     </editor-menu-bar>
 
     <!-- editor bubble for link interface -->
-    <LinkBubble :editor="editor" v-if="buttons.includes('link') && linkActive" />
+    <LinkBar :editor="editor" v-if="buttons.includes('link') && linkActive" />
 
     <!-- image selection modal interface  -->
     <portal to="modal" v-if="chooseImage">
@@ -258,7 +258,7 @@
 </template>
 <script>
 import { EditorMenuBar } from "tiptap";
-import LinkBubble from "./LinkBubble";
+import LinkBar from "./LinkBar";
 
 export default {
   props: {
@@ -318,7 +318,7 @@ export default {
   },
   components: {
     EditorMenuBar,
-    LinkBubble
+    LinkBar
   }
 };
 </script>

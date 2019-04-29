@@ -206,6 +206,7 @@ export default {
     ordered_list: "Ordered List",
     blockquote: "Blockquote",
     link: "Link",
+    link_placeholder: "Type link and hit enter...",
     image: "Image",
     heading: "Heading {level}",
     horizontal_rule: "Horizontal Rule",

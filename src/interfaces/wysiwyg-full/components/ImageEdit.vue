@@ -1,9 +1,7 @@
 <template>
   <div
     class="image-options"
-    v-show="$parent.isImageSelection"
-    :class="{ loaded: $parent.isImageSelection }"
-    v-if="$parent.selectionPosition.target"
+    v-if="selectionPosition.target"
     :style="{
       top: '50%',
       width: 'var(--width-x-large)'
@@ -14,15 +12,15 @@
     <button type="button" class="top-close" :disabled="false" @click="quit()">
       <v-icon name="close" />
     </button>
-    <div class="image-options-preview image-options-item half" v-if="$parent.selectionPosition.src">
+    <div class="image-options-preview image-options-item half" v-if="selectionPosition.src">
       <v-icon
-        v-if="!$parent.selectionPosition.src || imageUrlRawBroken"
+        v-if="!selectionPosition.src || imageUrlRawBroken"
         class="material-icons error icon"
         name="broken_image"
       ></v-icon>
       <img
         v-else
-        :src="$parent.selectionPosition.src"
+        :src="selectionPosition.src"
         alt="image-options-preview"
         class="image"
         @error="imageUrlRawBroken = true"
@@ -30,21 +28,21 @@
     </div>
     <div class="image-options-item half">
       <v-input
-        v-if="!!$parent.selectionPosition.target"
+        v-if="!!selectionPosition.target"
         class="image-options-item"
         ref="editedTitle"
         :placeholder="$t('interfaces-wysiwyg-full-image_title')"
-        v-model.lazy="$parent.selectionPosition.title"
-        :value="$parent.selectionPosition.title"
+        v-model.lazy="selectionPosition.title"
+        :value="selectionPosition.title"
         @keyup.13="setAll()"
       />
       <v-input
-        v-if="!!$parent.selectionPosition.target"
+        v-if="!!selectionPosition.target"
         ref="editedAlt"
         :placeholder="$t('interfaces-wysiwyg-full-image_alt')"
         class="image-options-item"
-        :value="$parent.selectionPosition.alt"
-        v-model.lazy="$parent.selectionPosition.alt"
+        :value="selectionPosition.alt"
+        v-model.lazy="selectionPosition.alt"
         @keyup.13="setAll()"
       />
       <div class="v-input image-options-item dimension">
@@ -53,11 +51,11 @@
             <small>{{ $t("interfaces-wysiwyg-full-image_width_px") }}</small>
           </label>
           <v-input
-            v-if="!!$parent.selectionPosition"
+            v-if="!!selectionPosition"
             ref="editedClasses"
             :placeholder="$t('interfaces-wysiwyg-full-image_width_px')"
-            :value="trimDimension($parent.selectionPosition.target.width.toString())"
-            v-model.lazy="$parent.selectionPosition.target.width"
+            :value="trimDimension(selectionPosition.target.width.toString())"
+            v-model.lazy="selectionPosition.target.width"
             @keyup.13="setAll()"
           />
         </div>
@@ -66,33 +64,33 @@
             <small>{{ $t("interfaces-wysiwyg-full-image_height_px") }}</small>
           </label>
           <v-input
-            v-if="!!$parent.selectionPosition"
+            v-if="!!selectionPosition"
             ref="editedClasses"
             :placeholder="$t('interfaces-wysiwyg-full-image_height_px')"
             class="image-options-item quart"
             :disabled="true"
-            :value="$parent.selectionPosition.target.height"
+            :value="selectionPosition.target.height"
           />
         </div>
       </div>
     </div>
     <v-input
-      v-if="!!$parent.selectionPosition.target"
+      v-if="!!selectionPosition.target"
       class="image-options-item"
       ref="editedSource"
       @input="imageUrlRawBroken = false"
       :placeholder="$t('interfaces-wysiwyg-full-image_source')"
-      v-model.lazy="$parent.selectionPosition.src"
-      :value="$parent.selectionPosition.src"
+      v-model.lazy="selectionPosition.src"
+      :value="selectionPosition.src"
       @keyup.13="setAll()"
     />
     <v-input
-      v-if="!!$parent.selectionPosition"
+      v-if="!!selectionPosition"
       ref="editedClasses"
       :placeholder="$t('interfaces-wysiwyg-full-image_css_classes')"
       class="image-options-item"
-      :value="$parent.selectionPosition.classes"
-      v-model.lazy="$parent.selectionPosition.classes"
+      :value="selectionPosition.classes"
+      v-model.lazy="selectionPosition.classes"
       @keyup.13="setAll()"
     />
     <div class="image-options-footer">
@@ -109,6 +107,12 @@
 </template>
 <script>
 export default {
+  props: {
+    selectionPosition: {
+      required: true,
+      type: Object
+    }
+  },
   data() {
     return {
       loaded: false,
@@ -122,15 +126,14 @@ export default {
       }
     },
     quit() {
-      this.$parent.isImageSelection = false;
+      this.$emit("toggleImageEdit", false);
     },
     setAll() {
-      this.$parent.selectionPosition.target.className = this.$parent.selectionPosition.classes;
-      this.$parent.selectionPosition.target.alt = this.$parent.selectionPosition.alt;
-      this.$parent.selectionPosition.target.src = this.$parent.selectionPosition.src;
-      this.$parent.selectionPosition.target.title = this.$parent.selectionPosition.title;
-      this.$parent.hasSettings = false;
-      this.$parent.isImageSelection = false;
+      this.selectionPosition.target.className = this.selectionPosition.classes;
+      this.selectionPosition.target.alt = this.selectionPosition.alt;
+      this.selectionPosition.target.src = this.selectionPosition.src;
+      this.selectionPosition.target.title = this.selectionPosition.title;
+      this.$emit("toggleImageEdit", false);
     }
   },
   mounted() {
@@ -158,6 +161,11 @@ export default {
   border: 2px solid var(--lighter-gray);
   opacity: 0;
   animation: FadeOutImageEdit 0.2s ease-in-out;
+  display: flex;
+  max-height: 100vh;
+  opacity: 1;
+  z-index: 99;
+  animation: FadeInImageEdit 0.3s ease-in-out;
 
   .title {
     font-size: var(--size-2);
@@ -186,14 +194,6 @@ export default {
   &:last-of-type {
     padding-bottom: 0;
   }
-}
-
-.loaded {
-  display: flex;
-  max-height: 100vh;
-  opacity: 1;
-  z-index: 99;
-  animation: FadeInImageEdit 0.3s ease-in-out;
 }
 
 .top-close {

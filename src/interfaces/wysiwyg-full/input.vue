@@ -16,9 +16,20 @@
     <RawHtmlView v-if="showSource" :value="value" @input="updateValue" />
 
     <!-- WYSIWYG Editor -->
-    <EditorContent v-else :editor="editor" />
+    <EditorContent
+      v-else
+      :editor="editor"
+      @toggleImageEdit="showImageEdit = $event || !showImageEdit"
+      @selectionIsImage="selectionIsImage = $event"
+      :selection-position="selectionPosition"
+      :selection-is-image="selectionIsImage"
+    />
 
-    <ImageEdit />
+    <ImageEdit
+      v-show="showImageEdit"
+      :selection-position="selectionPosition"
+      @toggleImageEdit="showImageEdit = $event || !showImageEdit"
+    />
   </div>
 </template>
 <script>
@@ -69,6 +80,8 @@ export default {
       editorText: "",
       editor: null,
       showSource: false,
+      showImageEdit: false,
+      selectionIsImage: false,
       selectionPosition: {
         pos: null,
         editorPos: null,

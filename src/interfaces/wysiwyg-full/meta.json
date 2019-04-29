@@ -55,7 +55,8 @@
           "link": "Link",
           "code": "Code",
           "table": "Table",
-          "todolist": "Todo list"
+          "todolist": "Todo list",
+          "history": "History (undo / redo)"
         }
       }
     }

@@ -1,5 +1,5 @@
 .interface-wysiwyg-container {
-  .interface-wysiwyg.editor__content {
+  .interface-wysiwyg.editor__content, .editor__content {
     > *[contenteditable="true"],
     > *[contenteditable] {
       min-height: inherit;
@@ -32,6 +32,9 @@
         border-left: 2px solid var(--lighter-gray);
         color: var(--light-gray);;
         font-size: 140%;
+      }
+      a {
+        cursor: pointer;
       }
       strong {
         font-weight: bolder;
@@ -121,7 +124,7 @@
     }
   }
   &.fullscreen {
-    .interface-code, .vue-codemirror {
+    .interface-code, .vue-codemirror, .editor__content {
       min-height: 100vh;
       .CodeMirror-scroll, .CodeMirror {
         min-height: inherit;
@@ -139,7 +142,7 @@
       }
     }
     .editor__rawformat {
-      left: 5px;
+      left: 15px;
       top: -24px;
     }
     .options {
@@ -153,6 +156,7 @@
         transition: background-color .4s ease-in-out, color .3s ease-in-out;
       }
       .ProseMirror {
+        min-height: inherit;
         transition: background-color .4s ease-in-out, color .3s ease-in-out;
         border-color: transparent;
       }
@@ -177,6 +181,9 @@
           border: 0;
           background-color: var(--black);
           color: var(--lighter-gray);
+          &:focus,&:active,&::selection{
+            color: var(--lightest-gray);
+          }
         }
       }
       .editor__content {
@@ -184,7 +191,14 @@
           max-width: 780px;
           margin-left: auto;
           margin-right: auto;
-          color: var(--lightest-gray);
+          color: var(--lighter-gray);
+
+          &:focus, &:active, &::selection {
+            color: var(--lightest-gray);
+          }
+          &::selection {
+            background-color: var(--light-gray);
+          }
         }
       }
       .ProseMirror {

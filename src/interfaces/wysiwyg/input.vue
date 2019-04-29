@@ -6,7 +6,12 @@
     :name="name"
     @input="$emit('input', $event.target.innerHTML)"
   >
+    <!-- Bubble with Editor menu bar -->
     <Bubble :options="options" :editor="editor" />
+
+    <!-- WYSIWYG Editor -->
+    <EditorContent :editor="editor" />
+
     <p
       class="fullscreen-info"
       v-if="$parent.$parent.field.name && distractionFree"
@@ -32,43 +37,22 @@
         @click="blackMode = !blackMode"
         v-tooltip="$t('interfaces-wysiwyg-dark_mode')"
       >
-        <v-icon name="filter_b_and_w" />
+        <v-icon :name="blackMode ? 'iso' : 'iso'" />
       </button>
       <button
         v-on:click="distractionFree = !distractionFree"
         type="button"
         class="fullscreen-toggle"
-        v-tooltip="!distractionFree ? $t('interfaces-wysiwyg-distraction_free_mode') : false"
+        v-tooltip="
+          !distractionFree
+            ? $t('interfaces-wysiwyg-distraction_free_mode')
+            : $t('interfaces-wysiwyg-distraction_free_mode_exit')
+        "
       >
-        <v-icon :name="!distractionFree ? 'fullscreen' : 'close'" />
+        <v-icon :name="!distractionFree ? 'fullscreen' : 'cancel'" />
       </button>
     </div>
-    <div class="editor__inner" :class="{ shrinked: showSource }" v-show="!showSource">
-      <!-- WYSIWYG Editor  -->
-      <editor-content
-        id="wysiwyg"
-        ref="editor"
-        :class="[
-          'interface-wysiwyg editor__content',
-          readonly ? 'readonly' : '',
-          { hidden: showSource }
-        ]"
-        :editor="editor"
-        v-show="!showSource"
-      />
-      <div
-        class="options-toggler"
-        v-if="selectionPosition.target && hasSettings && !showSource"
-        :class="{ active: hasSettings }"
-        @click="isImageSelection = !isImageSelection"
-        :style="{
-          top: getTopPosition(selectionPosition.target),
-          left: getLeftPosition(selectionPosition.target)
-        }"
-      >
-        <v-icon name="settings"></v-icon>
-      </div>
-    </div>
+
     <template v-if="showSource">
       <RawHtmlView
         class="raw-editor"
@@ -86,7 +70,8 @@
 
 <script>
 import mixin from "@directus/extension-toolkit/mixins/interface";
-import { Editor, EditorContent } from "tiptap";
+import { Editor } from "tiptap";
+import EditorContent from "./../wysiwyg-full/components/EditorContent";
 const Bubble = () => import("./../wysiwyg-full/components/Bubble");
 const RawHtmlView = () => import("./../wysiwyg-full/components/RawHtmlView");
 import ImageEdit from "./../wysiwyg-full/components/ImageEdit";
@@ -130,22 +115,6 @@ export default {
     }
   },
   methods: {
-    getTopPosition($elem) {
-      let editorTop = this.$refs.editor.$el.getBoundingClientRect().top;
-      if (editorTop) {
-        return $elem.getBoundingClientRect().top
-          ? $elem.getBoundingClientRect().top -
-              editorTop +
-              ($elem.getBoundingClientRect().height / 2 + 34) +
-              "px"
-          : "19px";
-      }
-    },
-    getLeftPosition($elem) {
-      return $elem.getBoundingClientRect().width
-        ? $elem.getBoundingClientRect().width / 2 - 12 + "px"
-        : "0";
-    },
     init() {
       if (
         !this.options.toolbarOptions ||
@@ -275,47 +244,11 @@ export default {
     };
   },
 
-  beforeUpdate() {
-    this.observer = new MutationObserver(mutations => {
-      for (const m of mutations) {
-        if (m.type === "attributes" && m.target.localName === "img") {
-          this.selectionPosition = {
-            title: m.target.attributes.title ? m.target.attributes.title.value : "",
-            alt: m.target.attributes.alt ? m.target.attributes.alt.value : "",
-            target: m.target,
-            src: m.target.src,
-            classes: m.target.className.includes("ProseMirror-selectednode")
-              ? m.target.className.replace(/ProseMirror-selectednode/gi, "")
-              : m.target.className,
-            height: m.target.height,
-            width: m.target.width
-          };
-          if (m.target.className.includes("ProseMirror-selectednode")) {
-            this.hasSettings = true;
-          }
-        } else if (m.type === "childList") {
-          this.isImageSelection = false;
-          this.hasSettings = false;
-        }
-      }
-    });
-  },
   mounted() {
     this.init();
-    this.$nextTick(function() {
-      if (this.$refs.editor.$el) {
-        this.observer.observe(this.$refs.editor.$el, {
-          nodeList: false,
-          childList: true,
-          subtree: true,
-          attributeFilter: ["class"]
-        });
-      }
-    });
   },
   beforeDestroy() {
     this.editor.destroy();
-    this.observer.disconnect();
   },
   destroyed() {
     window.removeEventListener("scroll", this.handleEditorScroll);
@@ -370,34 +303,12 @@ export default {
     }
   }
 }
-.editor {
-  position: relative;
-  min-height: 220px;
-  .editor__inner {
-    min-height: inherit;
 
-    &.shrinked {
-      min-height: 0;
-      .menubar__button:not(.toggler) {
-        display: none;
-      }
-    }
-    .editor__content {
-      &.hidden {
-        min-height: 0;
-        display: none;
-      }
-    }
-    img {
-      max-width: 100%;
-    }
-  }
-}
 .options {
   position: absolute;
   z-index: 9;
-  right: 10px;
-  top: 10px;
+  right: 0;
+  top: 7px;
 
   .back {
     float: left;

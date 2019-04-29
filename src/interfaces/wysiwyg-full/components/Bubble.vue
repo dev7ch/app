@@ -38,7 +38,6 @@ export default {
       if (this.$parent.$children.length) {
         for (let i = 0; i < this.$parent.$children.length; i++) {
           if (this.$parent.$children[i].$refs.hasOwnProperty("editor")) {
-            console.log(this.$parent.$children[i].editor);
             return (this.editor = this.$parent.$children[i].editor);
           }
         }

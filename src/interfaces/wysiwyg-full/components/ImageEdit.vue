@@ -6,8 +6,9 @@
     v-if="$parent.selectionPosition.target"
     :style="{
       top: '50%',
-      width: getEditorPos($parent.$refs.editor.$el).width
+      width: 'var(--width-x-large)'
     }"
+    @keyup.esc="quit()"
   >
     <h1 class="title image-options-item">Edit image attributes</h1>
     <button type="button" class="top-close" :disabled="false" @click="quit()">
@@ -35,6 +36,7 @@
         :placeholder="$t('image_title')"
         v-model.lazy="$parent.selectionPosition.title"
         :value="$parent.selectionPosition.title"
+        @keyup.13="setAll()"
       />
       <v-input
         v-if="!!$parent.selectionPosition.target"
@@ -43,6 +45,7 @@
         class="image-options-item"
         :value="$parent.selectionPosition.alt"
         v-model.lazy="$parent.selectionPosition.alt"
+        @keyup.13="setAll()"
       />
       <div class="v-input image-options-item dimension">
         <div class="image-options-item quart">
@@ -55,6 +58,7 @@
             :placeholder="$t('width_px')"
             :value="trimDimension($parent.selectionPosition.target.width.toString())"
             v-model.lazy="$parent.selectionPosition.target.width"
+            @keyup.13="setAll()"
           />
         </div>
         <div class="image-options-item quart">
@@ -80,6 +84,7 @@
       :placeholder="$t('image_source')"
       v-model.lazy="$parent.selectionPosition.src"
       :value="$parent.selectionPosition.src"
+      @keyup.13="setAll()"
     />
     <v-input
       v-if="!!$parent.selectionPosition"
@@ -88,6 +93,7 @@
       class="image-options-item"
       :value="$parent.selectionPosition.classes"
       v-model.lazy="$parent.selectionPosition.classes"
+      @keyup.13="setAll()"
     />
     <div class="image-options-footer">
       <v-button type="button" :disabled="false" @click="quit()">
@@ -110,12 +116,6 @@ export default {
     };
   },
   methods: {
-    getEditorPos($elem) {
-      return {
-        left: $elem.getBoundingClientRect().x - 10 + "px",
-        width: $elem.getBoundingClientRect().width - 45 + "px"
-      };
-    },
     trimDimension($str) {
       if ($str) {
         return $str.match(/[a-z%]+|[^a-z%]+/gi);
@@ -123,7 +123,6 @@ export default {
     },
     quit() {
       this.$parent.isImageSelection = false;
-      this.$parent.hasSettings = false;
     },
     setAll() {
       this.$parent.selectionPosition.target.className = this.$parent.selectionPosition.classes;
@@ -147,13 +146,13 @@ export default {
   background-color: var(--lightest-gray);
   padding: calc(var(--page-padding) / 2);
   position: fixed;
-  left: 50%;
-  right: 30px;
+  left: calc(var(--page-padding) * 1.2);
+  transform: translateY(-50%);
+  right: calc(var(--page-padding) * 1.2);
   max-width: 100%;
-  width: 100%;
   overflow-y: auto;
   top: 50%;
-  transform: translate(-50%, -50%);
+  width: 100%;
   margin-top: var(--header-height);
   border-radius: var(--border-radius);
   border: 2px solid var(--lighter-gray);
@@ -167,13 +166,17 @@ export default {
   }
 
   @media (min-width: 480px) {
+    right: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 390px;
     width: calc(100% - var(--page-padding) * 2);
-    //padding: var(--page-padding);
   }
 
   @media (min-width: 800px) {
-    margin-left: var(--nav-sidebar-width);
+    min-width: 440px;
     left: calc(50% - var(--nav-sidebar-width));
+    margin-left: calc(var(--nav-sidebar-width) + var(--page-padding));
   }
 }
 

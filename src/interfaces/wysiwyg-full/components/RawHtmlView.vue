@@ -31,5 +31,6 @@ export default {
 <style lang="scss">
 .editor .CodeMirror {
   padding: calc(var(--page-padding) / 2);
+  margin-bottom: 0;
 }
 </style>

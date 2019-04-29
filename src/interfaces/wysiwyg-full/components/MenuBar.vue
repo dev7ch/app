@@ -15,6 +15,7 @@
           :command="commands.bold"
           :active-condition="isActive.bold()"
           :disabled="!!$parent.showSource"
+          v-tooltip.bottom="$t('editor.bold')"
         ></MenuButton>
         <MenuButton
           v-if="optionsInclude('Italic')"
@@ -23,6 +24,7 @@
           :command="commands.italic"
           :active-condition="isActive.italic()"
           :disabled="!!$parent.showSource"
+          v-tooltip.bottom="$t('editor.italic')"
         />
         <MenuButton
           v-if="optionsInclude('Strike')"
@@ -31,6 +33,7 @@
           :command="commands.strike"
           :active-condition="isActive.strike()"
           :disabled="!!$parent.showSource"
+          v-tooltip.bottom="$t('editor.strike')"
         />
 
         <MenuButton
@@ -40,6 +43,7 @@
           :command="commands.underline"
           :active-condition="isActive.underline()"
           :disabled="!!$parent.showSource"
+          v-tooltip.bottom="$t('editor.underline')"
         />
 
         <MenuButton
@@ -49,6 +53,7 @@
           :command="commands.code"
           :active-condition="isActive.code()"
           :disabled="!!$parent.showSource"
+          v-tooltip.bottom="$t('editor.code')"
         />
 
         <MenuButton
@@ -58,6 +63,7 @@
           :command="commands.code_block"
           :active-condition="isActive.code_block()"
           :disabled="!!$parent.showSource"
+          v-tooltip.bottom="$t('editor.code_block')"
         />
 
         <MenuButton
@@ -67,6 +73,7 @@
           :command="commands.paragraph"
           :active-condition="isActive.paragraph()"
           :disabled="!!$parent.showSource"
+          v-tooltip.bottom="$t('editor.paragraph')"
         />
 
         <MenuButton
@@ -76,6 +83,7 @@
           :command="commands.bullet_list"
           :active-condition="isActive.bullet_list()"
           :disabled="!!$parent.showSource"
+          v-tooltip.bottom="$t('editor.bullet_list')"
         />
 
         <MenuButton
@@ -85,6 +93,7 @@
           :command="commands.ordered_list"
           :active-condition="isActive.ordered_list()"
           :disabled="!!$parent.showSource"
+          v-tooltip.bottom="$t('editor.ordered_list')"
         />
         <MenuButton
           v-if="optionsInclude('Blockquote')"
@@ -93,6 +102,7 @@
           :command="commands.blockquote"
           :active-condition="isActive.blockquote()"
           :disabled="!!$parent.showSource"
+          v-tooltip.bottom="$t('editor.blockquote')"
         />
 
         <MenuButton
@@ -102,6 +112,7 @@
           :command="setLink"
           :active-condition="linkBubble"
           :disabled="!!$parent.showSource"
+          v-tooltip.bottom="$t('editor.link')"
         />
 
         <MenuButton
@@ -111,6 +122,7 @@
           :command="() => (chooseImage = !chooseImage)"
           :active-condition="chooseImage"
           :disabled="!!$parent.showSource"
+          v-tooltip.bottom="$t('editor.image')"
         />
         <template v-for="n in 6">
           <MenuButton
@@ -122,6 +134,7 @@
             :command="() => commands.heading({ level: n })"
             :active-condition="isActive.heading({ level: n })"
             :disabled="!!$parent.showSource"
+            v-tooltip.bottom="$tc('editor.heading', { level: n })"
           />
         </template>
 
@@ -131,6 +144,7 @@
           icon="maximize"
           :command="commands.horizontal_rule"
           :disabled="!!$parent.showSource"
+          v-tooltip.bottom="$t('editor.horizontal_rule')"
         />
         <!-- table and table toolbar -->
         <MenuButton
@@ -147,6 +161,7 @@
           "
           :active-condition="isActive.table()"
           :disabled="!!$parent.showSource"
+          v-tooltip.bottom="$t('editor.table')"
         />
 
         <div
@@ -242,26 +257,13 @@
         </div>
         <!-- menu raw view toggler -->
         <button
-          v-if="!$props.editor"
           class="menubar__button toggler"
           @click="$parent.updateText($parent.editor.view.dom.innerHTML)"
           :style="{
             order: 999
           }"
         >
-          <v-icon name="explore" v-if="!$parent.showSource" />
-          <v-icon v-else name="explore_off" />
-        </button>
-        <button
-          v-else-if="$props.editor"
-          class="menubar__button toggler"
-          @click="updates.updateText(updates.editor.view.dom.innerHTML)"
-          :style="{
-            order: 999
-          }"
-        >
-          <v-icon name="explore" v-if="!updates.showSource" />
-          <v-icon v-else name="explore_off" />
+          <v-icon name="code" :color="$parent.showSource ? 'accent' : 'light-gray'" />
         </button>
       </div>
     </editor-menu-bar>
@@ -409,44 +411,35 @@ export default {
   border-top-left-radius: var(--border-radius);
   border-top-right-radius: var(--border-radius);
   color: var(--gray);
-  background-color: var(--lightest-gray);
+  background-color: var(--off-white);
   transition: var(--fast) var(--transition);
   transition-property: color, border-color;
-  margin-bottom: -5px;
   padding-top: 0;
 
   .menubar {
+    position: relative;
+    z-index: 2;
     min-height: 34px;
     display: flex;
     flex-flow: row wrap;
-    &.options-is-open {
-      + .editor__content {
-        //padding-top: 42px;
-      }
-    }
   }
 }
 
 .options-fixed {
   position: absolute;
-  margin-bottom: -2px;
-  transform: translateY(-100%);
   opacity: 0;
   z-index: 1;
-  background-color: var(--lightest-gray);
+  background-color: var(--off-white);
   width: 100%;
   border: var(--input-border-width) solid var(--lighter-gray);
-  border-radius: var(--border-radius) var(--border-radius) 0 0;
+  border-radius: var(--border-radius) var(--border-radius);
   border-bottom-color: var(--lighter-gray);
   color: var(--gray);
   left: 0;
   transition: var(--fast) var(--transition);
   transition-property: color, border-color;
+  top: 32px;
 
-  .menubar__button {
-    margin-left: 1px;
-    position: relative;
-  }
   &.is-open {
     opacity: 1;
   }
@@ -455,21 +448,8 @@ export default {
 .toggler {
   height: 31px;
   width: 31px;
-
   text-align: center;
   margin-left: auto;
-  border-bottom-left-radius: 50%;
-  border-top-left-radius: 50%;
-  border: var(--input-border-width) solid var(--lightest-gray);
-  transition: background-color ease-in-out 0.2s, color 0.15s ease-in-out;
-  background-color: var(--lightest-gray);
-  color: var(--gray);
-
-  &:hover,
-  &:focus {
-    color: var(--white);
-    background-color: var(--action);
-  }
 }
 
 .history__actions {

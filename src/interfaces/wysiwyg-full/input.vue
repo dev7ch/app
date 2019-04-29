@@ -6,20 +6,11 @@
     @input="$emit('input', $event.target.innerHTML)"
   >
     <!-- WYSIWYG Editor Menubar and Bubble components -->
-    <Menubar :options="options" v-if="editor" />
+    <MenuBar :options="options" v-if="editor" />
     <!-- WYSIWYG Editor -->
     <EditorContent :editor="editor" />
     <!-- Unformatted raw html view -->
-    <template v-if="showSource">
-      <RawHtmlView
-        :id="name + '-raw'"
-        :options="options"
-        :show-source="showSource"
-        :name="name"
-        :editor-text="editorText"
-        :editor="editor"
-      />
-    </template>
+    <RawHtmlView v-if="showSource" />
     <ImageEdit />
   </div>
 </template>
@@ -27,8 +18,8 @@
 import mixin from "@directus/extension-toolkit/mixins/interface";
 import { Editor } from "tiptap";
 import EditorContent from "./components/EditorContent";
-const Menubar = () => import("./components/MenuBar");
-const RawHtmlView = () => import("./components/RawHtmlView");
+import MenuBar from "./components/MenuBar";
+import RawHtmlView from "./components/RawHtmlView";
 import ImageEdit from "./components/ImageEdit";
 
 import {
@@ -165,7 +156,7 @@ export default {
   },
   components: {
     EditorContent,
-    Menubar,
+    MenuBar,
     RawHtmlView,
     ImageEdit
   },
@@ -212,17 +203,19 @@ export default {
 };
 </script>
 
+<style lang="scss">
+@import "assets/scss/editor";
+</style>
+
 <style lang="scss" scoped>
 .interface-wysiwyg-container,
 .interface-wysiwyg {
   position: relative;
   width: 100%;
-  min-height: inherit;
-  max-width: var(--width-x-large);
 }
 .editor {
   position: relative;
-  min-height: 220px;
+
   .editor__inner {
     min-height: inherit;
 
@@ -243,7 +236,4 @@ export default {
     }
   }
 }
-</style>
-<style lang="scss">
-@import "assets/scss/editor";
 </style>

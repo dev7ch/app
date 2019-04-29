@@ -2,7 +2,7 @@
   .interface-wysiwyg.editor__content, .editor__content {
     > *[contenteditable="true"],
     > *[contenteditable] {
-      min-height: inherit;
+      min-height: 300px;
       max-height: 60vh;
       overflow-y: auto;
       border: var(--input-border-width) solid var(--lighter-gray);
@@ -30,7 +30,7 @@
       blockquote {
         padding-left: 7px;
         border-left: 2px solid var(--lighter-gray);
-        color: var(--light-gray);;
+        color: var(--light-gray);
         font-size: 140%;
       }
       a {

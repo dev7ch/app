@@ -122,5 +122,6 @@
       "custom_url": "Adresse Web (URL) des images",
       "custom_url_comment": "URL personnalisée optionnelle des images, incluant la barre verticale oblique (/) finale"
     }
-  }
+  },
+  "author": "Silvan Hahn <silvan@dev7.ch>"
 }

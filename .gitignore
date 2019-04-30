@@ -6,6 +6,13 @@ public/config.js
 node_modules
 /dist
 public/config.js
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw*
 
 # local env files
 .env.local
@@ -19,11 +26,27 @@ yarn-error.log*
 # Avoid yarn.lock dulplication in favor of package-lock.json
 yarn.lock
 
-# Editor directories and files
-.idea
-.vscode
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw*
+# Typescript v1 declaration files
+typings/
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# dotenv environment variables file
+.env
+
+// Custom extensions
+
+custom/*

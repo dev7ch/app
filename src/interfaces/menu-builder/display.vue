@@ -11,7 +11,7 @@ export default {
   mixins: [mixin],
   computed: {
     displayValue() {
-      return this.value.toLowerCase();
+      return this.value ? this.value.toLowerCase() : null;
     }
   }
 };

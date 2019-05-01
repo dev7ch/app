@@ -1,41 +1,38 @@
 <template>
-  <editor-menu-bar :editor="editor">
-    <div
-      slot-scope="{ commands, isActive, getMarkAttrs }"
-      class="link-bar"
-      :class="{ 'is-active': isActive.link() }"
-    >
-      <button @click="setLinkUrl(commands.link, null)">
-        <v-icon name="delete" v-tooltip="$t('interfaces-wysiwyg-full-link_delete')" />
-      </button>
+  <div class="link-bar" :class="{ 'is-active': isActive }">
+    <button @click="setLinkUrl(commands.link, null)">
+      <v-icon name="delete" v-tooltip="$t('interfaces-wysiwyg-full-link_delete')" />
+    </button>
 
-      <form @submit.prevent="setLinkUrl(commands.link, linkUrl)">
-        <input
-          ref="input"
-          type="url"
-          @input="linkUrl = $event.target.value"
-          :value="getMarkAttrs('link').href"
-          :placeholder="$t('editor.link_placeholder')"
-        />
-      </form>
-    </div>
-  </editor-menu-bar>
+    <form @submit.prevent="setLinkUrl(commands.link, linkUrl)">
+      <input
+        ref="input"
+        type="url"
+        @input="linkUrl = $event.target.value"
+        :value="getMarkAttrs('link').href"
+        :placeholder="$t('editor.link_placeholder')"
+      />
+    </form>
+  </div>
 </template>
 <script>
-import { EditorMenuBar } from "tiptap";
-
 export default {
-  components: {
-    EditorMenuBar
-  },
   props: {
     editor: {
       type: Object,
       defaultValue: {}
     },
-    active: {
+    commands: {
+      type: Object || Function,
+      default: {}
+    },
+    isActive: {
       type: Boolean,
       default: false
+    },
+    getMarkAttrs: {
+      type: Function,
+      default: () => {}
     }
   },
   data() {

@@ -6,7 +6,7 @@
       v-if="this.$refs.editor && selectionPosition.target"
       v-show="selectionIsImage"
       class="options-toggler"
-      @click="$emit('toggleImageEdit')"
+      @click="showImageEdit = !showImageEdit"
       :style="{
         top: getTopPosition(selectionPosition.target),
         left: getLeftPosition(selectionPosition.target)
@@ -14,10 +14,16 @@
     >
       <v-icon name="settings"></v-icon>
     </div>
+    <ImageEdit
+      v-if="showImageEdit"
+      :selection-position="selectionPosition"
+      @toggleImageEdit="showImageEdit = $event || !showImageEdit"
+    />
   </div>
 </template>
 <script>
 import { EditorContent } from "tiptap";
+import ImageEdit from "./ImageEdit";
 
 export default {
   props: {
@@ -34,7 +40,13 @@ export default {
     }
   },
   components: {
-    EditorContent
+    EditorContent,
+    ImageEdit
+  },
+  data() {
+    return {
+      showImageEdit: false
+    };
   },
   methods: {
     getTopPosition($elem) {
@@ -55,6 +67,7 @@ export default {
     }
   },
   beforeUpdate() {
+    // creating observer outside of proseMirror context to direct interaction with vue js
     this.observer = new MutationObserver(mutations => {
       for (const m of mutations) {
         if (m.type === "attributes" && m.target.localName === "img") {
@@ -76,25 +89,28 @@ export default {
           !m.target.className.includes("ProseMirror-selectednode") ||
           !this.selectionIsImage
         ) {
-          this.$emit("toggleImageEdit", false);
+          this.toggleImageEdit = false;
         }
       }
     });
   },
   mounted() {
     this.$nextTick(function() {
+      // define detached observer for editor default html element
       if (this.$refs.editor.$el) {
         this.observer.observe(this.$refs.editor.$el, {
           nodeList: false,
           childList: true,
-          subtree: true,
-          attributeFilter: ["class"]
+          subtree: true, // observe deep
+          attributeFilter: ["class"] // filter attributes to observer for better performance
         });
       }
     });
   },
   beforeDestroy() {
-    this.observer.disconnect();
+    if (this.observer) {
+      this.observer.disconnect();
+    }
   },
   destroyed() {
     if (this.observer) {
@@ -108,7 +124,6 @@ export default {
 .options-toggler {
   position: absolute;
   cursor: pointer;
-  opacity: 0;
   z-index: 1;
   transform: translateY(-50%);
   border: var(--input-border-width) solid var(----accent);

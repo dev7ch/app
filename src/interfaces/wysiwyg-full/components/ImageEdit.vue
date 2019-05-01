@@ -159,12 +159,8 @@ export default {
   margin-top: var(--header-height);
   border-radius: var(--border-radius);
   border: 2px solid var(--lighter-gray);
-  opacity: 0;
-  animation: FadeOutImageEdit 0.2s ease-in-out;
-  display: flex;
   max-height: 100vh;
   opacity: 1;
-  z-index: 99;
   animation: FadeInImageEdit 0.3s ease-in-out;
 
   .title {

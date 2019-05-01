@@ -24,12 +24,6 @@
       :selection-position="selectionPosition"
       :selection-is-image="selectionIsImage"
     />
-
-    <ImageEdit
-      v-show="showImageEdit"
-      :selection-position="selectionPosition"
-      @toggleImageEdit="showImageEdit = $event || !showImageEdit"
-    />
   </div>
 </template>
 <script>
@@ -38,7 +32,6 @@ import { Editor } from "tiptap";
 import EditorContent from "./components/EditorContent";
 import MenuBar from "./components/MenuBar";
 import RawHtmlView from "./components/RawHtmlView";
-import ImageEdit from "./components/ImageEdit";
 
 import {
   Bold,
@@ -72,15 +65,13 @@ export default {
   components: {
     EditorContent,
     MenuBar,
-    RawHtmlView,
-    ImageEdit
+    RawHtmlView
   },
   data() {
     return {
       editorText: "",
       editor: null,
       showSource: false,
-      showImageEdit: false,
       selectionIsImage: false,
       selectionPosition: {
         pos: null,
@@ -113,11 +104,11 @@ export default {
               return new Blockquote();
             case "bold":
               return new Bold();
-            case "bulletlist":
-              return [new BulletList(), new ListItem()];
+            case "bullet_list":
+              return [new ListItem(), new BulletList()];
             case "code":
               return new Code();
-            case "codeblock":
+            case "code_block":
               return new CodeBlock();
             case "h1":
             case "h2":
@@ -128,7 +119,7 @@ export default {
               return new HardBreak();
             case "history":
               return new History();
-            case "horizontalrule":
+            case "horizontal_rule":
               return new HorizontalRule();
             case "image":
               return new Image();
@@ -136,7 +127,7 @@ export default {
               return new Italic();
             case "link":
               return new Link();
-            case "orderedlist":
+            case "ordered_list":
               return [new OrderedList(), new ListItem()];
             case "strike":
               return new Strike();
@@ -150,6 +141,7 @@ export default {
         })
         .filter(ext => ext)
         .flat();
+      console.log(extensions);
 
       this.editor = new Editor({
         extensions: extensions,

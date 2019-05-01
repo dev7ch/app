@@ -1,5 +1,5 @@
 <template>
-  <div class="link-bar" :class="{ 'is-active': isActive }">
+  <div class="menu-sub-bar" :class="{ 'is-active': isActive }">
     <button @click="setLinkUrl(commands.link, null)">
       <v-icon name="delete" v-tooltip="$t('interfaces-wysiwyg-full-link_delete')" />
     </button>
@@ -52,7 +52,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.link-bar {
+.menu-sub-bar {
   position: absolute;
   left: 0;
   bottom: 0;

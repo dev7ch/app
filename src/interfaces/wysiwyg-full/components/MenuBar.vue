@@ -67,8 +67,6 @@
         />
 
         <MenuButton
-          v-if="optionsInclude('paragraph')"
-          plugin-name="Paragraph"
           icon="subject"
           :command="commands.paragraph"
           :active-condition="isActive.paragraph()"

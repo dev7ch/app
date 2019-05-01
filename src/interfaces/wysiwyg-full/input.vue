@@ -110,10 +110,7 @@ export default {
               return new Code();
             case "code_block":
               return new CodeBlock();
-            case "h1":
-            case "h2":
-            case "h3":
-            case "h4":
+            case "h1" || "h2" || "h3" || "h4" || "h5" || "h6":
               return new Heading();
             case "hardbreak":
               return new HardBreak();
@@ -141,7 +138,6 @@ export default {
         })
         .filter(ext => ext)
         .flat();
-      console.log(extensions);
 
       this.editor = new Editor({
         extensions: extensions,

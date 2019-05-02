@@ -1,7 +1,10 @@
 <template>
-  <div class="menu-sub-bar" :class="{ 'is-active': isActive }">
+  <div class="menu-sub-bar" :class="{ 'is-active': isActive && !submitted }">
     <button @click="setLinkUrl(commands.link, null)">
       <v-icon name="delete" v-tooltip="$t('interfaces-wysiwyg-full-link_delete')" />
+    </button>
+    <button @click="$parent.isActive.link = false">
+      <v-icon name="close" v-tooltip="$t('interfaces-wysiwyg-full-link_cancel')" />
     </button>
 
     <form @submit.prevent="setLinkUrl(commands.link, linkUrl)">
@@ -37,7 +40,8 @@ export default {
   },
   data() {
     return {
-      linkUrl: null
+      linkUrl: null,
+      submitted: false
     };
   },
   methods: {

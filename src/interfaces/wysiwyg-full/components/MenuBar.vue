@@ -14,7 +14,7 @@
           icon="format_bold"
           :command="commands.bold"
           :active-condition="isActive.bold()"
-          :disabled="!!$parent.showSource"
+          :disabled="showSource"
           v-tooltip.bottom="$t('editor.bold')"
         ></MenuButton>
         <MenuButton
@@ -23,7 +23,7 @@
           icon="format_italic"
           :command="commands.italic"
           :active-condition="isActive.italic()"
-          :disabled="!!$parent.showSource"
+          :disabled="showSource"
           v-tooltip.bottom="$t('editor.italic')"
         />
         <MenuButton
@@ -32,7 +32,7 @@
           icon="format_strikethrough"
           :command="commands.strike"
           :active-condition="isActive.strike()"
-          :disabled="!!$parent.showSource"
+          :disabled="showSource"
           v-tooltip.bottom="$t('editor.strike')"
         />
 
@@ -42,7 +42,7 @@
           icon="format_underline"
           :command="commands.underline"
           :active-condition="isActive.underline()"
-          :disabled="!!$parent.showSource"
+          :disabled="showSource"
           v-tooltip.bottom="$t('editor.underline')"
         />
 
@@ -52,7 +52,7 @@
           icon="code"
           :command="commands.code"
           :active-condition="isActive.code()"
-          :disabled="!!$parent.showSource"
+          :disabled="showSource"
           v-tooltip.bottom="$t('editor.code')"
         />
 
@@ -62,15 +62,16 @@
           icon="code"
           :command="commands.code_block"
           :active-condition="isActive.code_block()"
-          :disabled="!!$parent.showSource"
+          :disabled="showSource"
           v-tooltip.bottom="$t('editor.code_block')"
         />
 
         <MenuButton
+          plugin-name="Paragraph"
           icon="subject"
           :command="commands.paragraph"
           :active-condition="isActive.paragraph()"
-          :disabled="!!$parent.showSource"
+          :disabled="showSource"
           v-tooltip.bottom="$t('editor.paragraph')"
         />
 
@@ -80,7 +81,7 @@
           icon="format_list_bulleted"
           :command="commands.bullet_list"
           :active-condition="isActive.bullet_list()"
-          :disabled="!!$parent.showSource"
+          :disabled="showSource"
           v-tooltip.bottom="$t('editor.bullet_list')"
         />
 
@@ -90,16 +91,16 @@
           icon="format_list_numbered"
           :command="commands.ordered_list"
           :active-condition="isActive.ordered_list()"
-          :disabled="!!$parent.showSource"
+          :disabled="showSource"
           v-tooltip.bottom="$t('editor.ordered_list')"
         />
         <MenuButton
-          v-if="optionsInclude('Blockquote')"
+          v-if="optionsInclude('blockquote')"
           plugin-name="Blockquote"
           icon="format_quote"
           :command="commands.blockquote"
           :active-condition="isActive.blockquote()"
-          :disabled="!!$parent.showSource"
+          :disabled="showSource"
           v-tooltip.bottom="$t('editor.blockquote')"
         />
 
@@ -109,7 +110,7 @@
           icon="link"
           :command="setLink"
           :active-condition="linkBubble"
-          :disabled="!!$parent.showSource"
+          :disabled="showSource"
           v-tooltip.bottom="$t('editor.link')"
         />
 
@@ -119,7 +120,7 @@
           icon="image"
           :command="() => (chooseImage = !chooseImage)"
           :active-condition="chooseImage"
-          :disabled="!!$parent.showSource"
+          :disabled="showSource"
           v-tooltip.bottom="$t('editor.image')"
         />
         <template v-for="n in 6">
@@ -131,17 +132,17 @@
             :label="'H' + n"
             :command="() => commands.heading({ level: n })"
             :active-condition="isActive.heading({ level: n })"
-            :disabled="!!$parent.showSource"
+            :disabled="showSource"
             v-tooltip.bottom="$tc('editor.heading', { level: n })"
           />
         </template>
 
         <MenuButton
-          v-if="optionsInclude('HorizontalRule')"
+          v-if="optionsInclude('horizontal_rule')"
           plugin-name="HorizontalRule"
           icon="maximize"
           :command="commands.horizontal_rule"
-          :disabled="!!$parent.showSource"
+          :disabled="showSource"
           v-tooltip.bottom="$t('editor.horizontal_rule')"
         />
         <!-- table and table toolbar -->
@@ -158,17 +159,17 @@
               })
           "
           :active-condition="isActive.table()"
-          :disabled="!!$parent.showSource"
+          :disabled="showSource"
           v-tooltip.bottom="$t('editor.table')"
         />
 
         <div
           class="options-fixed"
-          v-if="optionsInclude('Table') && !$parent.showSource ? isActive.table() : false"
+          v-if="optionsInclude('table') && !$parent.showSource ? isActive.table() : false"
           :class="{ 'is-open': isActive.table() }"
         >
           <MenuButton
-            v-if="optionsInclude('Table')"
+            v-if="optionsInclude('table')"
             plugin-name="Table"
             icon="table_chart"
             :command="commands.deleteTable"
@@ -176,7 +177,7 @@
           />
 
           <MenuButton
-            v-if="optionsInclude('Table')"
+            v-if="optionsInclude('table')"
             plugin-name="Table"
             icon="border_left"
             :command="commands.addColumnBefore"
@@ -184,7 +185,7 @@
           />
 
           <MenuButton
-            v-if="optionsInclude('Table')"
+            v-if="optionsInclude('table')"
             plugin-name="Table"
             icon="border_right"
             sup-type="add"
@@ -192,7 +193,7 @@
           />
 
           <MenuButton
-            v-if="optionsInclude('Table')"
+            v-if="optionsInclude('table')"
             plugin-name="Table"
             icon="border_outer"
             sup-type="remove"
@@ -200,7 +201,7 @@
           />
 
           <MenuButton
-            v-if="optionsInclude('Table')"
+            v-if="optionsInclude('table')"
             plugin-name="Table"
             icon="border_top"
             sup-type="add"
@@ -208,7 +209,7 @@
           />
 
           <MenuButton
-            v-if="optionsInclude('Table')"
+            v-if="optionsInclude('table')"
             plugin-name="Table"
             icon="border_bottom"
             sup-type="add"
@@ -216,7 +217,7 @@
           />
 
           <MenuButton
-            v-if="optionsInclude('Table')"
+            v-if="optionsInclude('table')"
             plugin-name="Table"
             icon="border_horizontal"
             sup-type="remove"
@@ -224,7 +225,7 @@
           />
 
           <MenuButton
-            v-if="optionsInclude('Table')"
+            v-if="optionsInclude('table')"
             plugin-name="Table"
             icon="merge_type"
             :command="commands.toggleCellMerge"
@@ -233,24 +234,22 @@
         <!-- history -->
         <div
           class="history__actions"
-          v-if="optionsInclude('History')"
+          v-if="optionsInclude('history')"
           :style="{
-            order: optionsIndex('History')
+            order: optionsIndex('history')
           }"
         >
           <MenuButton
-            v-if="optionsInclude('History')"
             class="menubar__button"
             icon="undo"
             :command="commands.undo"
-            :disabled="!!$parent.showSource"
+            :disabled="showSource"
           />
           <MenuButton
-            v-if="optionsInclude('History')"
             class="menubar__button"
             icon="redo"
             :command="commands.redo"
-            :disabled="!!$parent.showSource"
+            :disabled="showSource"
           />
         </div>
 
@@ -259,7 +258,7 @@
           @click="$emit('toggleSource')"
           v-tooltip.bottom="$t('editor.view_source')"
         >
-          <v-icon name="code" :color="$parent.showSource ? 'accent' : 'light-gray'" />
+          <v-icon name="code" :color="showSource ? 'accent' : 'light-gray'" />
         </button>
         <template v-if="optionsInclude('link') && linkBubble">
           <LinkBar
@@ -271,7 +270,6 @@
         </template>
       </div>
     </editor-menu-bar>
-    <!-- editor bubble for link interface -->
 
     <!-- image selection modal interface  -->
     <portal to="modal" v-if="chooseImage">
@@ -381,9 +379,15 @@ export default {
       return this.$props.buttons.indexOf($val);
     },
     addImageCommand(data) {
-      if (data.command !== null || data.command !== "data") {
+      if (data.command !== null && !this.imageUrlRaw) {
         this.editor.commands.image({
           src: data.full_url
+        });
+
+        this.chooseImage = false;
+      } else if (data.command !== null && this.imageUrlRaw !== "") {
+        this.editor.commands.image({
+          src: this.imageUrlRaw
         });
 
         this.chooseImage = false;

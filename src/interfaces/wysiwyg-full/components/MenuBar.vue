@@ -1,6 +1,6 @@
 <template>
   <div class="menubar__wrapper">
-    <editor-menu-bar :editor="$parent.editor">
+    <editor-menu-bar :editor="editor">
       <div
         class="menubar"
         slot-scope="{ commands, isActive, getMarkAttrs }"
@@ -128,7 +128,6 @@
             :key="n"
             v-if="optionsInclude('h' + n)"
             :plugin-name="'h' + n"
-            icon="crop_square"
             :label="'H' + n"
             :command="() => commands.heading({ level: n })"
             :active-condition="isActive.heading({ level: n })"
@@ -333,7 +332,8 @@ export default {
     },
     editor: {
       type: Object,
-      defaultValue: {}
+      defaultValue: {},
+      required: true
     },
     updates: {
       type: Object,
@@ -447,14 +447,14 @@ export default {
   z-index: 1;
   background-color: var(--off-white);
   width: 100%;
-  border: var(--input-border-width) solid var(--lighter-gray);
-  border-radius: var(--border-radius) var(--border-radius);
-  border-bottom-color: var(--lighter-gray);
+  border-top: calc(var(--input-border-width) / 2) solid var(--lighter-gray);
+  border-bottom: var(--input-border-width) solid var(--lighter-gray);
+  border-radius: 0;
   color: var(--gray);
   left: 0;
   transition: var(--fast) var(--transition);
   transition-property: color, border-color;
-  top: 32px;
+  top: 100%;
 
   &.is-open {
     opacity: 1;

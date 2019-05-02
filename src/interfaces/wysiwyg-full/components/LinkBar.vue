@@ -1,9 +1,14 @@
 <template>
-  <div class="menu-sub-bar" :class="{ 'is-active': isActive }" v-if="!submitted">
+  <div class="menu-sub-bar" :class="{ 'is-active': isActive }">
     <button @click="setLinkUrl(commands.link, null)">
       <v-icon name="delete" v-tooltip="$t('interfaces-wysiwyg-full-link_delete')" />
     </button>
-    <button @click="submitted = true" class="close">
+    <button
+      @click="
+        $parent.$parent.linkBubble ? ($parent.$parent.linkBubble = false) : (submitted = true)
+      "
+      class="close"
+    >
       <v-icon name="close" v-tooltip="$t('interfaces-wysiwyg-full-link_cancel')" />
     </button>
 
@@ -47,15 +52,19 @@ export default {
     setLinkUrl(command, linkUrl) {
       try {
         command({ href: linkUrl });
-        //this.editor.focus();
         this.submitted = true;
+
+        // if menu bar has linkBubble set it on submit, double parent is needed due `editor-menu-bar` is in between
+        if (this.$parent.$parent.linkBubble) {
+          this.$parent.$parent.linkBubble = false;
+        }
       } catch (e) {
         console.log(e.message);
       }
     }
   },
   mounted() {
-    this.submitted = false;
+    this.submitted = this.$props.isActive;
     this.$refs.input.focus();
   }
 };

@@ -7,6 +7,7 @@
   >
     <!-- WYSIWYG Editor Menubar and Bubble components -->
     <MenuBar
+      v-if="editor"
       :buttons="options.extensions"
       :editor="editor"
       @toggleSource="showSource = !showSource"

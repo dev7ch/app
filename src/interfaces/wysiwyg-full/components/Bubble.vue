@@ -3,6 +3,7 @@
     <div
       slot-scope="{ commands, isActive, getMarkAttrs, menu }"
       class="menububble__frame"
+      :visible="menu.isActive"
       :class="{ visible: menu.isActive && !showSource }"
       :style="
         `left: ${menu.left > calcWidth() / 2 ? menu.left + 'px' : '0'};
@@ -87,36 +88,30 @@ export default {
   background-color: var(--lightest-gray);
   padding: 0;
   opacity: 0;
+  visibility: hidden;
+  margin-top: -100vh;
   transition: top 0.2s ease-in-out, bottom 0.2s ease-in-out, left 0.2s ease-in-out,
     opacity 0.4s ease-in-out, opacity 0.3s ease-in-out;
   border-radius: var(--border-radius);
 
   &.visible {
+    transform: translateY(0);
     visibility: visible;
     opacity: 1;
     z-index: 99;
   }
 
   .menubar__wrapper {
-    z-index: 99;
+    border: var(--input-border-width) solid var(--lighter-gray);
+    border-radius: var(--border-radius);
     .menubar {
       overflow-y: auto;
     }
   }
-  .menubar__wrapper {
-    border: var(--input-border-width) solid var(--lighter-gray);
-  }
-}
-
-.menubar__button.toggler {
-  min-height: 34px;
-  border-color: var(--darkest-gray);
-  background-color: var(--darker-gray);
-}
-
-.menububble__button {
-  .icon {
-    //margin-bottom: -5px;
+  .menubar__button.toggler {
+    min-height: 34px;
+    border-color: var(--darkest-gray);
+    background-color: var(--darker-gray);
   }
 }
 </style>

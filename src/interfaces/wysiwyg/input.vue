@@ -36,12 +36,13 @@
 
     <div class="options">
       <button
+        v-if="rawView"
         @click="showSource"
         type="button"
         class="back"
         v-tooltip="$t('interfaces-wysiwyg-go_back')"
       >
-        <v-icon name="explore_off" />
+        <v-icon name="code" />
       </button>
       <button
         v-if="distractionFree"
@@ -287,7 +288,6 @@ export default {
   width: 100%;
   min-height: 24px;
   max-width: 100%;
-  border-bottom: 1px solid var(--lightest-gray);
   font-size: var(--size-2);
   padding-bottom: 6px;
   color: var(--darkest-gray);

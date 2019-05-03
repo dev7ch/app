@@ -6,20 +6,16 @@
       :buttons="options.extensions"
       :editor="editor"
       :show-source="rawView"
+      :show-link="linkBubble"
+      :toggle-link="toggleLinkBar"
       :toggle-source="showSource"
-      :update-value="updateValue"
     />
-
-    <!-- Unformatted raw html view -->
-    <!--<RawHtmlView v-if="showSource" :value="value" @input="updateValue" />-->
-
     <!-- WYSIWYG Editor -->
     <EditorContent
       :parent-value="editorText ? editorText : value"
       :update-value="updateValue"
       :raw-view="rawView"
       :editor="editor"
-      @toggleImageEdit="showImageEdit = $event || !showImageEdit"
     />
   </div>
 </template>
@@ -66,7 +62,8 @@ export default {
     return {
       editorText: "",
       editor: null,
-      rawView: false
+      rawView: false,
+      linkBubble: false
     };
   },
 
@@ -80,6 +77,17 @@ export default {
     }
   },
   methods: {
+    // Private property functions
+    updateValue(value) {
+      this.$emit("input", value);
+      this.editorText = value;
+      if (this.editorText !== this.editor.view.dom.innerHTML) {
+        this.editor.view.dom.innerHTML = value;
+      }
+    },
+    toggleLinkBar() {
+      this.linkBubble = !this.linkBubble;
+    },
     showSource() {
       if (!this.rawView) {
         this.updateValue(this.editor.view.dom.innerHTML);
@@ -88,6 +96,7 @@ export default {
       }
       return (this.rawView = !this.rawView);
     },
+    // Init editor
     init() {
       const extensions = this.options.extensions
         .map(ext => {
@@ -139,13 +148,6 @@ export default {
           this.$emit("input", getHTML());
         }
       });
-    },
-    updateValue(value) {
-      this.$emit("input", value);
-      this.editorText = value;
-      if (this.editorText !== this.editor.view.dom.innerHTML) {
-        this.editor.view.dom.innerHTML = value;
-      }
     }
   },
 

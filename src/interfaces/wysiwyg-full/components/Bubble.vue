@@ -20,6 +20,8 @@
           :editor="editor"
           :show-source="showSource"
           :toggle-source="toggleSource"
+          :show-link="showLink"
+          :toggle-link="toggleLink"
         />
       </template>
     </div>
@@ -49,6 +51,14 @@ export default {
     toggleSource: {
       type: Function,
       default: () => false
+    },
+    showLink: {
+      type: Boolean,
+      default: false
+    },
+    toggleLink: {
+      type: Function,
+      default: () => false
     }
   },
 
@@ -57,10 +67,6 @@ export default {
       if (this.$props.options.toolbarOptions) {
         return this.$props.options.toolbarOptions.length * 24 + 120;
       }
-    },
-    hideLinkMenu() {
-      this.linkUrl = null;
-      this.linkMenuIsActive = false;
     },
     setLinkUrl(command, url) {
       command({ href: url });
@@ -72,14 +78,6 @@ export default {
   components: {
     EditorMenuBubble,
     Menubar
-  },
-
-  data() {
-    return {
-      linkUrl: null,
-      linkBubble: false,
-      linkMenuIsActive: false
-    };
   }
 };
 </script>

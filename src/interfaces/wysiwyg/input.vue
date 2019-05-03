@@ -12,20 +12,18 @@
       :buttons="options.extensions"
       :show-source="rawView"
       :toggle-source="showSource"
+      :show-link="linkBubble"
+      :toggle-link="toggleLinkBar"
     />
 
     <!-- WYSIWYG Editor -->
     <EditorContent
-      :parent-value="editorText"
+      :parent-value="editorText ? editorText : value"
       :update-value="updateValue"
       :raw-view="rawView"
       :editor="editor"
       :is-blackmode="blackMode"
       :is-fullscreen="distractionFree"
-      @toggleImageEdit="showImageEdit = $event || !showImageEdit"
-      @selectionIsImage="selectionIsImage = $event"
-      :selection-position="selectionPosition"
-      :selection-is-image="selectionIsImage"
     />
 
     <p
@@ -107,7 +105,7 @@ export default {
   mixins: [mixin],
   watch: {
     value(newVal) {
-      if (newVal && !this.showSource) {
+      if (newVal && !this.rawView) {
         this.editorText = newVal;
       } else {
         this.$emit("input", this.editorText);
@@ -115,6 +113,9 @@ export default {
     }
   },
   methods: {
+    toggleLinkBar() {
+      return (this.linkBubble = !this.linkBubble);
+    },
     showSource() {
       if (!this.rawView) {
         this.updateValue(this.editor.view.dom.innerHTML);
@@ -176,7 +177,10 @@ export default {
     },
     updateValue(value) {
       this.$emit("input", value);
-      this.editor.view.dom.innerHTML = value;
+      this.editorText = value;
+      if (this.editorText !== this.editor.view.dom.innerHTML) {
+        this.editor.view.dom.innerHTML = value;
+      }
     }
   },
   components: {
@@ -187,20 +191,10 @@ export default {
     return {
       blackMode: false,
       distractionFree: false,
-      editorExtensions: [],
-      selectionIsImage: false,
       editorText: "",
       editor: null,
       rawView: false,
-      showRaw: false,
-      showTableOptions: false,
-      chooseExisting: false,
-      chooseImage: false,
-      newFile: false,
-      linkUrl: null,
-      linkMenuIsActive: false,
-      lineCount: 0,
-      codeMirrorOptions: {},
+      linkBubble: false,
       selectionPosition: {
         pos: null,
         editorPos: null,
@@ -210,9 +204,7 @@ export default {
         title: null,
         src: null,
         target: null
-      },
-      hasSettings: false,
-      isImageSelection: false
+      }
     };
   },
 

@@ -2,7 +2,7 @@
   <div class="editor-content-wrapper" :class="{ fullscreen: isFullscreen, night: isBlackmode }">
     <editor-content v-show="!rawView" ref="editor" class="editor-content" :editor="editor" />
     <span
-      v-if="selectionIsImage && !rawView"
+      v-if="showImageEdit && !rawView"
       class="options-toggler"
       @click="toggleImageEdit"
       :style="{
@@ -62,7 +62,6 @@ export default {
     return {
       editorText: "",
       editImage: false,
-      selectionIsImage: false,
       showImageEdit: false,
       selectionPosition: {
         pos: null,
@@ -114,14 +113,15 @@ export default {
               height: m.target.height,
               width: m.target.width
             };
-            this.selectionIsImage = true;
+            this.showImageEdit = true;
+          } else if (m.type !== "attributes") {
+            this.showImageEdit = false;
           }
         }
       });
 
-      // hide opttions toggler on scroll of textarea
-      if (this.selectionIsImage) {
-        this.editor.view.dom.onscroll = () => (this.selectionIsImage = false);
+      if (this.showImageEdit) {
+        this.editor.view.dom.onscroll = () => (this.showImageEdit = false);
       }
     }
   },
@@ -130,8 +130,8 @@ export default {
       // define detached observer for editor default html element
       if (this.$refs.editor.$el) {
         this.observer.observe(this.$refs.editor.$el, {
-          nodeList: true,
-          childList: false,
+          nodeList: false,
+          childList: true,
           subtree: true, // observe deep
           attributeFilter: ["class"] // filter attributes to observer for better performance
         });

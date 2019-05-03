@@ -3,12 +3,7 @@
     <button @click="setLinkUrl(commands.link, null)">
       <v-icon name="delete" v-tooltip="$t('interfaces-wysiwyg-full-link_delete')" />
     </button>
-    <button
-      @click="
-        $parent.$parent.linkBubble ? ($parent.$parent.linkBubble = false) : (submitted = true)
-      "
-      class="close"
-    >
+    <button @click="quit" class="close">
       <v-icon name="close" v-tooltip="$t('interfaces-wysiwyg-full-link_cancel')" />
     </button>
 
@@ -40,6 +35,10 @@ export default {
     getMarkAttrs: {
       type: Function,
       default: () => {}
+    },
+    toggleLink: {
+      type: Function,
+      default: () => false
     }
   },
   data() {
@@ -49,15 +48,14 @@ export default {
     };
   },
   methods: {
+    quit() {
+      return this.$props.toggleLink();
+    },
     setLinkUrl(command, linkUrl) {
       try {
         command({ href: linkUrl });
         this.submitted = true;
-
-        // if menu bar has linkBubble set it on submit, double parent is needed due `editor-menu-bar` is in between
-        if (this.$parent.$parent.linkBubble) {
-          this.$parent.$parent.linkBubble = false;
-        }
+        this.quit();
       } catch (e) {
         console.log(e.message);
       }
@@ -74,12 +72,17 @@ export default {
   position: absolute;
   left: 0;
   top: 100%;
-  width: 100%;
+  width: calc(100% + var(--input-border-width) * 2);
   height: 34px;
   background-color: var(--off-white);
-  border-top: calc(var(--input-border-width) / 2) solid var(--lighter-gray);
-  border-bottom: var(--input-border-width) solid var(--lighter-gray);
+  border: var(--input-border-width) solid var(--light-gray);
+  //border-bottom: var(--input-border-width) solid var(--lighter-gray);
   display: flex;
+  margin-left: calc(var(--input-border-width) * -1);
+  margin-right: calc(var(--input-border-width) * -1);
+  &:focus-within {
+    border: var(--input-border-width) solid var(--dark-gray);
+  }
 
   button {
     width: 32px;

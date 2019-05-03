@@ -109,7 +109,7 @@
           plugin-name="Link"
           icon="link"
           :command="setLink"
-          :active-condition="linkBubble || isActive.link()"
+          :active-condition="showLink || isActive.link()"
           :disabled="showSource"
           v-tooltip.bottom="$t('editor.link')"
         />
@@ -259,11 +259,12 @@
         >
           <v-icon name="code" :color="showSource ? 'accent' : 'light-gray'" />
         </button>
-        <template v-if="optionsInclude('link')">
+        <template v-if="optionsInclude('link') && showLink">
           <LinkBar
-            v-show="!showSource && linkBubble"
+            v-show="!showSource && showLink"
             :commands="commands"
             :get-mark-attrs="getMarkAttrs"
+            :toggle-link="toggleLink"
             :is-active="isActive.link()"
             :editor="editor"
           />
@@ -336,10 +337,6 @@ export default {
       defaultValue: {},
       required: true
     },
-    updates: {
-      type: Object,
-      defaultValue: null
-    },
     buttons: {
       type: Array,
       defaultValue: []
@@ -351,12 +348,18 @@ export default {
     toggleSource: {
       type: Function,
       default: () => false
+    },
+    showLink: {
+      type: Boolean,
+      default: false
+    },
+    toggleLink: {
+      type: Function,
+      default: () => false
     }
   },
   data() {
     return {
-      linkUrl: null,
-      linkBubble: false,
       chooseImage: false,
       imageUrlRaw: "",
       imageUrlRawBroken: false,
@@ -378,7 +381,7 @@ export default {
 
   methods: {
     setLink() {
-      this.linkBubble = !this.linkBubble;
+      this.toggleLink();
     },
     optionsInclude($val) {
       return this.$props.buttons.includes($val);

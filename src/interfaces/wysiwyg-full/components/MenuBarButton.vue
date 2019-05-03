@@ -56,7 +56,7 @@ export default {
   },
 
   mounted() {
-    console.log(this.$parent.$parent.$parent.$props.options);
+    console.log(this.$props.orderIndex);
   }
 };
 </script>

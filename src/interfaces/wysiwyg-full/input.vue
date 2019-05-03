@@ -1,6 +1,5 @@
 <template>
   <div class="interface-wysiwyg-full" :id="name" :name="name">
-    <!-- WYSIWYG Editor Menubar and Bubble components -->
     <MenuBar
       v-if="editor"
       :buttons="options.extensions"
@@ -68,7 +67,7 @@ export default {
 
   watch: {
     value(newVal) {
-      if (newVal && !this.showSource) {
+      if (newVal && !this.rawView) {
         this.editorText = newVal;
       } else {
         this.$emit("input", this.editorText);

@@ -109,7 +109,7 @@
           plugin-name="Link"
           icon="link"
           :command="setLink"
-          :active-condition="linkBubble"
+          :active-condition="linkBubble || isActive.link()"
           :disabled="showSource"
           v-tooltip.bottom="$t('editor.link')"
         />
@@ -164,7 +164,7 @@
 
         <div
           class="options-fixed"
-          v-if="optionsInclude('table') && !$parent.showSource ? isActive.table() : false"
+          v-if="optionsInclude('table') && !showSource ? isActive.table() : false"
           :class="{ 'is-open': isActive.table() }"
         >
           <MenuButton
@@ -254,7 +254,7 @@
 
         <button
           class="source-toggle"
-          @click="$parent.showSource = !$parent.showSource"
+          @click="toggleSource"
           v-tooltip.bottom="$t('editor.view_source')"
         >
           <v-icon name="code" :color="showSource ? 'accent' : 'light-gray'" />
@@ -347,6 +347,10 @@ export default {
     showSource: {
       type: Boolean,
       default: false
+    },
+    toggleSource: {
+      type: Function,
+      default: () => false
     }
   },
   data() {
@@ -428,7 +432,6 @@ export default {
 </script>
 <style lang="scss" scoped>
 .menubar__wrapper {
-  border-bottom: var(--input-border-width) solid var(--lighter-gray);
   border-top-left-radius: 0;
   border-top-right-radius: 0;
   color: var(--gray);

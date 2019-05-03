@@ -4,21 +4,21 @@
     :class="{ fullscreen: distractionFree, night: blackMode }"
     :id="name"
     :name="name"
-    @input="$emit('input', $event.target.innerHTML)"
   >
     <!-- Bubble with Editor menu bar -->
     <Bubble
       :options="options"
       :editor="editor"
       :buttons="options.extensions"
-      :show-source="showSource"
+      :show-source="rawView"
+      :toggle-source="showSource"
     />
 
     <!-- WYSIWYG Editor -->
     <EditorContent
       :parent-value="editorText"
       :update-value="updateValue"
-      :raw-view="showSource"
+      :raw-view="rawView"
       :editor="editor"
       :is-blackmode="blackMode"
       :is-fullscreen="distractionFree"
@@ -31,14 +31,14 @@
     <p
       class="fullscreen-info"
       v-if="$parent.$parent.field.name && distractionFree"
-      v-show="!showSource"
+      v-show="!rawView"
     >
       {{ $parent.$parent.field.name }}
     </p>
 
     <div class="options">
       <button
-        @click="showSource = !showSource"
+        @click="showSource"
         type="button"
         class="back"
         v-tooltip="$t('interfaces-wysiwyg-go_back')"
@@ -115,6 +115,14 @@ export default {
     }
   },
   methods: {
+    showSource() {
+      if (!this.rawView) {
+        this.updateValue(this.editor.view.dom.innerHTML);
+      } else {
+        this.updateValue(this.editorText);
+      }
+      return (this.rawView = !this.rawView);
+    },
     init() {
       const extensions = this.options.extensions
         .map(ext => {
@@ -183,7 +191,7 @@ export default {
       selectionIsImage: false,
       editorText: "",
       editor: null,
-      showSource: false,
+      rawView: false,
       showRaw: false,
       showTableOptions: false,
       chooseExisting: false,

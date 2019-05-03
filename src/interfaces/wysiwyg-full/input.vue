@@ -5,7 +5,9 @@
       v-if="editor"
       :buttons="options.extensions"
       :editor="editor"
-      :show-source="showSource"
+      :show-source="rawView"
+      :toggle-source="showSource"
+      :update-value="updateValue"
     />
 
     <!-- Unformatted raw html view -->
@@ -15,7 +17,7 @@
     <EditorContent
       :parent-value="editorText ? editorText : value"
       :update-value="updateValue"
-      :raw-view="showSource"
+      :raw-view="rawView"
       :editor="editor"
       @toggleImageEdit="showImageEdit = $event || !showImageEdit"
     />
@@ -64,7 +66,7 @@ export default {
     return {
       editorText: "",
       editor: null,
-      showSource: false
+      rawView: false
     };
   },
 
@@ -78,6 +80,14 @@ export default {
     }
   },
   methods: {
+    showSource() {
+      if (!this.rawView) {
+        this.updateValue(this.editor.view.dom.innerHTML);
+      } else {
+        this.updateValue(this.editorText);
+      }
+      return (this.rawView = !this.rawView);
+    },
     init() {
       const extensions = this.options.extensions
         .map(ext => {
@@ -156,7 +166,6 @@ export default {
 <style lang="scss" scoped>
 .interface-wysiwyg-full {
   --wysiwyg-padding: calc(var(--page-padding) / 2);
-
   position: relative;
   width: 100%;
   border: var(--input-border-width) solid var(--lighter-gray);
@@ -169,6 +178,10 @@ export default {
 
   &:focus-within {
     border-color: var(--dark-gray);
+  }
+
+  .menubar__wrapper {
+    border-bottom: var(--input-border-width) solid var(--lighter-gray);
   }
 }
 </style>

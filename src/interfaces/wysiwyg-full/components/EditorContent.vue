@@ -15,6 +15,7 @@
     <ImageEdit
       :editor="editor"
       :update-value="updateValue"
+      :toggle-edit="toggleImageEdit"
       :is-image-edit="editImage"
       :selection-position="selectionPosition"
     />
@@ -119,7 +120,9 @@ export default {
       });
 
       // hide opttions toggler on scroll of textarea
-      this.editor.view.dom.onscroll = () => (this.selectionIsImage = false);
+      if (this.selectionIsImage) {
+        this.editor.view.dom.onscroll = () => (this.selectionIsImage = false);
+      }
     }
   },
   mounted() {

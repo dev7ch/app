@@ -120,6 +120,10 @@ export default {
     updateValue: {
       type: Function
     },
+    toggleEdit: {
+      type: Function,
+      required: true
+    },
     editor: {
       type: Object,
       default: () => {}
@@ -127,7 +131,6 @@ export default {
   },
   data() {
     return {
-      loaded: false,
       imageUrlRawBroken: false
     };
   },
@@ -138,28 +141,24 @@ export default {
       }
     },
     quit() {
-      console.log(this);
-      if (this.$parent.editImage) {
-        this.$parent.editImage = false;
+      if (this.$props.toggleEdit) {
+        return this.$props.toggleEdit();
       }
-      this.loaded = false;
     },
     setAll() {
       // Apply changes to real target in editor, collected by observer
-      // $parent is here supposed due the observer is located in the $parent
+      // $parent is here supposed to reflect the original dom object due the observer is located in the $parent
       this.$parent.selectionPosition.target.className = this.selectionPosition.classes;
       this.$parent.selectionPosition.target.alt = this.selectionPosition.alt;
       this.$parent.selectionPosition.target.src = this.selectionPosition.src;
       this.$parent.selectionPosition.target.title = this.selectionPosition.title;
-      // Emit all changes manually due @input with newValue is not triggered
+      // Emit all changes manually due @input is not triggered in the edit modal
       this.updateValue(this.editor.view.dom.innerHTML);
-      if (this.$parent.editImage) {
-        this.$parent.editImage = false;
+      // Hide image edit modal by property function
+      if (this.$props.toggleEdit) {
+        return this.$props.toggleEdit();
       }
     }
-  },
-  mounted() {
-    this.loaded = true;
   }
 };
 </script>

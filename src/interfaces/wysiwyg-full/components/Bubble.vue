@@ -3,7 +3,7 @@
     <div
       slot-scope="{ commands, isActive, getMarkAttrs, menu }"
       class="menububble__frame"
-      :class="{ visible: menu.isActive && !$parent.showSource }"
+      :class="{ visible: menu.isActive && !showSource }"
       :style="
         `left: ${menu.left > calcWidth() / 2 ? menu.left + 'px' : '0'};
         transform:translateX(${menu.left > calcWidth() / 2 ? '-50%' : '0'});
@@ -14,7 +14,13 @@
       "
     >
       <template v-if="buttons">
-        <Menubar :options="options" :buttons="buttons" :editor="editor" />
+        <Menubar
+          :options="options"
+          :buttons="options.extensions"
+          :editor="editor"
+          :show-source="showSource"
+          :toggle-source="toggleSource"
+        />
       </template>
     </div>
   </editor-menu-bubble>
@@ -39,6 +45,10 @@ export default {
     showSource: {
       type: Boolean,
       default: false
+    },
+    toggleSource: {
+      type: Function,
+      default: () => false
     }
   },
 
@@ -70,9 +80,6 @@ export default {
       linkBubble: false,
       linkMenuIsActive: false
     };
-  },
-  mounted() {
-    console.log(this);
   }
 };
 </script>
@@ -81,6 +88,7 @@ export default {
   position: absolute;
   background-color: var(--lightest-gray);
   padding: 0;
+  opacity: 0;
   transition: top 0.2s ease-in-out, bottom 0.2s ease-in-out, left 0.2s ease-in-out,
     opacity 0.4s ease-in-out, opacity 0.3s ease-in-out;
   border-radius: var(--border-radius);
@@ -96,6 +104,9 @@ export default {
     .menubar {
       overflow-y: auto;
     }
+  }
+  .menubar__wrapper {
+    border: var(--input-border-width) solid var(--lighter-gray);
   }
 }
 

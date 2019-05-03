@@ -123,6 +123,15 @@
           :disabled="showSource"
           v-tooltip.bottom="$t('editor.image')"
         />
+        <MenuButton
+          v-if="optionsInclude('todo_list')"
+          plugin-name="TodoList"
+          icon="link"
+          :command="commands.todo_list"
+          :active-condition="isActive.todo_list()"
+          :disabled="showSource"
+          v-tooltip.bottom="$t('editor.link')"
+        />
         <template v-for="n in 6">
           <MenuButton
             :key="n"
@@ -230,9 +239,9 @@
             :command="commands.toggleCellMerge"
           />
         </div>
-        <!-- history -->
+
         <div
-          class="history__actions"
+          class="history__actions toggler"
           v-if="optionsInclude('history')"
           :style="{
             order: optionsIndex('history')
@@ -253,12 +262,16 @@
         </div>
 
         <button
-          class="source-toggle"
+          class="menubar__button source-toggle toggler"
           @click="toggleSource"
           v-tooltip.bottom="$t('editor.view_source')"
+          :style="{
+            order: '99'
+          }"
         >
           <v-icon name="code" :color="showSource ? 'accent' : 'light-gray'" />
         </button>
+
         <template v-if="optionsInclude('link') && showLink">
           <LinkBar
             v-show="!showSource && showLink"
@@ -482,6 +495,7 @@ export default {
 .history__actions {
   display: inline-flex;
   margin-left: auto;
+  width: initial;
 
   + .toggler {
     margin-left: initial;

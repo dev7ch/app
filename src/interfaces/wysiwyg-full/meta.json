@@ -33,7 +33,7 @@
       "interface": "checkboxes",
       "default": [
         "bold", "italic", "underline", "h1", "h2", "h3", "h4", "blockquote", 
-        "bulletList", "orderedList", "table", "history"
+        "bullet_list", "ordered_list", "table", "history"
       ],
       "options": {
         "choices": {
@@ -41,10 +41,6 @@
           "strike": "Strike",
           "underline": "Underline",
           "italic": "Italic",
-          "h1": "Heading 1",
-          "h2": "Heading 2",
-          "h3": "Heading 3",
-          "h4": "Heading 4",
           "blockquote": "Blockquote",
           "bullet_list": "Bullet List",
           "ordered_list": "Ordered List",
@@ -54,8 +50,13 @@
           "link": "Link",
           "code": "Code",
           "table": "Table",
-          "todo_list": "Todo list",
           "code_block": "Code Block",
+          "h1": "Heading 1",
+          "h2": "Heading 2",
+          "h3": "Heading 3",
+          "h4": "Heading 4",
+          "h5": "Heading 5",
+          "h6": "Heading 6",
           "history": "History (undo / redo)"
         }
       }

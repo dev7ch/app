@@ -4,6 +4,7 @@
     <MenuBar
       v-if="editor"
       :buttons="options.extensions"
+      :options="options"
       :editor="editor"
       :show-source="rawView"
       :show-link="linkBubble"
@@ -44,8 +45,6 @@ import {
   TableCell,
   TableHeader,
   TableRow,
-  TodoItem,
-  TodoList,
   Underline
 } from "tiptap-extensions";
 
@@ -131,8 +130,6 @@ export default {
               return new Strike();
             case "table":
               return [new Table(), new TableHeader(), new TableCell(), new TableRow()];
-            case "todolist":
-              return [new TodoItem(), new TodoList()];
             case "underline":
               return new Underline();
           }

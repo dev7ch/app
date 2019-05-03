@@ -1,7 +1,7 @@
-<template>
+<template v-if="$parent.$parent.$props.buttons">
   <button
     :style="{
-      order: $parent.$parent.buttons.indexOf(pluginName)
+      order: orderIndex
     }"
     class="menubar__button"
     :class="{ 'is-active': !!activeCondition }"
@@ -48,7 +48,15 @@ export default {
     activeCondition: {
       type: Boolean,
       default: false
+    },
+    orderIndex: {
+      type: Number,
+      default: -1
     }
+  },
+
+  mounted() {
+    console.log(this.$parent.$parent.$parent.$props.options);
   }
 };
 </script>
@@ -111,8 +119,14 @@ export default {
   &.is-active,
   &:hover,
   &:focus {
-    i {
+    * {
       color: var(--dark-gray);
+    }
+  }
+
+  &.is-active {
+    span {
+      color: var(--accent);
     }
   }
 

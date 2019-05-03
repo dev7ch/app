@@ -33,7 +33,7 @@
       "interface": "checkboxes",
       "default": [
         "bold", "italic", "underline", "h1", "h2", "h3", "h4", "blockquote",
-        "bulletList", "orderedList", "table", "history"
+        "bullet_list", "ordered_list", "table", "history"
       ],
       "options": {
         "choices": {
@@ -54,7 +54,6 @@
           "link": "Link",
           "code": "Code",
           "table": "Table",
-          "todo_list": "Todo list",
           "code_block": "Code Block",
           "history": "History (undo / redo)"
         }
@@ -63,7 +62,7 @@
   },
   "translation": {
     "en-US": {
-      "wysiwyg": "WYSIWYG",
+      "wysiwyg": "Advanced WYSIWYG",
       "placeholder": "Placeholder",
       "placeholder_comment": "Enter placeholder text",
       "link_add": "Click to add Link",

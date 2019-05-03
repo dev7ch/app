@@ -1,29 +1,23 @@
 <template>
-  <div
-    class="interface-wysiwyg-full"
-    :id="name"
-    :name="name"
-    @input="$emit('input', $event.target.innerHTML)"
-  >
+  <div class="interface-wysiwyg-full" :id="name" :name="name">
     <!-- WYSIWYG Editor Menubar and Bubble components -->
     <MenuBar
       v-if="editor"
       :buttons="options.extensions"
       :editor="editor"
-      @toggleSource="showSource = !showSource"
+      :show-source="showSource"
     />
 
     <!-- Unformatted raw html view -->
-    <RawHtmlView v-if="showSource" :value="value" @input="updateValue" />
+    <!--<RawHtmlView v-if="showSource" :value="value" @input="updateValue" />-->
 
     <!-- WYSIWYG Editor -->
     <EditorContent
-      v-else
+      :parent-value="editorText ? editorText : value"
+      :update-value="updateValue"
+      :raw-view="showSource"
       :editor="editor"
       @toggleImageEdit="showImageEdit = $event || !showImageEdit"
-      @selectionIsImage="selectionIsImage = $event"
-      :selection-position="selectionPosition"
-      :selection-is-image="selectionIsImage"
     />
   </div>
 </template>
@@ -32,7 +26,6 @@ import mixin from "@directus/extension-toolkit/mixins/interface";
 import { Editor } from "tiptap";
 import EditorContent from "./components/EditorContent";
 import MenuBar from "./components/MenuBar";
-import RawHtmlView from "./components/RawHtmlView";
 
 import {
   Bold,
@@ -65,25 +58,13 @@ export default {
   mixins: [mixin],
   components: {
     EditorContent,
-    MenuBar,
-    RawHtmlView
+    MenuBar
   },
   data() {
     return {
       editorText: "",
       editor: null,
-      showSource: false,
-      selectionIsImage: false,
-      selectionPosition: {
-        pos: null,
-        editorPos: null,
-        alt: {
-          value: null
-        },
-        title: null,
-        src: null,
-        target: null
-      }
+      showSource: false
     };
   },
 
@@ -140,9 +121,10 @@ export default {
         .filter(ext => ext)
         .flat();
 
+      this.editorText = this.value ? this.value : "";
       this.editor = new Editor({
         extensions: extensions,
-        content: this.value || "",
+        content: this.editorText,
         onUpdate: ({ getHTML }) => {
           this.$emit("input", getHTML());
         }
@@ -150,7 +132,10 @@ export default {
     },
     updateValue(value) {
       this.$emit("input", value);
-      this.editor.view.dom.innerHTML = value;
+      this.editorText = value;
+      if (this.editorText !== this.editor.view.dom.innerHTML) {
+        this.editor.view.dom.innerHTML = value;
+      }
     }
   },
 

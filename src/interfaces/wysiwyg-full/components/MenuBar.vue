@@ -254,13 +254,14 @@
 
         <button
           class="source-toggle"
-          @click="$emit('toggleSource')"
+          @click="$parent.showSource = !$parent.showSource"
           v-tooltip.bottom="$t('editor.view_source')"
         >
           <v-icon name="code" :color="showSource ? 'accent' : 'light-gray'" />
         </button>
-        <template v-if="optionsInclude('link') && linkBubble">
+        <template v-if="optionsInclude('link')">
           <LinkBar
+            v-show="!showSource && linkBubble"
             :commands="commands"
             :get-mark-attrs="getMarkAttrs"
             :is-active="isActive.link()"
@@ -342,11 +343,14 @@ export default {
     buttons: {
       type: Array,
       defaultValue: []
+    },
+    showSource: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
     return {
-      showSource: false,
       linkUrl: null,
       linkBubble: false,
       chooseImage: false,
@@ -397,12 +401,13 @@ export default {
       let image;
       image = item.data ? item.data : null;
 
-      if (this.$props.options && !!this.$props.options.custom_url !== undefined) {
+      if (this.$props.options && !!this.$props.options.custom_url === undefined) {
         image = `${this.$props.options.custom_url}${item.data.filename}`;
       }
       // // @todo implement image source base url
       // const index = (this.editor.getSelection() || {}).index || this.editor.getLength();
       if (image) {
+        console.log(image);
         this.addImageCommand(image);
       }
     },

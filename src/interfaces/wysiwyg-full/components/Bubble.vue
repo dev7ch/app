@@ -1,10 +1,5 @@
 <template>
-  <editor-menu-bubble
-    v-if="$parent.editor"
-    class="menububble"
-    :editor="$parent.editor"
-    @hide="hideLinkMenu"
-  >
+  <editor-menu-bubble v-if="editor" class="menububble" :editor="editor">
     <div
       slot-scope="{ commands, isActive, getMarkAttrs, menu }"
       class="menububble__frame"
@@ -18,7 +13,9 @@
         min-width: 220px;`
       "
     >
-      <Menubar :options="options" :editor="$parent.editor" :updates="$parent" />
+      <template v-if="buttons">
+        <Menubar :options="options" :buttons="buttons" :editor="editor" />
+      </template>
     </div>
   </editor-menu-bubble>
 </template>
@@ -29,31 +26,27 @@ export default {
   props: {
     options: {
       type: Object,
-      defaultValue: {}
+      defaultValue: () => {}
+    },
+    buttons: {
+      type: Array,
+      defaultValue: null
+    },
+    editor: {
+      type: Object,
+      defaultValue: () => {}
+    },
+    showSource: {
+      type: Boolean,
+      default: false
     }
   },
 
   methods: {
-    setEditorfromChild() {
-      if (this.$parent.$children.length) {
-        for (let i = 0; i < this.$parent.$children.length; i++) {
-          if (this.$parent.$children[i].$refs.hasOwnProperty("editor")) {
-            return (this.editor = this.$parent.$children[i].editor);
-          }
-        }
-      }
-    },
     calcWidth() {
       if (this.$props.options.toolbarOptions) {
         return this.$props.options.toolbarOptions.length * 24 + 120;
       }
-    },
-    showLinkMenu(attrs) {
-      this.linkUrl = attrs.href;
-      this.linkMenuIsActive = true;
-      this.$nextTick(() => {
-        this.$refs.linkInput.focus();
-      });
     },
     hideLinkMenu() {
       this.linkUrl = null;
@@ -73,16 +66,13 @@ export default {
 
   data() {
     return {
-      editor: null,
-      editorText: "",
-      showSource: false,
       linkUrl: null,
       linkBubble: false,
       linkMenuIsActive: false
     };
   },
   mounted() {
-    this.setEditorfromChild();
+    console.log(this);
   }
 };
 </script>
@@ -91,7 +81,6 @@ export default {
   position: absolute;
   background-color: var(--lightest-gray);
   padding: 0;
-  opacity: 0;
   transition: top 0.2s ease-in-out, bottom 0.2s ease-in-out, left 0.2s ease-in-out,
     opacity 0.4s ease-in-out, opacity 0.3s ease-in-out;
   border-radius: var(--border-radius);

@@ -1,54 +1,84 @@
 <template>
-  <div>
-    <editor-content ref="editor" class="editor-content" :editor="editor"></editor-content>
-
-    <div
-      v-if="this.$refs.editor && selectionPosition.target"
-      v-show="selectionIsImage"
+  <div class="editor-content-wrapper" :class="{ fullscreen: isFullscreen, night: isBlackmode }">
+    <editor-content v-show="!rawView" ref="editor" class="editor-content" :editor="editor" />
+    <span
+      v-if="selectionIsImage && !rawView"
       class="options-toggler"
-      @click="showImageEdit = !showImageEdit"
+      @click="toggleImageEdit"
       :style="{
         top: getTopPosition(selectionPosition.target),
         left: getLeftPosition(selectionPosition.target)
       }"
     >
       <v-icon name="settings"></v-icon>
-    </div>
+    </span>
     <ImageEdit
-      v-if="showImageEdit"
+      :editor="editor"
+      :update-value="updateValue"
+      :is-image-edit="editImage"
       :selection-position="selectionPosition"
-      @toggleImageEdit="showImageEdit = $event || !showImageEdit"
     />
+    <RawHtmlView v-if="rawView" :value="parentValue" @input="updateValue" />
   </div>
 </template>
 <script>
 import { EditorContent } from "tiptap";
 import ImageEdit from "./ImageEdit";
+import RawHtmlView from "./RawHtmlView";
 
 export default {
   props: {
     editor: {
       required: true
     },
-    selectionPosition: {
-      required: true,
-      type: Object
-    },
-    selectionIsImage: {
+    rawView: {
       type: Boolean,
+      default: false,
       required: true
+    },
+    parentValue: {
+      type: String,
+      default: ""
+    },
+    updateValue: {
+      type: Function
+    },
+    isFullscreen: {
+      type: Boolean,
+      default: false
+    },
+    isBlackmode: {
+      type: Boolean,
+      default: false
     }
   },
   components: {
     EditorContent,
-    ImageEdit
+    ImageEdit,
+    RawHtmlView
   },
   data() {
     return {
-      showImageEdit: false
+      editorText: "",
+      editImage: false,
+      selectionIsImage: false,
+      showImageEdit: false,
+      selectionPosition: {
+        pos: null,
+        editorPos: null,
+        alt: {
+          value: null
+        },
+        title: null,
+        src: null,
+        target: null
+      }
     };
   },
   methods: {
+    toggleImageEdit() {
+      return (this.editImage = !this.editImage);
+    },
     getTopPosition($elem) {
       let editorTop = this.$refs.editor.$el.getBoundingClientRect().top;
       if (editorTop) {
@@ -68,39 +98,37 @@ export default {
   },
   beforeUpdate() {
     // creating observer outside of proseMirror context to direct interaction with vue js
-    this.observer = new MutationObserver(mutations => {
-      for (const m of mutations) {
-        if (m.type === "attributes" && m.target.localName === "img") {
-          this.$parent.selectionPosition = {
-            title: m.target.attributes.title ? m.target.attributes.title.value : "",
-            alt: m.target.attributes.alt ? m.target.attributes.alt.value : "",
-            target: m.target,
-            src: m.target.src,
-            classes: m.target.className.includes("ProseMirror-selectednode")
-              ? m.target.className.replace(/ProseMirror-selectednode/gi, "")
-              : m.target.className,
-            height: m.target.height,
-            width: m.target.width
-          };
-          if (m.target.className.includes("ProseMirror-selectednode")) {
-            this.$emit("selectionIsImage", true);
+    if (this.$refs.editor.$el && this.editor) {
+      this.observer = new MutationObserver(mutations => {
+        for (const m of mutations) {
+          if (m.type === "attributes" && m.target.localName === "img") {
+            this.selectionPosition = {
+              title: m.target.attributes.title ? m.target.attributes.title.value : "",
+              alt: m.target.attributes.alt ? m.target.attributes.alt.value : "",
+              target: m.target,
+              src: m.target.src,
+              classes: m.target.className.includes("ProseMirror-selectednode")
+                ? m.target.className.replace(/ProseMirror-selectednode/gi, "")
+                : m.target.className,
+              height: m.target.height,
+              width: m.target.width
+            };
+            this.selectionIsImage = true;
           }
-        } else if (
-          !m.target.className.includes("ProseMirror-selectednode") ||
-          !this.selectionIsImage
-        ) {
-          this.toggleImageEdit = false;
         }
-      }
-    });
+      });
+
+      // hide opttions toggler on scroll of textarea
+      this.editor.view.dom.onscroll = () => (this.selectionIsImage = false);
+    }
   },
   mounted() {
     this.$nextTick(function() {
       // define detached observer for editor default html element
       if (this.$refs.editor.$el) {
         this.observer.observe(this.$refs.editor.$el, {
-          nodeList: false,
-          childList: true,
+          nodeList: true,
+          childList: false,
           subtree: true, // observe deep
           attributeFilter: ["class"] // filter attributes to observer for better performance
         });
@@ -159,9 +187,27 @@ export default {
 </style>
 
 <style lang="scss">
+.editor-content-wrapper {
+  min-height: 300px;
+
+  &.fullscreen {
+    min-height: 100vh;
+
+    &.night {
+      background-color: var(--black);
+    }
+
+    > * {
+      margin: auto;
+      width: 720px;
+      max-width: 100%;
+    }
+  }
+}
 .editor-content {
+  min-height: inherit;
   .ProseMirror {
-    min-height: 300px;
+    min-height: inherit;
     padding: var(--wysiwyg-padding);
     max-height: 60vh;
     overflow-y: auto;

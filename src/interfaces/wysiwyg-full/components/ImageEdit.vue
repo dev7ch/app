@@ -1,7 +1,7 @@
 <template>
   <div
     class="image-options"
-    v-if="selectionPosition.target"
+    v-if="selectionPosition.target && isImageEdit"
     :style="{
       top: '50%',
       width: 'var(--width-x-large)'
@@ -98,7 +98,7 @@
         <v-icon name="close" />
         {{ $t("cancel") }}
       </v-button>
-      <v-button type="button" :disabled="$parent.readonly" @click="setAll()">
+      <v-button type="button" :disabled="$parent.readonly || imageUrlRawBroken" @click="setAll()">
         <v-icon name="check" />
         {{ $t("confirm") }}
       </v-button>
@@ -111,6 +111,18 @@ export default {
     selectionPosition: {
       required: true,
       type: Object
+    },
+    isImageEdit: {
+      required: true,
+      type: Boolean,
+      default: false
+    },
+    updateValue: {
+      type: Function
+    },
+    editor: {
+      type: Object,
+      default: () => {}
     }
   },
   data() {
@@ -126,14 +138,24 @@ export default {
       }
     },
     quit() {
-      this.$emit("toggleImageEdit", false);
+      console.log(this);
+      if (this.$parent.editImage) {
+        this.$parent.editImage = false;
+      }
+      this.loaded = false;
     },
     setAll() {
-      this.selectionPosition.target.className = this.selectionPosition.classes;
-      this.selectionPosition.target.alt = this.selectionPosition.alt;
-      this.selectionPosition.target.src = this.selectionPosition.src;
-      this.selectionPosition.target.title = this.selectionPosition.title;
-      this.$emit("toggleImageEdit", false);
+      // Apply changes to real target in editor, collected by observer
+      // $parent is here supposed due the observer is located in the $parent
+      this.$parent.selectionPosition.target.className = this.selectionPosition.classes;
+      this.$parent.selectionPosition.target.alt = this.selectionPosition.alt;
+      this.$parent.selectionPosition.target.src = this.selectionPosition.src;
+      this.$parent.selectionPosition.target.title = this.selectionPosition.title;
+      // Emit all changes manually due @input with newValue is not triggered
+      this.updateValue(this.editor.view.dom.innerHTML);
+      if (this.$parent.editImage) {
+        this.$parent.editImage = false;
+      }
     }
   },
   mounted() {

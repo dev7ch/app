@@ -11,7 +11,7 @@
   >
     <template v-if="sortable">
       <div
-        v-for="(item, idx) in sortableList"
+        v-for="(item, val, idx) in sortableList"
         :key="idx"
         class="sortable-box"
         :class="{ active: selection.includes(item.val) }"
@@ -113,6 +113,7 @@ export default {
     if (this.$props.sortable) {
       this.initSortable();
     }
+    console.log(this);
   },
 
   data() {
@@ -136,7 +137,7 @@ export default {
     },
 
     initSortable() {
-      if (this.selection) {
+      if (this.selection && this.choices) {
         let selection = [...this.selection];
         let staged = this.$lodash.map(this.choices, function(k) {
           return k.val;
@@ -150,8 +151,6 @@ export default {
 
     updateValue(val) {
       let selection = [...this.selection];
-
-      console.log(val);
       if (selection.includes(val)) {
         selection.splice(selection.indexOf(val), 1);
       } else {
@@ -167,8 +166,6 @@ export default {
       if (this.type === "array") {
         selection = selection.split(",");
       }
-
-      console.log(selection);
 
       this.$emit("input", selection);
     }

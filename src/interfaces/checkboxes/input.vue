@@ -6,7 +6,6 @@
     v-model="sortableList"
     v-bind="dragOptions"
     @end="saveSort()"
-    @start="setSort()"
     draggable=".sortable-box.active"
   >
     <template v-if="sortable">

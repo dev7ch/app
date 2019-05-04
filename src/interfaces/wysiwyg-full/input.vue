@@ -1,185 +1,203 @@
 <template>
-  <div class="interface-wysiwyg-full" :id="name" :name="name">
-    <MenuBar
-      v-if="editor"
-      :buttons="options.extensions"
-      :options="options"
-      :editor="editor"
-      :show-source="rawView"
-      :show-link="linkBubble"
-      :toggle-link="toggleLinkBar"
-      :toggle-source="showSource"
-    />
-    <!-- WYSIWYG Editor -->
-    <EditorContent
-      :parent-value="editorText ? editorText : value"
-      :update-value="updateValue"
-      :raw-view="rawView"
-      :editor="editor"
-    />
+  <div class="interface-wysiwyg-container" ref="parent">
+    <div ref="editor" :class="['interface-wysiwyg', readonly ? 'readonly' : '']"></div>
+    <portal to="modal" v-if="chooseExisting">
+      <v-modal
+        :title="$t('choose_one')"
+        :buttons="{
+          done: {
+            text: $t('done')
+          }
+        }"
+        @close="chooseExisting = false"
+        @done="chooseExisting = false"
+      >
+        <v-items
+          collection="directus_files"
+          view-type="cards"
+          :selection="[]"
+          :view-options="viewOptions"
+          @select="insertItem($event[0])"
+        ></v-items>
+      </v-modal>
+    </portal>
   </div>
 </template>
+
 <script>
+import Quill from "quill";
+import "quill/dist/quill.core.css";
+import "./quill.theme.css";
+import { ImageUpload } from "quill-image-upload";
+
+Quill.register("modules/imageUpload", ImageUpload);
+
 import mixin from "@directus/extension-toolkit/mixins/interface";
-import { Editor } from "tiptap";
-import EditorContent from "./components/EditorContent";
-import MenuBar from "./components/MenuBar";
-
-import {
-  Bold,
-  Blockquote,
-  BulletList,
-  Code,
-  CodeBlock,
-  HardBreak,
-  Heading,
-  History,
-  HorizontalRule,
-  Italic,
-  Link,
-  ListItem,
-  OrderedList,
-  Strike,
-  Table,
-  TableCell,
-  TableHeader,
-  TableRow,
-  Underline
-} from "tiptap-extensions";
-
-import { Image } from "./extensions";
 
 export default {
   name: "interface-wysiwyg",
   mixins: [mixin],
-  components: {
-    EditorContent,
-    MenuBar
-  },
-  data() {
-    return {
-      editorText: "",
-      editor: null,
-      rawView: false,
-      linkBubble: false
-    };
-  },
-
-  watch: {
-    value(newVal) {
-      if (newVal && !this.rawView) {
-        this.editorText = newVal;
-      } else {
-        this.$emit("input", this.editorText);
-      }
-    }
-  },
-  methods: {
-    // Private property functions
-    updateValue(value) {
-      this.$emit("input", value);
-      this.editorText = value;
-      if (this.editorText !== this.editor.view.dom.innerHTML) {
-        this.editor.view.dom.innerHTML = value;
-      }
-    },
-    toggleLinkBar() {
-      this.linkBubble = !this.linkBubble;
-    },
-    showSource() {
-      if (!this.rawView) {
-        this.updateValue(this.editor.view.dom.innerHTML);
-      } else {
-        this.updateValue(this.editorText);
-      }
-      return (this.rawView = !this.rawView);
-    },
-    // Init editor
-    init() {
-      const extensions = this.options.extensions
-        .map(ext => {
-          switch (ext) {
-            case "blockquote":
-              return new Blockquote();
-            case "bold":
-              return new Bold();
-            case "bullet_list":
-              return [new ListItem(), new BulletList()];
-            case "code":
-              return new Code();
-            case "code_block":
-              return new CodeBlock();
-            case "h1" || "h2" || "h3" || "h4" || "h5" || "h6" || "heading":
-              return new Heading();
-            case "hardbreak":
-              return new HardBreak();
-            case "history":
-              return new History();
-            case "horizontal_rule":
-              return new HorizontalRule();
-            case "image":
-              return new Image();
-            case "italic":
-              return new Italic();
-            case "link":
-              return new Link();
-            case "ordered_list":
-              return [new OrderedList(), new ListItem()];
-            case "strike":
-              return new Strike();
-            case "table":
-              return [new Table(), new TableHeader(), new TableCell(), new TableRow()];
-            case "underline":
-              return new Underline();
-          }
-        })
-        .filter(ext => ext)
-        .flat();
-
-      this.editorText = this.value ? this.value : "";
-      this.editor = new Editor({
-        extensions: extensions,
-        content: this.editorText,
-        onUpdate: ({ getHTML }) => {
-          this.$emit("input", getHTML());
-        }
-      });
-    }
-  },
-
   mounted() {
     this.init();
   },
+  watch: {
+    value(newVal) {
+      if (newVal !== this.editor.root.innerHTML) {
+        this.editor.clipboard.dangerouslyPasteHTML(this.value);
+      }
+    }
+  },
+  data() {
+    return {
+      chooseExisting: false,
+      viewOptions: {
+        title: "title",
+        subtitle: "type",
+        content: "description",
+        src: "data"
+      }
+    };
+  },
+  methods: {
+    init() {
+      let uploadURL = null;
 
-  beforeDestroy() {
-    this.editor.destroy();
+      if (this.options.upload_files) {
+        uploadURL = `${this.$store.state.auth.url}/${this.$store.state.auth.project}/files`;
+      }
+
+      this.editor = new Quill(this.$refs.editor, {
+        theme: "snow",
+        readOnly: this.readonly,
+        modules: {
+          toolbar:
+            typeof this.options.toolbarOptions === "string"
+              ? JSON.parse(this.options.toolbarOptions)
+              : this.options.toolbarOptions,
+          imageUpload: {
+            // server url. If the url is empty then the base64 returns
+            url: uploadURL,
+
+            // custom form name
+            name: "image",
+            withCredentials: false,
+            headers: {
+              Authorization: `Bearer ${this.$api.token}`
+            },
+            csrf: { token: "token", hash: "" }, // add custom CSRF
+            customUploader: null, // add custom uploader
+            // personalize successful callback and call next function to insert new url to the editor
+            callbackOK: (serverResponse, next) => {
+              this.$store.dispatch("loadingFinished", "uploadingFile");
+              // pass image url to editor
+              if (typeof serverResponse === "string") {
+                return next(serverResponse);
+              } else if (this.options.custom_url) {
+                return next(`${this.options.custom_url}${serverResponse.data.filename}`);
+              }
+
+              return next(serverResponse.data.data.full_url);
+            },
+            // personalize failed callback
+            callbackKO: serverError => {
+              this.$store.dispatch("loadingFinished", "uploadingFile");
+
+              try {
+                alert(JSON.parse(serverError.body).error.message);
+              } catch (e) {
+                console.error(e); // eslint-disable-line
+              }
+            },
+            // optional
+            // add callback when a image have been chosen
+            checkBeforeSend: (file, next) => {
+              this.$store.dispatch("loadingStart", {
+                id: "uploadingFile"
+              });
+              next(file); // go back to component and send to the server
+            }
+          }
+        }
+      });
+
+      this.editor.clipboard.dangerouslyPasteHTML(this.value);
+
+      this.editor.on("text-change", () => {
+        this.$emit("input", this.editor.root.innerHTML);
+      });
+
+      // Make custom icons for image buttons
+      const customButton = this.$refs.parent.querySelector(".ql-choose-existing");
+      if (customButton) {
+        customButton.className += " material-icons icon";
+        customButton.addEventListener("click", () => this.openModal());
+      }
+      const imageButton = this.$refs.parent.querySelector(".ql-image");
+      if (imageButton) {
+        imageButton.innerHTML = "";
+        imageButton.className += " material-icons icon";
+      }
+    },
+    openModal() {
+      this.chooseExisting = true;
+    },
+    insertItem(image) {
+      let url = image.data.full_url;
+      if (this.options.custom_url) url = `${this.options.custom_url}${image.filename}`;
+      const index = (this.editor.getSelection() || {}).index || this.editor.getLength();
+      this.editor.insertEmbed(index, "image", url, "user");
+      this.chooseExisting = false;
+    }
   }
 };
 </script>
 
 <style lang="scss">
-@import "assets/scss/editor";
+.ql-container {
+  font-size: 14px;
+}
+
+.ql-choose-existing {
+  padding: 3px 5px;
+  color: var(--light-gray);
+  &:hover {
+    color: var(--darkest-gray);
+  }
+  &:after {
+    content: "collections";
+    font-size: 20px;
+  }
+}
+
+.ql-image {
+  padding: 3px 5px;
+  color: var(--light-gray);
+  &:hover {
+    color: var(--darkest-gray);
+  }
+  &:after {
+    content: "add_photo_alternate";
+    font-size: 20px;
+  }
+}
+
+.ql-editor {
+  &.readonly {
+    background-color: var(--lightest-gray) !important;
+    cursor: not-allowed;
+    &:focus {
+      color: var(--gray);
+    }
+  }
+}
 </style>
 
 <style lang="scss" scoped>
-.interface-wysiwyg-full {
-  --wysiwyg-padding: calc(var(--page-padding) / 2);
-  position: relative;
-  width: 100%;
-  border: var(--input-border-width) solid var(--lighter-gray);
-  border-radius: var(--border-radius);
-  transition: border-color var(--fast) var(--transition);
+.interface-wysiwyg-container {
+  max-width: var(--width-x-large);
+}
 
-  &:hover {
-    border-color: var(--light-gray);
-  }
-
-  &:focus-within {
-    border-color: var(--dark-gray);
-  }
-
-  .menubar__wrapper {
-    border-bottom: var(--input-border-width) solid var(--lighter-gray);
-  }
+.material-icons {
+  font-size: 20px;
 }
 </style>

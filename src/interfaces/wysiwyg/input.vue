@@ -1,234 +1,108 @@
 <template>
-  <div
-    class="interface-wysiwyg-container editor"
-    :class="{ fullscreen: distractionFree, night: blackMode }"
-    :id="name"
-    :name="name"
-  >
-    <!-- Bubble with Editor menu bar -->
-    <Bubble
-      :options="options"
-      :editor="editor"
-      :buttons="options.extensions"
-      :show-source="rawView"
-      :toggle-source="showSource"
-      :show-link="linkBubble"
-      :toggle-link="toggleLinkBar"
-    />
-
-    <!-- WYSIWYG Editor -->
-    <EditorContent
-      :parent-value="editorText ? editorText : value"
-      :update-value="updateValue"
-      :raw-view="rawView"
-      :editor="editor"
-      :is-blackmode="blackMode"
-      :is-fullscreen="distractionFree"
-    />
-
-    <p
-      class="fullscreen-info"
-      v-if="$parent.$parent.field.name && distractionFree"
-      v-show="!rawView"
+  <div ref="input" :class="[{ fullscreen: distractionFree }, 'interface-wysiwyg-container']">
+    <div ref="editor" :class="['interface-wysiwyg', readonly ? 'readonly' : '']"></div>
+    <button
+      v-on:click="distractionFree = !distractionFree"
+      type="button"
+      class="fullscreen-toggle"
+      v-tooltip="$t('interfaces-wysiwyg-distraction_free_mode')"
     >
-      {{ $parent.$parent.field.name }}
-    </p>
-
-    <div class="options">
-      <button
-        v-if="rawView"
-        @click="showSource"
-        type="button"
-        class="back"
-        v-tooltip="$t('interfaces-wysiwyg-go_back')"
-      >
-        <v-icon name="code" />
-      </button>
-      <button
-        v-if="distractionFree"
-        type="button"
-        class="black-mode"
-        @click="blackMode = !blackMode"
-        v-tooltip="$t('interfaces-wysiwyg-dark_mode')"
-      >
-        <v-icon :name="blackMode ? 'iso' : 'iso'" />
-      </button>
-      <button
-        v-on:click="distractionFree = !distractionFree"
-        type="button"
-        class="fullscreen-toggle"
-        v-tooltip="
-          !distractionFree
-            ? $t('interfaces-wysiwyg-distraction_free_mode')
-            : $t('interfaces-wysiwyg-distraction_free_mode_exit')
-        "
-      >
-        <v-icon :name="!distractionFree ? 'fullscreen' : 'cancel'" />
-      </button>
-    </div>
+      <v-icon :name="fullscreenIcon" />
+    </button>
   </div>
 </template>
 
 <script>
+import MediumEditor from "medium-editor";
+import "medium-editor/dist/css/medium-editor.css";
+
 import mixin from "@directus/extension-toolkit/mixins/interface";
-import { Editor } from "tiptap";
-import EditorContent from "./../wysiwyg-full/components/EditorContent";
-const Bubble = () => import("./../wysiwyg-full/components/Bubble");
-
-import {
-  Blockquote,
-  CodeBlock,
-  HardBreak,
-  Heading,
-  HorizontalRule,
-  OrderedList,
-  BulletList,
-  ListItem,
-  TodoItem,
-  TodoList,
-  Bold,
-  Code,
-  Italic,
-  Link,
-  Strike,
-  Underline,
-  History,
-  Table,
-  TableHeader,
-  TableRow,
-  TableCell
-} from "tiptap-extensions";
-
-import { Image } from "./../wysiwyg-full/extensions";
 
 export default {
   name: "interface-wysiwyg",
   mixins: [mixin],
-  watch: {
-    value(newVal) {
-      if (newVal && !this.rawView) {
-        this.editorText = newVal;
-      } else {
-        this.$emit("input", this.editorText);
-      }
-    }
-  },
-  methods: {
-    toggleLinkBar() {
-      return (this.linkBubble = !this.linkBubble);
-    },
-    showSource() {
-      if (!this.rawView) {
-        this.updateValue(this.editor.view.dom.innerHTML);
-      } else {
-        this.updateValue(this.editorText);
-      }
-      return (this.rawView = !this.rawView);
-    },
-    init() {
-      const extensions = this.options.extensions
-        .map(ext => {
-          switch (ext) {
-            case "blockquote":
-              return new Blockquote();
-            case "bold":
-              return new Bold();
-            case "bullet_list":
-              return [new ListItem(), new BulletList()];
-            case "code":
-              return new Code();
-            case "code_block":
-              return new CodeBlock();
-            case "h1" || "h2" || "h3" || "h4" || "h5" || "h6":
-              return new Heading();
-            case "hardbreak":
-              return new HardBreak();
-            case "history":
-              return new History();
-            case "horizontal_rule":
-              return new HorizontalRule();
-            case "image":
-              return new Image();
-            case "italic":
-              return new Italic();
-            case "link":
-              return new Link();
-            case "ordered_list":
-              return [new OrderedList(), new ListItem()];
-            case "strike":
-              return new Strike();
-            case "table":
-              return [new Table(), new TableHeader(), new TableCell(), new TableRow()];
-            case "todolist":
-              return [new TodoItem(), new TodoList()];
-            case "underline":
-              return new Underline();
-          }
-        })
-        .filter(ext => ext)
-        .flat();
-      this.editorText = this.value ? this.value : "";
-      this.editor = new Editor({
-        extensions: extensions,
-        content: this.value ? this.value : "",
-        onUpdate: ({ getHTML }) => {
-          this.$emit("input", getHTML());
-        }
-      });
-    },
-    updateValue(value) {
-      this.$emit("input", value);
-      this.editorText = value;
-      if (this.editorText !== this.editor.view.dom.innerHTML) {
-        this.editor.view.dom.innerHTML = value;
-      }
-    }
-  },
-  components: {
-    EditorContent,
-    Bubble
-  },
   data() {
     return {
-      blackMode: false,
-      distractionFree: false,
-      editorText: "",
-      editor: null,
-      rawView: false,
-      linkBubble: false,
-      selectionPosition: {
-        pos: null,
-        editorPos: null,
-        alt: {
-          value: null
-        },
-        title: null,
-        src: null,
-        target: null
-      }
+      distractionFree: false
     };
   },
-
+  computed: {
+    editorOptions() {
+      return {
+        disableEditing: this.readonly,
+        placeholder: {
+          text: this.options.placeholder || "",
+          hideOnClick: true
+        },
+        toolbar: this.readonly
+          ? false
+          : {
+              buttons: this.options.buttons
+            }
+      };
+    },
+    fullscreenIcon() {
+      return this.distractionFree ? "close" : "fullscreen";
+    }
+  },
   mounted() {
     this.init();
   },
   beforeDestroy() {
-    this.editor.destroy();
+    this.destroy();
+  },
+  watch: {
+    options() {
+      this.destroy();
+      this.init();
+    },
+    value(newVal) {
+      if (newVal !== this.editor.getContent()) {
+        this.editor.setContent(newVal);
+      }
+    },
+    distractionFree(on) {
+      if (on) {
+        this.$helpers.disableBodyScroll(this.$refs.input);
+      } else {
+        this.$helpers.enableBodyScroll(this.$refs.input);
+      }
+    }
+  },
+  methods: {
+    init() {
+      this.editor = new MediumEditor(this.$refs.editor, this.editorOptions);
+
+      if (this.value) {
+        this.editor.setContent(this.value);
+      }
+
+      this.editor.origElements.addEventListener("input", () => {
+        const content = this.editor.getContent();
+
+        if (content === "<p><br></p>") {
+          return this.$emit("input", null);
+        }
+
+        this.$emit("input", content);
+      });
+    },
+    destroy() {
+      this.editor.destroy();
+    }
   }
 };
 </script>
 
-<style lang="scss" scoped>
-.interface-wysiwyg-container,
-.interface-wysiwyg {
+<style lang="scss">
+.interface-wysiwyg-container {
   position: relative;
   width: 100%;
-  min-height: inherit;
   max-width: var(--width-x-large);
 
   &.fullscreen {
     position: fixed;
-    top: 31px;
+    top: 0;
     left: 0;
     right: 0;
     bottom: 0;
@@ -236,62 +110,309 @@ export default {
     max-width: 100%;
     max-height: 100%;
     background-color: var(--body-background);
-    transition: background-color 0.4s ease-in-out, color 0.3s ease-in-out,
-      border-bottom 0.35s ease-in-out;
 
-    .editor__content {
-      min-height: 100vh;
-      textarea {
-        min-height: inherit;
+    button.fullscreen-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 101;
+      background-color: var(--darker-gray);
+      color: var(--white);
+      &:hover {
+        background-color: var(--darkest-gray);
       }
     }
-    .raw-editor {
-      min-height: 100vh;
-    }
-    &:after {
-      transition: inherit;
-      content: "";
-      z-index: -1;
-      position: absolute;
-      top: -33px;
-      width: 100%;
-      height: 35px;
-      background-color: var(--body-background);
-    }
-    &.night {
-      &:after {
-        background-color: var(--black);
+
+    .interface-wysiwyg {
+      color: var(--dark-gray);
+
+      border: none;
+      border-radius: 0;
+      padding: 80px 80px 100px 80px;
+      max-width: 880px;
+      margin: 0 auto;
+      height: 100%;
+      max-height: 100%;
+
+      font-size: 21px;
+      line-height: 33px;
+      font-weight: 400;
+
+      p {
+        margin-top: 30px;
+      }
+
+      blockquote {
+        margin-top: 30px;
+        padding-left: 20px;
+      }
+
+      h1 {
+        margin-top: 60px;
+      }
+
+      h2 {
+        margin-top: 60px;
+      }
+
+      h3 {
+        margin-top: 40px;
+      }
+
+      h4 {
+        margin-top: 30px;
+      }
+
+      h5 {
+        margin-top: 20px;
+      }
+
+      h6 {
+        margin-top: 20px;
       }
     }
   }
 }
 
-.options {
+button.fullscreen-toggle {
   position: absolute;
-  z-index: 9;
-  right: 0;
-  top: 7px;
-
-  .back {
-    float: left;
-  }
-  > button {
-    min-width: 40px;
+  top: 10px;
+  right: 10px;
+  background-color: var(--white);
+  color: var(--dark-gray);
+  opacity: 0.4;
+  border-radius: 100%;
+  padding: 4px;
+  &:hover {
+    opacity: 1;
   }
 }
 
-.fullscreen-info {
-  position: absolute;
-  padding-left: 10px;
-  top: -24px;
-  z-index: 1;
+.interface-wysiwyg {
+  position: relative;
   width: 100%;
-  min-height: 24px;
-  max-width: 100%;
-  font-size: var(--size-2);
-  padding-bottom: 6px;
-  color: var(--darkest-gray);
-  transition: background-color 0.4s ease-in-out, color 0.3s ease-in-out,
-    border-bottom 0.35s ease-in-out;
+  border: var(--input-border-width) solid var(--lighter-gray);
+  border-radius: var(--border-radius);
+  color: var(--gray);
+  padding: 12px 15px;
+  transition: var(--fast) var(--transition);
+  transition-property: color, border-color, padding;
+  min-height: 200px;
+  max-height: 800px;
+  overflow: scroll;
+  font-weight: 400;
+  line-height: 1.7em;
+
+  & > :first-child {
+    padding-top: 0;
+    margin-top: 0;
+  }
+
+  &::placeholder {
+    color: var(--light-gray);
+  }
+
+  &[contenteditable="true"] {
+    cursor: default;
+    background-color: var(--white);
+    &:hover {
+      transition: none;
+      border-color: var(--light-gray);
+    }
+
+    &:focus {
+      color: var(--darker-gray);
+      border-color: var(--darker-gray);
+      outline: 0;
+    }
+
+    &:focus + i {
+      color: var(--darkest-gray);
+    }
+  }
+
+  &.readonly {
+    background-color: var(--lightest-gray);
+    cursor: not-allowed;
+    &:focus {
+      color: var(--gray);
+    }
+  }
+
+  &:-webkit-autofill {
+    box-shadow: inset 0 0 0 1000px var(--white) !important;
+    color: var(--dark-gray) !important;
+    -webkit-text-fill-color: var(--dark-gray) !important;
+  }
+
+  &:-webkit-autofill,
+  &:-webkit-autofill:hover,
+  &:-webkit-autofill:focus {
+    border: var(--input-border-width) solid var(--lighter-gray);
+    background-color: var(--white);
+    box-shadow: inset 0 0 0 2000px var(--white);
+  }
+
+  b,
+  strong {
+    font-weight: 700;
+  }
+
+  a {
+    color: var(--darkest-gray);
+  }
+
+  p {
+    margin-top: 20px;
+  }
+
+  blockquote {
+    border-left: 4px solid var(--lightest-gray);
+    font-style: italic;
+    margin-top: 20px;
+    padding-left: 20px;
+  }
+
+  pre {
+    max-width: 100%;
+    background-color: var(--body-background);
+    padding: 20px 10px;
+    font-family: "Roboto Mono", mono;
+    overflow: scroll;
+    margin-top: 20px;
+  }
+
+  h1 {
+    font-size: 3em;
+    line-height: 1.2em;
+    font-weight: 600;
+    margin-top: 30px;
+  }
+  h2 {
+    font-size: 2.5em;
+    line-height: 1.2em;
+    font-weight: 600;
+    margin-top: 30px;
+  }
+  h3 {
+    font-size: 2em;
+    line-height: 1.2em;
+    font-weight: 600;
+    margin-top: 30px;
+  }
+  h4 {
+    font-size: 1.87em;
+    line-height: 1.2em;
+    font-weight: 600;
+    margin-top: 20px;
+  }
+  h5 {
+    font-size: 1.5em;
+    line-height: 1.2em;
+    font-weight: 600;
+    margin-top: 20px;
+  }
+  h6 {
+    font-size: 1.2em;
+    line-height: 1.2em;
+    font-weight: 600;
+    margin-top: 20px;
+  }
+}
+
+.medium-toolbar-arrow-under:after {
+  top: 40px;
+  border-color: var(--darker-gray) transparent transparent transparent;
+}
+
+.medium-toolbar-arrow-over:before {
+  top: -8px;
+  border-color: transparent transparent var(--darker-gray) transparent;
+}
+
+.medium-editor-toolbar {
+  background-color: var(--darker-gray);
+  border-radius: var(--border-radius);
+}
+
+.medium-editor-toolbar li {
+  padding: 0;
+}
+
+.medium-editor-toolbar li button {
+  min-width: 40px;
+  height: 40px;
+  line-height: 0;
+  border: none;
+  border-right: 1px solid var(--dark-gray);
+  background-color: transparent;
+  color: var(--white);
+  transition: background-color var(--fast) var(--transition), color var(--fast) var(--transition);
+}
+
+.medium-editor-toolbar li button:hover {
+  background-color: var(--dark-gray);
+  color: var(--white);
+}
+
+.medium-editor-toolbar li .medium-editor-button-active {
+  background-color: var(--dark-gray);
+  color: var(--white);
+}
+
+.medium-editor-toolbar li .medium-editor-button-first {
+  border-radius: var(--border-radius) 0 0 var(--border-radius);
+}
+
+.medium-editor-toolbar li .medium-editor-button-last {
+  border-right: none;
+  border-radius: 0 var(--border-radius) var(--border-radius) 0;
+}
+
+.medium-editor-toolbar-form .medium-editor-toolbar-input {
+  height: 40px;
+  background: var(--darker-gray);
+  border-right: 1px solid var(--gray);
+  color: var(--white);
+  padding-left: 20px;
+}
+
+.medium-editor-toolbar-form .medium-editor-toolbar-input::-webkit-input-placeholder {
+  color: var(--white);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.medium-editor-toolbar-form .medium-editor-toolbar-input:-moz-placeholder {
+  /* Firefox 18- */
+  color: var(--white);
+}
+
+.medium-editor-toolbar-form .medium-editor-toolbar-input::-moz-placeholder {
+  /* Firefox 19+ */
+  color: var(--white);
+}
+
+.medium-editor-toolbar-form .medium-editor-toolbar-input:-ms-input-placeholder {
+  color: var(--white);
+}
+
+.medium-editor-toolbar-form a {
+  color: var(--white);
+}
+
+.medium-editor-toolbar-anchor-preview {
+  background: var(--gray);
+  color: var(--white);
+  border-radius: var(--border-radius);
+}
+
+.medium-editor-toolbar-anchor-preview a {
+  padding: 0px 6px;
+}
+
+.medium-editor-placeholder:after {
+  color: var(--lighter-gray);
+  font-style: normal;
+  font-weight: 500;
 }
 </style>

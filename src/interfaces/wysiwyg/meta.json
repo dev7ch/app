@@ -1,6 +1,6 @@
 {
   "name": "$t:wysiwyg",
-  "version": "1.1.0",
+  "version": "1.0.1",
   "types": ["string"],
   "icon": "format_quote",
   "recommended": {
@@ -13,49 +13,32 @@
       "interface": "text-input",
       "length": 200
     },
-    "show_history": {
-      "name": "$t:show_history",
-      "comment": "$t:show_history_commet",
-      "interface": "toggle",
-      "type": "BOOLEAN",
-      "default": true
-    },
-    "custom_url": {
-      "name": "$t:custom_url",
-      "comment": "$t:custom_url_comment",
-      "interface": "text-input",
-      "default": null,
-      "length": 250
-    },
-    "extensions": {
-      "name": "Extensions",
-      "comment": "What options to allow the user to use.",
+    "buttons": {
+      "name": "$t:buttons",
+      "comment": "$t:buttons_comment",
       "interface": "checkboxes",
-      "default": [
-        "bold", "italic", "underline", "h1", "h2", "h3", "h4", "blockquote",
-        "bullet_list", "ordered_list", "table", "history"
-      ],
+      "default": ["bold", "italic", "underline", "anchor", "h2", "h3", "quote"],
       "options": {
+        "wrap": false,
         "choices": {
           "bold": "Bold",
-          "strike": "Strike",
-          "underline": "Underline",
           "italic": "Italic",
-          "h1": "Heading 1",
-          "h2": "Heading 2",
-          "h3": "Heading 3",
-          "h4": "Heading 4",
-          "blockquote": "Blockquote",
-          "bullet_list": "Bullet List",
-          "ordered_list": "Ordered List",
-          "hard_break": "Hard Break",
-          "horizontal_rule": "Horizontal Rule",
-          "image": "Image",
-          "link": "Link",
-          "code": "Code",
-          "table": "Table",
-          "code_block": "Code Block",
-          "history": "History (undo / redo)"
+          "underline": "Underline",
+          "strikethrough": "Strikethrough",
+          "subscript": "Subscript",
+          "superscript": "Superscript",
+          "anchor": "Link",
+          "quote": "Quote",
+          "pre": "Pre",
+          "orderedlist": "Ordered List",
+          "unorderedlist": "Unordered List",
+          "h1": "H1",
+          "h2": "H2",
+          "h3": "H3",
+          "h4": "H4",
+          "h5": "H5",
+          "h6": "H6",
+          "removeFormat": "Remove all formatting"
         }
       }
     }
@@ -65,41 +48,17 @@
       "wysiwyg": "WYSIWYG",
       "placeholder": "Placeholder",
       "placeholder_comment": "Enter placeholder text",
-      "link_add": "Click to add Link",
-      "link_edit": "Edit Link",
-      "link_info": "Type link and hit enter ...",
-      "link_delete": "Delete url from current selection",
-      "link_add_or_edit": "Add or edit link on selection",
-      "image_title": "Add image title",
-      "image_css_classes": "Add or edit CSS classes of image",
-      "image_alt": "Alternative image title",
-      "image_source": "Image source",
-      "image_height_px": "Height in px",
-      "image_width_px": "Width in px",
-      "toolbar_options": "Editor toolbar options",
-      "toolbar_options_comment": "Enable and sort extensions in the toolbar of ***ADD LINK TO README IN EXTENSION***",
-      "toolbar_cm_options": "Code Mirror Options",
-      "toolbar_cm_options_comment": "Code Mirror Options for the formatted raw view of this editor",
-      "show_history": "Show History",
-      "show_history_comment": "Show History in Editor menu toolbar",
-      "custom_url": "URL base for images",
-      "custom_url_comment": "Optional custom URL base for images including last '/'"
+      "buttons": "Buttons",
+      "buttons_comment": "Choose what buttons to use in the toolbar",
+      "distraction_free_mode": "Distracton Free Mode"
     },
-    "fr-FR": {
-      "wysiwyg_full": "Editeur avancé de contenu avec présentation « tel écran, tel écrit »",
+	"fr-FR": {
+      "wysiwyg": "Editeur simplifié de contenu avec présentation « tel écran, tel écrit »",
       "placeholder": "Paramètre fictif",
       "placeholder_comment": "Texte statique qui est affiché avant la sélection d'une valeur",
-      "link_add": "Click to add Link",
-      "link_edit": "Edit Link",
-      "link_info": "Type link and hit enter ...",
-      "link_delete": "Delete url from current selection",
-      "link_add_or_edit": "Add or edit link on selection",
-      "toolbar_options": "Options de la barre d'outils",
-      "toolbar_options_comment": "***ADD LINK TO README IN EXTENSION***",
-      "show_history": "Show History",
-      "show_history_comment": "Show History in Editor menu toolbar",
-      "custom_url": "Adresse Web (URL) des images",
-      "custom_url_comment": "URL personnalisée optionnelle des images, incluant la barre verticale oblique (/) finale"
+      "buttons": "Boutons",
+      "buttons_comment": "Choix des boutons utilisables à travers la barre d'outils",
+      "distraction_free_mode": "Mode « non distractif »"
     }
   }
 }

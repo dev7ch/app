@@ -1,20 +1,25 @@
 <template>
   <draggable
-    class="interface-checkboxes draggable"
-    :class="{ sortable: sortable }"
+    class="interface-checkboxes"
+    :class="{ draggable: sortable }"
     element="div"
     v-model="sortableList"
     v-bind="dragOptions"
     @end="saveSort()"
     draggable=".sortable-box.active"
   >
-    <template v-if="sortable">
-      <div
+    <template v-if="sortable && sortableList.length > 1">
+      <transition-group
+        name="list-sorting"
+        tag="div"
         v-for="(item, idx) in sortableList"
         :key="idx"
         class="sortable-box"
         :class="{ active: selection.includes(item.val) }"
-        :style="{ order: selection.indexOf(item.val) > -1 ? selection.indexOf(item.val) : 999 }"
+        :style="{
+          order:
+            selection.indexOf(item.val) > -1 ? selection.indexOf(item.val) : selection.length + 1
+        }"
       >
         <v-checkbox
           :id="item.label"
@@ -25,9 +30,9 @@
           :checked="selection.includes(item.val)"
           @change="updateValue(item.val, $event)"
         ></v-checkbox>
-      </div>
+      </transition-group>
     </template>
-    <template v-else-if="!sortable">
+    <span v-else-if="!sortable">
       <v-checkbox
         v-for="(label, val) in options.choices"
         :id="label"
@@ -38,7 +43,7 @@
         :checked="selection.includes(val)"
         @change="updateValue(val, $event)"
       ></v-checkbox>
-    </template>
+    </span>
   </draggable>
 </template>
 
@@ -63,14 +68,14 @@ export default {
   computed: {
     dragOptions() {
       return {
-        animation: 1,
+        animation: 200,
         group: "description",
         disabled: !this.editable,
         ghostClass: "ghost"
       };
     },
     selection() {
-      if (!this.value || this.value == null) return [];
+      if (this.value == null) return [];
       let selection;
       // Convert the value to an array
       if (typeof this.value === "string") {
@@ -89,7 +94,7 @@ export default {
       return selection;
     },
     choices() {
-      if (!this.$props.options.choices) return [];
+      if (!this.$props.options.choices || this.$props.options.choices == null) return [];
       let choice = this.$props.options.choices;
       // Convert the value to an array
       if (typeof choice === "string") {
@@ -108,7 +113,7 @@ export default {
     }
   },
 
-  created() {
+  beforeMount() {
     if (this.$props.sortable) {
       this.initSortable();
     }
@@ -177,14 +182,74 @@ export default {
   max-width: var(--width-x-large);
   display: grid;
   grid-gap: 20px;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(1, 1fr);
+
+  @media only screen and (min-width: 330px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media only screen and (min-width: 480px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  @media only screen and (min-width: 800px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
 
   &.draggable {
+    max-width: 100%;
     .sortable-box {
-      order: 999;
+      transition: opacity ease-in-out 0.2s, box-shadow ease-in-out 0.3s;
       &.active {
-        //order: -1;
+        &.ghost {
+          position: relative;
+          &.sortable-chosen {
+            opacity: 0.4;
+            order: initial;
+            + .sortable-box.active {
+              color: var(--accent);
+              position: relative;
+              .form-checkbox {
+                position: relative;
+                border: var(--border-radius);
+                box-shadow: inset 1px 1px 2px var(--light-gray);
+              }
+            }
+          }
+
+          .form-checkbox {
+            :after {
+              font-family: "Material Icons", sans-serif;
+              font-weight: normal;
+              font-style: normal;
+              display: inline-block;
+              line-height: 1;
+              text-transform: none;
+              letter-spacing: normal;
+              word-wrap: normal;
+              white-space: nowrap;
+              -webkit-font-feature-settings: "liga";
+              font-feature-settings: "liga";
+              vertical-align: middle;
+              content: "drag_indicator";
+              height: 100%;
+              width: 24px;
+              font-size: 24px;
+              position: absolute;
+              left: 0;
+              color: var(--accent);
+              background-color: var(--white);
+            }
+          }
+        }
       }
+    }
+  }
+
+  @keyframes appear {
+    0% {
+      opacity: 0.2;
+    }
+    100% {
     }
   }
 }

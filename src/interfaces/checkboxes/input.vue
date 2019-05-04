@@ -10,7 +10,7 @@
   >
     <template v-if="sortable">
       <div
-        v-for="(item, val, idx) in sortableList"
+        v-for="(item, idx) in sortableList"
         :key="idx"
         class="sortable-box"
         :class="{ active: selection.includes(item.val) }"

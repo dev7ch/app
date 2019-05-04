@@ -75,17 +75,15 @@ export default {
       };
     },
     selection() {
-      if (this.value == null) return [];
-      let selection;
+      if (!this.value || this.value === null) return [];
+      let selection = this.value;
       // Convert the value to an array
-      if (typeof this.value === "string") {
-        if (this.value.includes(",")) {
+      if (typeof selection === "string") {
+        if (selection.includes(",")) {
           selection = selection.split(",");
         } else {
           selection = [this.value];
         }
-      } else {
-        selection = this.value;
       }
       if (this.options.wrap && selection.length > 2) {
         selection.pop();
@@ -101,7 +99,7 @@ export default {
         if (choice.includes(",")) {
           choice = choice.split(",");
         } else {
-          choice = [this.$props.options.choices];
+          choice = [choice];
         }
       } else if (typeof choice === "object") {
         choice = Object.keys(choice).map(k => ({
@@ -109,6 +107,7 @@ export default {
           label: choice[k]
         }));
       }
+
       return choice;
     }
   },

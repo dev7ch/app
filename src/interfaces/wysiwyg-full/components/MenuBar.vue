@@ -185,7 +185,6 @@
             :order-index="optionsIndex('h' + n)"
             :label="'H' + n"
             :command="() => commands.heading({ level: n })"
-            :active-condition="isActive.heading({ level: n })"
             :disabled="showSource"
             v-tooltip.bottom="$tc('editor.heading', { level: n }) + ' ' + n"
           />

@@ -109,7 +109,7 @@ export default {
               return new Code();
             case "code_block":
               return new CodeBlock();
-            case "h1" || "h2" || "h3" || "h4" || "h5" || "h6":
+            case "h1" || "h2" || "h3" || "h4" || "h5" || "h6" || "heading":
               return new Heading();
             case "hardbreak":
               return new HardBreak();

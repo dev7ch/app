@@ -7,17 +7,23 @@
     v-bind="dragOptions"
     @end="saveSort()"
     @start="setSort()"
-    draggable=".sortable-box"
+    draggable=".sortable-box.active"
   >
     <template v-if="sortable">
-      <div v-for="(item, idx) in sortableList" :key="idx" class="sortable-box">
+      <div
+        v-for="(item, idx) in sortableList"
+        :key="idx"
+        class="sortable-box"
+        :class="{ active: selection.includes(item.val) }"
+        :style="{ order: selection.indexOf(item.val) > -1 ? selection.indexOf(item.val) : 999 }"
+      >
         <v-checkbox
           :id="item.label"
           :key="item.label"
           :value="item.val"
           :disabled="readonly"
           :label="item.label"
-          :checked="selection.includes(item.val || idx)"
+          :checked="selection.includes(item.val)"
           @change="updateValue(item.val, $event)"
         ></v-checkbox>
       </div>
@@ -58,14 +64,14 @@ export default {
   computed: {
     dragOptions() {
       return {
-        animation: 3,
+        animation: 1,
         group: "description",
         disabled: !this.editable,
         ghostClass: "ghost"
       };
     },
     selection() {
-      if (!this.value) return [];
+      if (!this.value || this.value == null) return [];
       let selection;
       // Convert the value to an array
       if (typeof this.value === "string") {
@@ -85,24 +91,27 @@ export default {
     },
     choices() {
       if (!this.$props.options.choices) return [];
-      let choice;
+      let choice = this.$props.options.choices;
       // Convert the value to an array
-      if (typeof this.$props.options.choices === "string") {
-        if (this.$props.options.choices.includes(",")) {
+      if (typeof choice === "string") {
+        if (choice.includes(",")) {
           choice = choice.split(",");
         } else {
           choice = [this.$props.options.choices];
         }
-      } else if (typeof this.$props.options.choices === "object") {
-        choice = this.$props.options.choices;
-        choice = Object.keys(this.$props.options.choices).map(k => ({
+      } else if (typeof choice === "object") {
+        choice = Object.keys(choice).map(k => ({
           val: k,
-          label: this.$props.options.choices[k],
-          sort: k.ke
+          label: choice[k]
         }));
       }
-      console.log(choice);
       return choice;
+    }
+  },
+
+  created() {
+    if (this.$props.sortable) {
+      this.initSortable();
     }
   },
 
@@ -115,30 +124,28 @@ export default {
     };
   },
 
-  mounted() {
-    if (this.$props.sortable) {
-      this.initSortable();
-    }
-  },
-
   methods: {
     saveSort() {
       let selection = [...this.selection];
-      let staged = this.$lodash.map(this.sortableList, function(value) {
-        return value.val;
+      let staged = this.$lodash.map(this.sortableList, function(k) {
+        return k.val;
       });
       staged = staged.filter(val => selection.includes(val));
       console.log(staged);
-      console.log(this.options);
       return this.$emit("input", staged);
     },
 
-    setSort() {
-      this.initSortable();
-    },
-
     initSortable() {
-      this.sortableList = [...this.choices];
+      if (this.selection) {
+        let selection = [...this.selection];
+        let staged = this.$lodash.map(this.choices, function(k) {
+          return k.val;
+        });
+        staged = staged.filter(val => selection.includes(val.val));
+        console.log(staged);
+        console.log(selection);
+        this.sortableList = [...staged, ...this.choices];
+      }
     },
 
     updateValue(val) {
@@ -175,5 +182,14 @@ export default {
   display: grid;
   grid-gap: 20px;
   grid-template-columns: repeat(4, 1fr);
+
+  &.draggable {
+    .sortable-box {
+      order: 999;
+      &.active {
+        //order: -1;
+      }
+    }
+  }
 }
 </style>

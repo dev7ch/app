@@ -75,15 +75,17 @@ export default {
       };
     },
     selection() {
-      if (!this.value || this.value === null) return [];
-      let selection = this.value;
+      if (this.value == null) return [];
+      let selection;
       // Convert the value to an array
-      if (typeof selection === "string") {
-        if (selection.includes(",")) {
-          selection = selection.split(",");
+      if (typeof this.value === "string" && this.value) {
+        if (this.value.includes(",")) {
+          selection = this.value.split(",");
         } else {
           selection = [this.value];
         }
+      } else {
+        selection = this.value;
       }
       if (this.options.wrap && selection.length > 2) {
         selection.pop();

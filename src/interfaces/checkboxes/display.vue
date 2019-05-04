@@ -22,14 +22,18 @@ export default {
       return selection;
     },
     displayValue() {
-      if (this.options.formatting) {
-        return this.selection
+      let selection = this.selection;
+      console.log(this.selection);
+      if (this.options.formatting && selection.includes(", ")) {
+        return selection
           .filter(val => val)
           .map(val => this.options.choices[val])
           .join(", ");
       }
-
-      return this.selection.join(", ");
+      if (this.options.formatting) {
+        return selection.filter(val => val).map(val => this.options.choices[val]);
+      }
+      return selection;
     }
   }
 };

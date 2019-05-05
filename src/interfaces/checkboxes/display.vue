@@ -1,5 +1,5 @@
 <template>
-  <div class="readonly-checkboxes no-wrap">{{ displayValue.toString() }}</div>
+  <div class="readonly-checkboxes no-wrap">{{ displayValue }}</div>
 </template>
 
 <script>
@@ -20,9 +20,10 @@ export default {
       return selection;
     },
     displayValue() {
-      const display = this.selection;
+      let display = this.selection;
       if (this.options.formatting && this.type === "array") {
-        return display.filter(val => val).map(val => this.options.choices[val]);
+        display = display.filter(val => val).map(val => this.options.choices[val]);
+        return display.toString();
       }
       return display;
     }

@@ -188,26 +188,22 @@ export default {
   &.draggable {
     max-width: 100%;
     .sortable-box {
-      transition: opacity ease-in-out 0.2s, box-shadow ease-in-out 0.3s;
+      transition: opacity ease-in-out 0.2s, background-color ease-in-out 0.3s;
       &.active {
         &.ghost {
           position: relative;
           &.sortable-chosen {
             opacity: 0.4;
-            order: initial;
             + .sortable-box.active {
+              border-radius: var(--border-radius);
               color: var(--accent);
-              position: relative;
-              .form-checkbox {
-                position: relative;
-                border: var(--border-radius);
-                box-shadow: inset 1px 1px 2px var(--light-gray);
-              }
+              background-color: var(--lightest-gray);
             }
           }
 
           .form-checkbox {
             :after {
+              position: absolute;
               font-family: "Material Icons", sans-serif;
               font-weight: normal;
               font-style: normal;

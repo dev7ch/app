@@ -118,7 +118,6 @@ export default {
     if (this.$props.sortable) {
       this.initSortable();
     }
-    console.log(this);
   },
 
   data() {
@@ -137,7 +136,6 @@ export default {
         return k.val;
       });
       staged = staged.filter(val => selection.includes(val));
-      console.log(staged);
       return this.$emit("input", staged);
     },
 
@@ -148,8 +146,6 @@ export default {
           return k.val;
         });
         staged = staged.filter(val => selection.includes(val.val));
-        console.log(staged);
-        console.log(selection);
         this.sortableList = [...staged, ...this.choices];
       }
     },

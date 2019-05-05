@@ -22,7 +22,7 @@
         }"
       >
         <v-checkbox
-          :id="item.label"
+          :id="_uid + idx + '-' + item.val"
           :key="item.label"
           :value="item.val"
           :disabled="readonly"
@@ -220,7 +220,6 @@ export default {
               height: 100%;
               width: 24px;
               font-size: 24px;
-              position: absolute;
               left: 0;
               color: var(--accent);
               background-color: var(--white);

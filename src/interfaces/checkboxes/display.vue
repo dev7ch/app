@@ -13,23 +13,19 @@ export default {
       if (this.value == null) return [];
 
       const selection = this.type === "VARCHAR" ? this.value.split(",") : this.value;
-
       if (this.options.wrap) {
         selection.pop();
         selection.shift();
       }
-
       return selection;
     },
     displayValue() {
-      if (this.options.formatting) {
-        return this.selection
-          .filter(val => val)
-          .map(val => this.options.choices[val])
-          .join(", ");
+      let display = this.selection;
+      if (this.options.formatting && this.type === "array") {
+        display = display.filter(val => val).map(val => this.options.choices[val]);
+        return display.toString();
       }
-
-      return this.selection.join(", ");
+      return display;
     }
   }
 };

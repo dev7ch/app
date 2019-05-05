@@ -1,53 +1,150 @@
 <template>
-  <div class="interface-checkboxes">
-    <v-checkbox
-      v-for="(label, val) in options.choices"
-      :id="label"
-      :key="label"
-      :value="name + '-' + val"
-      :disabled="readonly"
-      :label="label"
-      :checked="selection.includes(val)"
-      @change="updateValue(val, $event)"
-    ></v-checkbox>
-  </div>
+  <draggable
+    class="interface-checkboxes"
+    :class="{ draggable: sortable }"
+    element="div"
+    v-model="sortableList"
+    v-bind="dragOptions"
+    @end="saveSort()"
+    draggable=".sortable-box.active"
+  >
+    <template v-if="sortable && sortableList.length > 1">
+      <transition-group
+        name="list-sorting"
+        tag="div"
+        v-for="(item, idx) in sortableList"
+        :key="idx"
+        class="sortable-box"
+        :class="{ active: selection.includes(item.val) }"
+        :style="{
+          order:
+            selection.indexOf(item.val) > -1 ? selection.indexOf(item.val) : selection.length + 1
+        }"
+      >
+        <v-checkbox
+          :id="_uid + idx + '-' + item.val"
+          :key="item.label"
+          :value="item.val"
+          :disabled="readonly"
+          :label="item.label"
+          :checked="selection.includes(item.val)"
+          @change="updateValue(item.val, $event)"
+        ></v-checkbox>
+      </transition-group>
+    </template>
+    <span v-else-if="!sortable">
+      <v-checkbox
+        v-for="(label, val) in options.choices"
+        :id="label"
+        :key="label"
+        :value="name + '-' + val"
+        :disabled="readonly"
+        :label="label"
+        :checked="selection.includes(val)"
+        @change="updateValue(val, $event)"
+      ></v-checkbox>
+    </span>
+  </draggable>
 </template>
 
 <script>
 import mixin from "@directus/extension-toolkit/mixins/interface";
+import draggable from "vuedraggable";
 
 export default {
   name: "interface-checkboxes",
   mixins: [mixin],
+  props: {
+    sortable: {
+      type: Boolean,
+      default: true
+    }
+  },
+
+  components: {
+    draggable
+  },
+
   computed: {
+    dragOptions() {
+      return {
+        animation: 200,
+        group: "description",
+        disabled: !this.editable,
+        ghostClass: "ghost"
+      };
+    },
     selection() {
       if (this.value == null) return [];
-
       let selection;
-
-      // Conver the value to an array
-      if (typeof this.value === "string") {
+      // Convert the value to an array
+      if (typeof this.value === "string" && this.value) {
         if (this.value.includes(",")) {
-          selection = selection.split(",");
+          selection = this.value.split(",");
         } else {
           selection = [this.value];
         }
       } else {
         selection = this.value;
       }
-
       if (this.options.wrap && selection.length > 2) {
         selection.pop();
         selection.shift();
       }
-
       return selection;
+    },
+    choices() {
+      if (!this.$props.options.choices || this.$props.options.choices == null) return [];
+      let choice = this.$props.options.choices;
+      // Convert the value to an array
+      if (typeof choice === "string") {
+        if (choice.includes(",")) {
+          choice = choice.split(",");
+        } else {
+          choice = [choice];
+        }
+      } else if (typeof choice === "object") {
+        choice = Object.keys(choice).map(k => ({
+          val: k,
+          label: choice[k]
+        }));
+      }
+      return choice;
     }
   },
+
+  beforeMount() {
+    if (this.$props.sortable) {
+      let selection = [...this.selection];
+      let staged = this.$lodash.map(this.choices, function(k) {
+        return k.val;
+      });
+      staged = staged.filter(val => selection.includes(val.val));
+      this.sortableList = [...staged, ...this.choices];
+    }
+  },
+
+  data() {
+    return {
+      sortableList: [],
+      editable: true,
+      isDragging: false,
+      delayedDragging: false
+    };
+  },
+
   methods: {
+    saveSort() {
+      let selection = [...this.selection];
+      let staged = this.$lodash.map(this.sortableList, function(k) {
+        return k.val;
+      });
+      staged = staged.filter(val => selection.includes(val));
+      return this.$emit("input", staged);
+    },
+
     updateValue(val) {
       let selection = [...this.selection];
-
       if (selection.includes(val)) {
         selection.splice(selection.indexOf(val), 1);
       } else {
@@ -75,6 +172,62 @@ export default {
   max-width: var(--width-x-large);
   display: grid;
   grid-gap: 20px;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(1, 1fr);
+
+  @media only screen and (min-width: 330px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media only screen and (min-width: 480px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  @media only screen and (min-width: 800px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  &.draggable {
+    max-width: 100%;
+    .sortable-box {
+      transition: opacity ease-in-out 0.2s, background-color ease-in-out 0.3s;
+      &.active {
+        &.ghost {
+          position: relative;
+          &.sortable-chosen {
+            opacity: 0.4;
+            + .sortable-box.active {
+              border-radius: var(--border-radius);
+              color: var(--accent);
+              background-color: var(--lightest-gray);
+            }
+          }
+
+          .form-checkbox {
+            :after {
+              position: absolute;
+              font-family: "Material Icons", sans-serif;
+              font-weight: normal;
+              font-style: normal;
+              display: inline-block;
+              line-height: 1;
+              text-transform: none;
+              letter-spacing: normal;
+              word-wrap: normal;
+              white-space: nowrap;
+              -webkit-font-feature-settings: "liga";
+              font-feature-settings: "liga";
+              vertical-align: middle;
+              content: "drag_indicator";
+              height: 100%;
+              width: 24px;
+              font-size: 24px;
+              left: 0;
+              color: var(--accent);
+              background-color: var(--white);
+            }
+          }
+        }
+      }
+    }
+  }
 }
 </style>

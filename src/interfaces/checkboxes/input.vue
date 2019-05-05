@@ -109,14 +109,18 @@ export default {
           label: choice[k]
         }));
       }
-
       return choice;
     }
   },
 
   beforeMount() {
     if (this.$props.sortable) {
-      this.initSortable();
+      let selection = [...this.selection];
+      let staged = this.$lodash.map(this.choices, function(k) {
+        return k.val;
+      });
+      staged = staged.filter(val => selection.includes(val.val));
+      this.sortableList = [...staged, ...this.choices];
     }
   },
 
@@ -137,17 +141,6 @@ export default {
       });
       staged = staged.filter(val => selection.includes(val));
       return this.$emit("input", staged);
-    },
-
-    initSortable() {
-      if (this.selection && this.choices) {
-        let selection = [...this.selection];
-        let staged = this.$lodash.map(this.choices, function(k) {
-          return k.val;
-        });
-        staged = staged.filter(val => selection.includes(val.val));
-        this.sortableList = [...staged, ...this.choices];
-      }
     },
 
     updateValue(val) {

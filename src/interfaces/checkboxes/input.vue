@@ -1,7 +1,7 @@
 <template>
   <draggable
     class="interface-checkboxes"
-    :class="{ draggable: sortable }"
+    :class="{ draggable: sortable, single: options.single }"
     element="div"
     v-model="sortableList"
     v-bind="dragOptions"
@@ -46,7 +46,6 @@ export default {
     dragOptions() {
       return {
         animation: 200,
-        group: "list-sorting",
         disabled: !this.editable,
         ghostClass: "ghost"
       };
@@ -72,7 +71,7 @@ export default {
     },
     choosable() {
       let options = this.$props.options.choices ? this.$props.options.choices : {};
-      let selected = this.selected ? this.selected : [];
+      let selected = this.selection ? this.selection : [];
       if (typeof options === "object") {
         options = Object.keys(options).map(k => ({
           val: k,
@@ -159,7 +158,8 @@ export default {
 
 <style lang="scss" scoped>
 .interface-checkboxes {
-  max-width: var(--width-x-large);
+  width: var(--width-x-large);
+  max-width: 100%;
   display: grid;
   grid-gap: 20px;
   grid-template-columns: repeat(1, 1fr);
@@ -175,6 +175,9 @@ export default {
     grid-template-columns: repeat(4, 1fr);
   }
 
+  &.single {
+    grid-template-columns: repeat(1, 1fr);
+  }
   &.draggable {
     max-width: 100%;
     .sortable-box {

@@ -10,7 +10,7 @@
       "comment": "$t:choices_comment",
       "interface": "json",
       "type": "JSON",
-      "default": {
+      "template": {
         "value1": "$t:option 1",
         "value2": "$t:option 2",
         "value3": "$t:option 3",
@@ -34,6 +34,13 @@
       "interface": "toggle",
       "type": "BOOLEAN",
       "default": true
+    },
+    "single": {
+      "name": "$t:single",
+      "comment": "$t:single_comment",
+      "interface": "toggle",
+      "type": "BOOLEAN",
+      "default": false
     }
   },
   "translation": {
@@ -47,7 +54,10 @@
       "formatting_comment": "Render the values as the display values",
       "display_text": "Display Text",
       "value": "Value",
-      "option": "Option"
+      "option": "Option",
+      "single": "Single Column",
+      "single_comment": "Display Checkboxes in single column"
+
     },
 	"fr-FR": {
       "checkboxes": "Cases à cocher",
@@ -59,7 +69,9 @@
       "formatting_comment": "Affiche les valeurs selon un format donné",
       "display_text": "Texte affiché",
       "value": "Valeur",
-      "option": "Option"
+      "option": "Option",
+      "single": "Single Column",
+      "single_comment": "Display checkboxes in single column"
     }
   }
 }

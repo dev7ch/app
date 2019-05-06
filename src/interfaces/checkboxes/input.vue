@@ -8,23 +8,19 @@
     @end="saveSort()"
     :draggable="sortable ? '.sortable-box.active' : false"
   >
-    <transition-group
+    <v-checkbox
       name="list-sorting"
       v-for="(item, idx) in sortableList"
       :key="idx"
       class="sortable-box"
       :class="{ active: selection.includes(item.val || item) }"
-    >
-      <v-checkbox
-        :id="_uid + idx + '-' + (item.val ? item.val : item)"
-        :key="idx"
-        :value="item.val ? item.val : item"
-        :disabled="readonly"
-        :label="item.label ? item.label : item"
-        :checked="selection.includes(item.val ? item.val : item)"
-        @change="updateValue(item.val ? item.val : item, $event)"
-      ></v-checkbox>
-    </transition-group>
+      :id="_uid + idx + '-' + (item.val ? item.val : item)"
+      :value="item.val ? item.val : item"
+      :disabled="readonly"
+      :label="item.label ? item.label : item"
+      :checked="selection.includes(item.val ? item.val : item)"
+      @change="updateValue(item.val ? item.val : item, $event)"
+    ></v-checkbox>
   </draggable>
 </template>
 
@@ -50,7 +46,7 @@ export default {
     dragOptions() {
       return {
         animation: 200,
-        group: "description",
+        group: "list-sorting",
         disabled: !this.editable,
         ghostClass: "ghost"
       };
@@ -74,48 +70,36 @@ export default {
       }
       return selection;
     },
-    choices() {
-      let choice = this.$props.options.choices ? this.$props.options.choices : {};
-      let selection = this.selection ? this.selection : [];
-
-      // Convert the value to an array
-      if (typeof choice === "string") {
-        if (choice.includes(",")) {
-          choice = choice.split(",");
-        } else {
-          choice = [choice];
-        }
-      }
-      if (typeof choice === "object") {
-        choice = Object.keys(choice).map(k => ({
+    choosable() {
+      let options = this.$props.options.choices ? this.$props.options.choices : {};
+      let selected = this.selected ? this.selected : [];
+      if (typeof options === "object") {
+        options = Object.keys(options).map(k => ({
           val: k,
-          label: choice[k] ? choice[k] : k
+          label: options[k]
         }));
       }
-      if (selection.length > 0) {
+      if (selected.length > 0) {
         let _this = this;
-        selection = this.$lodash.map(selection, function(k) {
+        selected = this.$lodash.map(selected, k => {
           return {
             val: k,
-            label: _this.findLabel(choice, k)
+            label: _this.findLabel(options, k)
           };
         });
       }
-      return [...selection, ...choice];
+      return [...selected, ...options];
     }
   },
 
   created() {
-    let selection = this.choices;
-    this.sortableList = this.trimValues(selection, "val");
+    this.sortableList = this.trimValues(this.choosable, "val");
   },
 
   data() {
     return {
       sortableList: [],
-      editable: true,
-      isDragging: false,
-      delayedDragging: false
+      editable: true
     };
   },
 
@@ -142,7 +126,7 @@ export default {
     },
 
     saveSort() {
-      let selection = [...this.selection];
+      let selection = this.selection;
       let staged = this.$lodash.map(this.sortableList, function(k) {
         return k.val ? k.val : k;
       });
@@ -201,28 +185,23 @@ export default {
           &.sortable-chosen {
             opacity: 0.4;
             + .sortable-box.active {
-              border-radius: var(--border-radius);
-              color: var(--accent);
               opacity: 0.7;
             }
           }
-
-          .form-checkbox {
-            :after {
-              position: absolute;
-              font-family: "Material Icons", sans-serif;
-              display: inline-block;
-              line-height: 1;
-              letter-spacing: normal;
-              vertical-align: middle;
-              content: "drag_indicator";
-              height: 100%;
-              width: 24px;
-              font-size: 24px;
-              left: 0;
-              color: var(--accent);
-              background-color: var(--white);
-            }
+          :after {
+            position: absolute;
+            font-family: "Material Icons", sans-serif;
+            display: inline-block;
+            line-height: 1;
+            letter-spacing: normal;
+            vertical-align: middle;
+            content: "drag_indicator";
+            height: 100%;
+            width: 24px;
+            font-size: 24px;
+            left: 0;
+            color: var(--darker-gray);
+            background-color: var(--white);
           }
         }
       }

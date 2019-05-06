@@ -6,44 +6,25 @@
     v-model="sortableList"
     v-bind="dragOptions"
     @end="saveSort()"
-    draggable=".sortable-box.active"
+    :draggable="sortable ? '.sortable-box.active' : false"
   >
-    <template v-if="sortable && sortableList.length > 1">
-      <transition-group
-        name="list-sorting"
-        tag="div"
-        v-for="(item, idx) in sortableList"
-        :key="idx"
-        class="sortable-box"
-        :class="{ active: selection.includes(item.val) }"
-        :style="{
-          order:
-            selection.indexOf(item.val) > -1 ? selection.indexOf(item.val) : selection.length + 1
-        }"
-      >
-        <v-checkbox
-          :id="_uid + idx + '-' + item.val"
-          :key="item.label"
-          :value="item.val"
-          :disabled="readonly"
-          :label="item.label"
-          :checked="selection.includes(item.val)"
-          @change="updateValue(item.val, $event)"
-        ></v-checkbox>
-      </transition-group>
-    </template>
-    <span v-else-if="!sortable">
+    <transition-group
+      name="list-sorting"
+      v-for="(item, idx) in sortableList"
+      :key="idx"
+      class="sortable-box"
+      :class="{ active: selection.includes(item.val || item) }"
+    >
       <v-checkbox
-        v-for="(label, val) in options.choices"
-        :id="label"
-        :key="label"
-        :value="name + '-' + val"
+        :id="_uid + idx + '-' + (item.val ? item.val : item)"
+        :key="idx"
+        :value="item.val ? item.val : item"
         :disabled="readonly"
-        :label="label"
-        :checked="selection.includes(val)"
-        @change="updateValue(val, $event)"
+        :label="item.label ? item.label : item"
+        :checked="selection.includes(item.val ? item.val : item)"
+        @change="updateValue(item.val ? item.val : item, $event)"
       ></v-checkbox>
-    </span>
+    </transition-group>
   </draggable>
 </template>
 
@@ -94,8 +75,9 @@ export default {
       return selection;
     },
     choices() {
-      if (!this.$props.options.choices || this.$props.options.choices == null) return [];
-      let choice = this.$props.options.choices;
+      let choice = this.$props.options.choices ? this.$props.options.choices : {};
+      let selection = this.selection ? this.selection : [];
+
       // Convert the value to an array
       if (typeof choice === "string") {
         if (choice.includes(",")) {
@@ -103,25 +85,33 @@ export default {
         } else {
           choice = [choice];
         }
-      } else if (typeof choice === "object") {
+      }
+      if (typeof choice === "object") {
         choice = Object.keys(choice).map(k => ({
           val: k,
-          label: choice[k]
+          label: choice[k] ? choice[k] : k
         }));
       }
-      return choice;
+      if (selection) {
+        selection = this.$lodash.map(selection, function(k) {
+          return {
+            val: k,
+            label: choice.find(x => x.val === k)
+              ? choice.find(x => x.val === k).label
+                ? choice.find(x => x.val === k).label
+                : choice.find(x => x.val === k)
+              : k
+          };
+        });
+        console.log(selection);
+      }
+
+      return [...selection, ...choice];
     }
   },
 
-  beforeMount() {
-    if (this.$props.sortable) {
-      let selection = [...this.selection];
-      let staged = this.$lodash.map(this.choices, function(k) {
-        return k.val;
-      });
-      staged = staged.filter(val => selection.includes(val.val));
-      this.sortableList = [...staged, ...this.choices];
-    }
+  created() {
+    this.sortableList = this.trimValues([...this.choices], "val");
   },
 
   data() {
@@ -137,7 +127,7 @@ export default {
     saveSort() {
       let selection = [...this.selection];
       let staged = this.$lodash.map(this.sortableList, function(k) {
-        return k.val;
+        return k.val ? k.val : k;
       });
       staged = staged.filter(val => selection.includes(val));
       return this.$emit("input", staged);
@@ -162,6 +152,13 @@ export default {
       }
 
       this.$emit("input", selection);
+    },
+    trimValues(arr, comp) {
+      return arr
+        .map(e => e[comp])
+        .map((e, i, final) => final.indexOf(e) === i && i) // store the keys of the unique objects
+        .filter(e => arr[e]) // eliminate the dead keys & store unique objects
+        .map(e => arr[e]);
     }
   }
 };
@@ -197,7 +194,8 @@ export default {
             + .sortable-box.active {
               border-radius: var(--border-radius);
               color: var(--accent);
-              background-color: var(--lightest-gray);
+              opacity: 0.7;
+              animation: move ease-in-out 0.3s;
             }
           }
 
@@ -205,16 +203,10 @@ export default {
             :after {
               position: absolute;
               font-family: "Material Icons", sans-serif;
-              font-weight: normal;
-              font-style: normal;
               display: inline-block;
               line-height: 1;
-              text-transform: none;
+
               letter-spacing: normal;
-              word-wrap: normal;
-              white-space: nowrap;
-              -webkit-font-feature-settings: "liga";
-              font-feature-settings: "liga";
               vertical-align: middle;
               content: "drag_indicator";
               height: 100%;

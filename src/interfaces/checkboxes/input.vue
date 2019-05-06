@@ -92,26 +92,22 @@ export default {
           label: choice[k] ? choice[k] : k
         }));
       }
-      if (selection) {
+      if (selection.length > 0) {
+        let _this = this;
         selection = this.$lodash.map(selection, function(k) {
           return {
             val: k,
-            label: choice.find(x => x.val === k)
-              ? choice.find(x => x.val === k).label
-                ? choice.find(x => x.val === k).label
-                : choice.find(x => x.val === k)
-              : k
+            label: _this.findLabel(choice, k)
           };
         });
-        console.log(selection);
       }
-
       return [...selection, ...choice];
     }
   },
 
   created() {
-    this.sortableList = this.trimValues([...this.choices], "val");
+    let selection = this.choices;
+    this.sortableList = this.trimValues(selection, "val");
   },
 
   data() {
@@ -124,15 +120,6 @@ export default {
   },
 
   methods: {
-    saveSort() {
-      let selection = [...this.selection];
-      let staged = this.$lodash.map(this.sortableList, function(k) {
-        return k.val ? k.val : k;
-      });
-      staged = staged.filter(val => selection.includes(val));
-      return this.$emit("input", staged);
-    },
-
     updateValue(val) {
       let selection = [...this.selection];
       if (selection.includes(val)) {
@@ -153,12 +140,34 @@ export default {
 
       this.$emit("input", selection);
     },
+
+    saveSort() {
+      let selection = [...this.selection];
+      let staged = this.$lodash.map(this.sortableList, function(k) {
+        return k.val ? k.val : k;
+      });
+      staged = staged.filter(val => selection.includes(val));
+      return this.$emit("input", staged);
+    },
+
     trimValues(arr, comp) {
       return arr
         .map(e => e[comp])
         .map((e, i, final) => final.indexOf(e) === i && i) // store the keys of the unique objects
         .filter(e => arr[e]) // eliminate the dead keys & store unique objects
         .map(e => arr[e]);
+    },
+
+    findLabel(choice, k) {
+      if (k && choice.find(x => x.val === k)) {
+        if (choice.find(x => x.val === k).label) {
+          return choice.find(x => x.val === k).label;
+        } else {
+          return choice.find(x => x.val === k);
+        }
+      } else {
+        return k;
+      }
     }
   }
 };
@@ -195,7 +204,6 @@ export default {
               border-radius: var(--border-radius);
               color: var(--accent);
               opacity: 0.7;
-              animation: move ease-in-out 0.3s;
             }
           }
 
@@ -205,7 +213,6 @@ export default {
               font-family: "Material Icons", sans-serif;
               display: inline-block;
               line-height: 1;
-
               letter-spacing: normal;
               vertical-align: middle;
               content: "drag_indicator";

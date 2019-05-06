@@ -20,13 +20,13 @@ export default {
       return selection;
     },
     displayValue() {
+      let display = this.selection ? this.selection : [];
       if (this.options.formatting && this.type === "array") {
-        // Check if label exist for value in options, if not add value as label
-        return this.selection
+        return display
           .map(val => (this.options.choices[val] ? this.options.choices[val] : val))
           .toString();
       }
-      return this.selection;
+      return display.toString();
     }
   }
 };

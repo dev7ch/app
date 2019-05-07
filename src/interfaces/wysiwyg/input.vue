@@ -6,15 +6,6 @@
     :name="name"
   >
     <!-- Bubble with Editor menu bar -->
-    <Bubble
-      :options="options"
-      :editor="editor"
-      :buttons="options.extensions"
-      :show-source="rawView"
-      :toggle-source="showSource"
-      :show-link="linkBubble"
-      :toggle-link="toggleLinkBar"
-    />
 
     <!-- WYSIWYG Editor -->
     <EditorContent
@@ -24,6 +15,16 @@
       :editor="editor"
       :is-blackmode="blackMode"
       :is-fullscreen="distractionFree"
+    />
+
+    <Bubble
+      :options="options"
+      :editor="editor"
+      :buttons="options.extensions"
+      :show-source="rawView"
+      :toggle-source="showSource"
+      :show-link="linkBubble"
+      :toggle-link="toggleLinkBar"
     />
 
     <p

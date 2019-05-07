@@ -22,8 +22,8 @@ export default class Image extends Node {
         width: {
           default: "auto"
         },
-        maxWidth: {
-          default: "100%"
+        "max-width": {
+          default: null
         },
         height: {
           default: "auto"
@@ -35,7 +35,7 @@ export default class Image extends Node {
         {
           tag: "img[src]",
           getAttrs: dom => ({
-            class: dom.getAttribute("class") !== null ? dom.getAttribute("class") : null,
+            class: dom.getAttribute("class"),
             src: dom.getAttribute("src"),
             title: dom.getAttribute("title"),
             alt: dom.getAttribute("alt"),

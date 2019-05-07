@@ -8,6 +8,18 @@
           'options-is-open': optionsInclude('table') ? isActive.table() : false
         }"
       >
+        <!--<MenuButton-->
+        <!--v-for="button in buttons"-->
+        <!--:key="button"-->
+        <!--:title="button"-->
+        <!--:icon="'format_bold'"-->
+        <!--:order-index="optionsIndex('button')"-->
+        <!--:command="commands[button] ? commands[button] : () => commands[button]"-->
+        <!--:active-condition="isActive[button] ? isActive[button] : false"-->
+        <!--:disabled="showSource"-->
+        <!--v-tooltip.bottom="$t('editor.' + button)"-->
+        <!--&gt;-->
+        <!--</MenuButton>-->
         <MenuButton
           v-if="optionsInclude('bold')"
           :order-index="optionsIndex('bold')"
@@ -179,16 +191,17 @@
         </div>
 
         <template v-for="n in 6">
-          <MenuButton
-            :key="n"
-            v-if="optionsInclude('h' + n)"
-            :order-index="optionsIndex('h' + n)"
-            :label="'H' + n"
-            :command="() => commands.heading({ level: n })"
-            :active-condition="isActive.heading({ level: n })"
-            :disabled="showSource"
-            v-tooltip.bottom="$tc('editor.heading', { level: n }) + ' ' + n"
-          />
+          <template v-if="optionsInclude('h' + n)">
+            <MenuButton
+              :key="n"
+              :order-index="optionsIndex('h' + n)"
+              :label="'H' + n"
+              :command="() => commands.heading({ level: n })"
+              :active-condition="isActive.heading({ level: n })"
+              :disabled="showSource"
+              v-tooltip.bottom="$tc('editor.heading', { level: n }) + ' ' + n"
+            />
+          </template>
         </template>
 
         <div
@@ -378,7 +391,6 @@ export default {
       // // @todo implement image source base url
       // const index = (this.editor.getSelection() || {}).index || this.editor.getLength();
       if (image) {
-        console.log(image);
         this.addImageCommand(image);
       }
     },

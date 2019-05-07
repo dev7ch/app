@@ -10,7 +10,6 @@
       :toggle-link="toggleLinkBar"
       :toggle-source="showSource"
     />
-    <!-- WYSIWYG Editor -->
     <EditorContent
       :parent-value="editorText ? editorText : value"
       :update-value="updateValue"
@@ -77,10 +76,18 @@ export default {
   methods: {
     // Private property functions
     updateValue(value) {
-      this.$emit("input", value);
       this.editorText = value;
       if (this.editorText !== this.editor.view.dom.innerHTML) {
         this.editor.view.dom.innerHTML = value;
+      }
+
+      if (value === "<p><br></p>") {
+        // empty value oon toggle to raw mode
+        this.editorText = "";
+        // stage empty value to save in DB
+        this.$emit("input", "");
+      } else {
+        this.$emit("input", value);
       }
     },
     toggleLinkBar() {
@@ -109,8 +116,6 @@ export default {
               return new Code();
             case "code_block":
               return new CodeBlock();
-            case "h1" || "h2" || "h3" || "h4" || "h5" || "h6":
-              return new Heading();
             case "hardbreak":
               return new HardBreak();
             case "history":
@@ -131,6 +136,8 @@ export default {
               return [new Table(), new TableHeader(), new TableCell(), new TableRow()];
             case "underline":
               return new Underline();
+            default:
+              return new Heading();
           }
         })
         .filter(ext => ext)

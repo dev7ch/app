@@ -1,4 +1,4 @@
-<template v-if="$parent.$parent.$props.buttons">
+<template>
   <button
     :style="{
       order: orderIndex
@@ -46,24 +46,19 @@ export default {
       type: Function
     },
     activeCondition: {
-      type: Boolean,
       default: false
     },
     orderIndex: {
       type: Number,
       default: -1
     }
-  },
-
-  mounted() {
-    console.log(this.$props.orderIndex);
   }
 };
 </script>
 <style lang="scss" scoped>
 .menubar__button:not(.toggler) {
   position: relative;
-  min-height: 30px;
+  height: 34px;
   min-width: 30px;
   span,
   .icon {

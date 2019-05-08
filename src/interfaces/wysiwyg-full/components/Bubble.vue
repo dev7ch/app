@@ -1,14 +1,10 @@
 <template>
-  <editor-menu-bubble
-    v-if="$parent.editor"
-    class="menububble"
-    :editor="$parent.editor"
-    @hide="hideLinkMenu"
-  >
+  <editor-menu-bubble v-if="editor" class="menububble" :editor="editor">
     <div
       slot-scope="{ commands, isActive, getMarkAttrs, menu }"
       class="menububble__frame"
-      :class="{ visible: menu.isActive && !$parent.showSource }"
+      :visible="menu.isActive"
+      :class="{ visible: menu.isActive && !showSource }"
       :style="
         `left: ${menu.left > calcWidth() / 2 ? menu.left + 'px' : '0'};
         transform:translateX(${menu.left > calcWidth() / 2 ? '-50%' : '0'});
@@ -18,7 +14,17 @@
         min-width: 220px;`
       "
     >
-      <Menubar :options="options" :editor="$parent.editor" :updates="$parent" />
+      <template v-if="buttons">
+        <Menubar
+          :options="options"
+          :buttons="options.extensions"
+          :editor="editor"
+          :show-source="showSource"
+          :toggle-source="toggleSource"
+          :show-link="showLink"
+          :toggle-link="toggleLink"
+        />
+      </template>
     </div>
   </editor-menu-bubble>
 </template>
@@ -29,35 +35,39 @@ export default {
   props: {
     options: {
       type: Object,
-      defaultValue: {}
+      defaultValue: () => {}
+    },
+    buttons: {
+      type: Array,
+      defaultValue: null
+    },
+    editor: {
+      type: Object,
+      defaultValue: () => {}
+    },
+    showSource: {
+      type: Boolean,
+      default: false
+    },
+    toggleSource: {
+      type: Function,
+      default: () => false
+    },
+    showLink: {
+      type: Boolean,
+      default: false
+    },
+    toggleLink: {
+      type: Function,
+      default: () => false
     }
   },
 
   methods: {
-    setEditorfromChild() {
-      if (this.$parent.$children.length) {
-        for (let i = 0; i < this.$parent.$children.length; i++) {
-          if (this.$parent.$children[i].$refs.hasOwnProperty("editor")) {
-            return (this.editor = this.$parent.$children[i].editor);
-          }
-        }
-      }
-    },
     calcWidth() {
       if (this.$props.options.toolbarOptions) {
         return this.$props.options.toolbarOptions.length * 24 + 120;
       }
-    },
-    showLinkMenu(attrs) {
-      this.linkUrl = attrs.href;
-      this.linkMenuIsActive = true;
-      this.$nextTick(() => {
-        this.$refs.linkInput.focus();
-      });
-    },
-    hideLinkMenu() {
-      this.linkUrl = null;
-      this.linkMenuIsActive = false;
     },
     setLinkUrl(command, url) {
       command({ href: url });
@@ -69,20 +79,6 @@ export default {
   components: {
     EditorMenuBubble,
     Menubar
-  },
-
-  data() {
-    return {
-      editor: null,
-      editorText: "",
-      showSource: false,
-      linkUrl: null,
-      linkBubble: false,
-      linkMenuIsActive: false
-    };
-  },
-  mounted() {
-    this.setEditorfromChild();
   }
 };
 </script>
@@ -92,33 +88,30 @@ export default {
   background-color: var(--lightest-gray);
   padding: 0;
   opacity: 0;
+  visibility: hidden;
+  margin-top: -100vh;
   transition: top 0.2s ease-in-out, bottom 0.2s ease-in-out, left 0.2s ease-in-out,
     opacity 0.4s ease-in-out, opacity 0.3s ease-in-out;
   border-radius: var(--border-radius);
 
   &.visible {
+    transform: translateY(0);
     visibility: visible;
     opacity: 1;
     z-index: 99;
   }
 
   .menubar__wrapper {
-    z-index: 99;
+    border: var(--input-border-width) solid var(--lighter-gray);
+    border-radius: var(--border-radius);
     .menubar {
       overflow-y: auto;
     }
   }
-}
-
-.menubar__button.toggler {
-  min-height: 34px;
-  border-color: var(--darkest-gray);
-  background-color: var(--darker-gray);
-}
-
-.menububble__button {
-  .icon {
-    //margin-bottom: -5px;
+  .menubar__button.toggler {
+    min-height: 34px;
+    border-color: var(--darkest-gray);
+    background-color: var(--darker-gray);
   }
 }
 </style>

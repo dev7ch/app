@@ -1,141 +1,153 @@
 <template>
   <div class="menubar__wrapper">
-    <editor-menu-bar :editor="$parent.editor">
+    <editor-menu-bar :editor="editor">
       <div
         class="menubar"
-        slot-scope="{ commands, isActive }"
+        slot-scope="{ commands, isActive, getMarkAttrs }"
         :class="{
-          'options-is-open': optionsInclude('Table') ? isActive.table() : false
+          'options-is-open': optionsInclude('table') ? isActive.table() : false
         }"
       >
+        <!--<MenuButton-->
+        <!--v-for="button in buttons"-->
+        <!--:key="button"-->
+        <!--:title="button"-->
+        <!--:icon="'format_bold'"-->
+        <!--:order-index="optionsIndex('button')"-->
+        <!--:command="commands[button] ? commands[button] : () => commands[button]"-->
+        <!--:active-condition="isActive[button] ? isActive[button] : false"-->
+        <!--:disabled="showSource"-->
+        <!--v-tooltip.bottom="$t('editor.' + button)"-->
+        <!--&gt;-->
+        <!--</MenuButton>-->
         <MenuButton
-          v-if="optionsInclude('Bold')"
-          plugin-name="Bold"
+          v-if="optionsInclude('bold')"
+          :order-index="optionsIndex('bold')"
           icon="format_bold"
           :command="commands.bold"
           :active-condition="isActive.bold()"
-          :disabled="!!$parent.showSource"
+          :disabled="showSource"
+          v-tooltip.bottom="$t('editor.bold')"
         ></MenuButton>
         <MenuButton
-          v-if="optionsInclude('Italic')"
-          plugin-name="Italic"
+          v-if="optionsInclude('italic')"
+          :order-index="optionsIndex('italic')"
           icon="format_italic"
           :command="commands.italic"
           :active-condition="isActive.italic()"
-          :disabled="!!$parent.showSource"
+          :disabled="showSource"
+          v-tooltip.bottom="$t('editor.italic')"
         />
         <MenuButton
-          v-if="optionsInclude('Strike')"
-          plugin-name="Strike"
+          v-if="optionsInclude('strike')"
+          :order-index="optionsIndex('strike')"
           icon="format_strikethrough"
           :command="commands.strike"
           :active-condition="isActive.strike()"
-          :disabled="!!$parent.showSource"
+          :disabled="showSource"
+          v-tooltip.bottom="$t('editor.strike')"
         />
 
         <MenuButton
-          v-if="optionsInclude('Underline')"
-          plugin-name="Underline"
+          v-if="optionsInclude('underline')"
+          :order-index="optionsIndex('underline')"
           icon="format_underline"
           :command="commands.underline"
           :active-condition="isActive.underline()"
-          :disabled="!!$parent.showSource"
+          :disabled="showSource"
+          v-tooltip.bottom="$t('editor.underline')"
         />
 
         <MenuButton
-          v-if="optionsInclude('Code')"
-          plugin-name="Code"
+          v-if="optionsInclude('code')"
+          :order-index="optionsIndex('code')"
           icon="code"
           :command="commands.code"
           :active-condition="isActive.code()"
-          :disabled="!!$parent.showSource"
+          :disabled="showSource"
+          v-tooltip.bottom="$t('editor.code')"
         />
 
         <MenuButton
-          v-if="optionsInclude('CodeBlock')"
-          plugin-name="CodeBlock"
+          v-if="optionsInclude('code_block')"
+          :order-index="optionsIndex('code_block')"
           icon="code"
           :command="commands.code_block"
           :active-condition="isActive.code_block()"
-          :disabled="!!$parent.showSource"
+          :disabled="showSource"
+          v-tooltip.bottom="$t('editor.code_block')"
         />
 
         <MenuButton
-          v-if="optionsInclude('Paragraph')"
-          plugin-name="Paragraph"
+          :order-index="optionsIndex('paragraph')"
           icon="subject"
           :command="commands.paragraph"
           :active-condition="isActive.paragraph()"
-          :disabled="!!$parent.showSource"
+          :disabled="showSource"
+          v-tooltip.bottom="$t('editor.paragraph')"
         />
 
         <MenuButton
-          v-if="optionsInclude('BulletList')"
-          plugin-name="BulletList"
+          v-if="optionsInclude('bullet_list')"
+          :order-index="optionsIndex('bullet_list')"
           icon="format_list_bulleted"
           :command="commands.bullet_list"
           :active-condition="isActive.bullet_list()"
-          :disabled="!!$parent.showSource"
+          :disabled="showSource"
+          v-tooltip.bottom="$t('editor.bullet_list')"
         />
 
         <MenuButton
-          v-if="optionsInclude('OrderedList')"
-          plugin-name="OrderedList"
+          v-if="optionsInclude('ordered_list')"
+          :order-index="optionsIndex('ordered_list')"
           icon="format_list_numbered"
           :command="commands.ordered_list"
           :active-condition="isActive.ordered_list()"
-          :disabled="!!$parent.showSource"
+          :disabled="showSource"
+          v-tooltip.bottom="$t('editor.ordered_list')"
         />
         <MenuButton
-          v-if="optionsInclude('Blockquote')"
-          plugin-name="Blockquote"
+          v-if="optionsInclude('blockquote')"
+          :order-index="optionsIndex('blockquote')"
           icon="format_quote"
           :command="commands.blockquote"
           :active-condition="isActive.blockquote()"
-          :disabled="!!$parent.showSource"
+          :disabled="showSource"
+          v-tooltip.bottom="$t('editor.blockquote')"
         />
 
         <MenuButton
-          v-if="optionsInclude('Link')"
-          plugin-name="Link"
+          v-if="optionsInclude('link')"
+          :order-index="optionsIndex('link')"
           icon="link"
           :command="setLink"
-          :active-condition="linkBubble"
-          :disabled="!!$parent.showSource"
+          :active-condition="showLink || isActive.link()"
+          :disabled="showSource"
+          v-tooltip.bottom="$t('editor.link')"
         />
 
         <MenuButton
-          v-if="optionsInclude('Image')"
-          plugin-name="Image"
+          v-if="optionsInclude('image')"
+          :order-index="optionsIndex('image')"
           icon="image"
           :command="() => (chooseImage = !chooseImage)"
           :active-condition="chooseImage"
-          :disabled="!!$parent.showSource"
+          :disabled="showSource"
+          v-tooltip.bottom="$t('editor.image')"
         />
-        <template v-for="n in 6">
-          <MenuButton
-            :key="n"
-            v-if="optionsInclude('h' + n)"
-            :plugin-name="'h' + n"
-            icon="crop_square"
-            :label="'H' + n"
-            :command="() => commands.heading({ level: n })"
-            :active-condition="isActive.heading({ level: n })"
-            :disabled="!!$parent.showSource"
-          />
-        </template>
 
         <MenuButton
-          v-if="optionsInclude('HorizontalRule')"
-          plugin-name="HorizontalRule"
+          v-if="optionsInclude('horizontal_rule')"
+          :order-index="optionsIndex('horizontal_rule')"
           icon="maximize"
           :command="commands.horizontal_rule"
-          :disabled="!!$parent.showSource"
+          :disabled="showSource"
+          v-tooltip.bottom="$t('editor.horizontal_rule')"
         />
         <!-- table and table toolbar -->
         <MenuButton
-          v-if="optionsInclude('Table')"
-          plugin-name="Table"
+          v-if="optionsInclude('table')"
+          :order-index="optionsIndex('table')"
           icon="table_chart"
           :command="
             () =>
@@ -146,127 +158,96 @@
               })
           "
           :active-condition="isActive.table()"
-          :disabled="!!$parent.showSource"
+          :disabled="showSource"
+          v-tooltip.bottom="$t('editor.table')"
         />
 
         <div
           class="options-fixed"
-          v-if="optionsInclude('Table') && !$parent.showSource ? isActive.table() : false"
+          v-if="optionsInclude('table') && !showSource ? isActive.table() : false"
           :class="{ 'is-open': isActive.table() }"
         >
           <MenuButton
-            v-if="optionsInclude('Table')"
-            plugin-name="Table"
+            v-if="optionsInclude('table')"
+            :order-index="optionsIndex('table')"
             icon="table_chart"
             :command="commands.deleteTable"
             sup-type="remove"
           />
 
-          <MenuButton
-            v-if="optionsInclude('Table')"
-            plugin-name="Table"
-            icon="border_left"
-            :command="commands.addColumnBefore"
-            sup-type="add"
-          />
+          <MenuButton icon="border_left" :command="commands.addColumnBefore" sup-type="add" />
 
-          <MenuButton
-            v-if="optionsInclude('Table')"
-            plugin-name="Table"
-            icon="border_right"
-            sup-type="add"
-            :command="commands.addColumnAfter"
-          />
+          <MenuButton icon="border_right" sup-type="add" :command="commands.addColumnAfter" />
 
-          <MenuButton
-            v-if="optionsInclude('Table')"
-            plugin-name="Table"
-            icon="border_outer"
-            sup-type="remove"
-            :command="commands.deleteColumn"
-          />
+          <MenuButton icon="border_outer" sup-type="remove" :command="commands.deleteColumn" />
 
-          <MenuButton
-            v-if="optionsInclude('Table')"
-            plugin-name="Table"
-            icon="border_top"
-            sup-type="add"
-            :command="commands.addRowBefore"
-          />
+          <MenuButton icon="border_top" sup-type="add" :command="commands.addRowBefore" />
 
-          <MenuButton
-            v-if="optionsInclude('Table')"
-            plugin-name="Table"
-            icon="border_bottom"
-            sup-type="add"
-            :command="commands.addRowAfter"
-          />
+          <MenuButton icon="border_bottom" sup-type="add" :command="commands.addRowAfter" />
 
-          <MenuButton
-            v-if="optionsInclude('Table')"
-            plugin-name="Table"
-            icon="border_horizontal"
-            sup-type="remove"
-            :command="commands.deleteRow"
-          />
+          <MenuButton icon="border_horizontal" sup-type="remove" :command="commands.deleteRow" />
 
-          <MenuButton
-            v-if="optionsInclude('Table')"
-            plugin-name="Table"
-            icon="merge_type"
-            :command="commands.toggleCellMerge"
-          />
+          <MenuButton icon="merge_type" :command="commands.toggleCellMerge" />
         </div>
-        <!-- history -->
+
+        <template v-for="n in 6">
+          <template v-if="optionsInclude('h' + n)">
+            <MenuButton
+              :key="n"
+              :order-index="optionsIndex('h' + n)"
+              :label="'H' + n"
+              :command="() => commands.heading({ level: n })"
+              :active-condition="isActive.heading({ level: n })"
+              :disabled="showSource"
+              v-tooltip.bottom="$tc('editor.heading', { level: n }) + ' ' + n"
+            />
+          </template>
+        </template>
+
         <div
-          class="history__actions"
-          v-if="optionsInclude('History')"
+          class="history__actions toggler"
+          v-if="optionsInclude('history')"
           :style="{
-            order: optionsIndex('History')
+            order: 95
           }"
         >
           <MenuButton
-            v-if="optionsInclude('History')"
             class="menubar__button"
             icon="undo"
             :command="commands.undo"
-            :disabled="!!$parent.showSource"
+            :disabled="showSource"
           />
           <MenuButton
-            v-if="optionsInclude('History')"
             class="menubar__button"
             icon="redo"
             :command="commands.redo"
-            :disabled="!!$parent.showSource"
+            :disabled="showSource"
           />
         </div>
-        <!-- menu raw view toggler -->
         <button
-          v-if="!$props.editor"
-          class="menubar__button toggler"
-          @click="$parent.updateText($parent.editor.view.dom.innerHTML)"
+          class="menubar__button source-toggle toggler"
+          @click="toggleSource"
+          v-tooltip.bottom="$t('editor.view_source')"
           :style="{
-            order: 999
+            order: '99'
           }"
         >
-          <v-icon name="explore" v-if="!$parent.showSource" />
-          <v-icon v-else name="explore_off" />
+          <v-icon name="code" :color="showSource ? 'accent' : 'light-gray'" />
         </button>
-        <button
-          v-else-if="$props.editor"
-          class="menubar__button toggler"
-          @click="updates.updateText(updates.editor.view.dom.innerHTML)"
-          :style="{
-            order: 999
-          }"
-        >
-          <v-icon name="explore" v-if="!updates.showSource" />
-          <v-icon v-else name="explore_off" />
-        </button>
+
+        <template v-if="optionsInclude('link') && showLink">
+          <LinkBar
+            v-show="!showSource && showLink"
+            :commands="commands"
+            :get-mark-attrs="getMarkAttrs"
+            :toggle-link="toggleLink"
+            :is-active="isActive.link()"
+            :editor="editor"
+          />
+        </template>
       </div>
     </editor-menu-bar>
-    <!-- editor bubble for link interface -->
-    <LinkBubble :options="options" :editor="$parent.editor" :class="{ visible: linkBubble }" />
+
     <!-- image selection modal interface  -->
     <portal to="modal" v-if="chooseImage">
       <v-modal
@@ -319,28 +300,43 @@
 <script>
 import MenuButton from "./MenuBarButton";
 import { EditorMenuBar } from "tiptap";
-import LinkBubble from "./LinkBubble";
+import LinkBar from "./LinkBar";
 
 export default {
   props: {
     options: {
       type: Object,
-      defaultValue: {}
+      defaultValue: {},
+      required: true
     },
     editor: {
       type: Object,
-      defaultValue: {}
+      defaultValue: {},
+      required: true
     },
-    updates: {
-      type: Object,
-      defaultValue: null
+    buttons: {
+      type: Array,
+      defaultValue: []
+    },
+    showSource: {
+      type: Boolean,
+      default: false
+    },
+    toggleSource: {
+      type: Function,
+      default: () => false
+    },
+    showLink: {
+      type: Boolean,
+      default: false
+    },
+    toggleLink: {
+      type: Function,
+      default: () => false
     }
   },
   data() {
     return {
-      showSource: false,
-      linkUrl: null,
-      linkBubble: false,
       chooseImage: false,
       imageUrlRaw: "",
       imageUrlRawBroken: false,
@@ -362,91 +358,91 @@ export default {
 
   methods: {
     setLink() {
-      this.linkBubble = !this.linkBubble;
+      this.toggleLink();
     },
     optionsInclude($val) {
-      return this.$props.options.toolbarOptions.includes($val);
+      return this.$props.buttons.includes($val);
     },
     optionsIndex($val) {
-      return this.$props.options.toolbarOptions.indexOf($val);
+      return this.$props.buttons.indexOf($val);
     },
     addImageCommand(data) {
-      if (data.command !== null || data.command !== "data") {
-        this.$parent.editor.commands.image({
-          src: data
+      if (data.command !== null && !this.imageUrlRaw) {
+        this.editor.commands.image({
+          src: data.full_url
+        });
+
+        this.chooseImage = false;
+      } else if (data.command !== null && this.imageUrlRaw !== "") {
+        this.editor.commands.image({
+          src: this.imageUrlRaw
         });
 
         this.chooseImage = false;
       }
     },
     insertItem(item) {
-      let url = item.data.full_url;
-      if (this.$props.options.custom_url) {
-        url = `${this.$props.options.custom_url}${item.filename}`;
+      let image;
+      image = item.data ? item.data : null;
+
+      if (this.$props.options && !!this.$props.options.custom_url === undefined) {
+        image = `${this.$props.options.custom_url}${item.data.filename}`;
       }
-      // @todo implement image source base url
+      // // @todo implement image source base url
       // const index = (this.editor.getSelection() || {}).index || this.editor.getLength();
-      this.addImageCommand(url);
+      if (image) {
+        this.addImageCommand(image);
+      }
     },
 
-    insertImageUrl(url) {
-      if (url !== "") {
+    insertImageUrl(image) {
+      if (image !== "") {
         this.chooseImage = false;
-        this.addImageCommand(url);
+        this.addImageCommand(image);
       }
     }
   },
   components: {
     EditorMenuBar,
-    MenuButton,
-    LinkBubble
+    LinkBar,
+    MenuButton
   }
 };
 </script>
 <style lang="scss" scoped>
 .menubar__wrapper {
-  border: var(--input-border-width) solid var(--lighter-gray);
-  border-top-left-radius: var(--border-radius);
-  border-top-right-radius: var(--border-radius);
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
   color: var(--gray);
-  background-color: var(--lightest-gray);
+  background-color: var(--off-white);
   transition: var(--fast) var(--transition);
   transition-property: color, border-color;
-  margin-bottom: -5px;
   padding-top: 0;
 
   .menubar {
+    position: relative;
+    z-index: 2;
     min-height: 34px;
     display: flex;
     flex-flow: row wrap;
-    &.options-is-open {
-      + .editor__content {
-        //padding-top: 42px;
-      }
-    }
   }
 }
 
 .options-fixed {
   position: absolute;
-  margin-bottom: -2px;
-  transform: translateY(-100%);
   opacity: 0;
   z-index: 1;
-  background-color: var(--lightest-gray);
+  background-color: var(--off-white);
   width: 100%;
-  border: var(--input-border-width) solid var(--lighter-gray);
-  border-radius: var(--border-radius) var(--border-radius) 0 0;
-  border-bottom-color: var(--lighter-gray);
+  border-top: calc(var(--input-border-width) / 2) solid var(--lighter-gray);
+  border-bottom: var(--input-border-width) solid var(--lighter-gray);
+  border-radius: 0;
   color: var(--gray);
   left: 0;
   transition: var(--fast) var(--transition);
   transition-property: color, border-color;
+  top: 100%;
 
-  .menubar__button {
-    margin-left: 1px;
-    position: relative;
-  }
   &.is-open {
     opacity: 1;
   }
@@ -455,26 +451,14 @@ export default {
 .toggler {
   height: 31px;
   width: 31px;
-
   text-align: center;
   margin-left: auto;
-  border-bottom-left-radius: 50%;
-  border-top-left-radius: 50%;
-  border: var(--input-border-width) solid var(--lightest-gray);
-  transition: background-color ease-in-out 0.2s, color 0.15s ease-in-out;
-  background-color: var(--lightest-gray);
-  color: var(--gray);
-
-  &:hover,
-  &:focus {
-    color: var(--white);
-    background-color: var(--action);
-  }
 }
 
 .history__actions {
   display: inline-flex;
   margin-left: auto;
+  width: initial;
 
   + .toggler {
     margin-left: initial;

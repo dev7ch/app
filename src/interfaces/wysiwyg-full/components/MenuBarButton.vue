@@ -1,7 +1,7 @@
 <template>
   <button
     :style="{
-      order: $parent.$parent.options.toolbarOptions.indexOf(pluginName)
+      order: orderIndex
     }"
     class="menubar__button"
     :class="{ 'is-active': !!activeCondition }"
@@ -46,8 +46,11 @@ export default {
       type: Function
     },
     activeCondition: {
-      type: Boolean,
       default: false
+    },
+    orderIndex: {
+      type: Number,
+      default: -1
     }
   }
 };
@@ -55,7 +58,7 @@ export default {
 <style lang="scss" scoped>
 .menubar__button:not(.toggler) {
   position: relative;
-  min-height: 30px;
+  height: 34px;
   min-width: 30px;
   span,
   .icon {
@@ -111,8 +114,14 @@ export default {
   &.is-active,
   &:hover,
   &:focus {
-    i {
+    * {
       color: var(--dark-gray);
+    }
+  }
+
+  &.is-active {
+    span {
+      color: var(--accent);
     }
   }
 

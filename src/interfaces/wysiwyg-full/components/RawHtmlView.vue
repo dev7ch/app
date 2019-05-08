@@ -1,99 +1,48 @@
 <template>
-  <div class="editor__raw" v-show="showSource">
-    <v-textarea
-      @input="$emit('input', $event.target)"
-      v-if="showSource && showRaw"
-      v-model.lazy="$parent.editorText"
-      class="textarea"
-      :id="name + '-raw'"
-      :value="$parent.editor.view.dom.innerHTML"
-      :placeholder="$props.options.placeholder"
-      :rows="options.rows ? +options.rows : 10"
-    ></v-textarea>
-
-    <!-- include code mirror component for formatted raw view -->
-
-    <CodeMirror
-      :placeholder="options.placeholder"
-      class="textarea code"
-      :id="id + '-raw-formatted'"
-      v-if="$parent.showSource && !showRaw"
-      :alt-options="
-        $props.options.codeMirrorOptions ? $props.options.codeMirrorOptions : codeMirrorDefaults
-      "
-      :value="$parent.editor.view.dom.innerHTML"
-      v-model="$parent.editorText"
-      :name="'htmlmixed'"
-      type="textarea"
-      @keypress="$emit('input', $event)"
-    ></CodeMirror>
-    <!-- formatted / unformatted  view toggler -->
-    <div class="editor__rawformat" v-if="showSource" @click="showRaw = !showRaw">
-      <span :style="{ color: !showRaw ? 'var(--accent)' : 'var(--light-gray)' }">formatted</span>
-      |
-      <span :style="{ color: showRaw ? 'var(--accent)' : 'var(--light-gray)' }">unformatted</span>
-    </div>
-  </div>
+  <codemirror
+    class="code-editor"
+    :value="value"
+    @input="$emit('input', $event)"
+    :options="cmOptions"
+  ></codemirror>
 </template>
 <script>
-import CodeMirror from "../../code/input";
+import "codemirror/lib/codemirror.css";
+import "codemirror/addon/display/autorefresh.js";
+import "codemirror/mode/xml/xml.js";
+
+import { codemirror } from "vue-codemirror";
 
 export default {
-  props: ["showSource", "options", "editor", "id", "name"],
   components: {
-    CodeMirror
+    codemirror
   },
-  data() {
-    return {
-      showRaw: true,
-      codeMirrorDefaults: {
-        tabSize: 2,
+  props: {
+    value: {
+      type: String,
+      required: true
+    }
+  },
+  computed: {
+    cmOptions() {
+      return {
+        tabSize: 4,
         autoRefresh: true,
-        indentUnit: 2,
-        styleActiveLine: true,
-        readOnly: false,
-        styleSelectedText: true,
-        lineNumbers: true,
-        lineWrapping: true,
+        indentUnit: 4,
         mode: "text/html",
-        matchBrackets: true,
         showCursorWhenSelecting: true,
         theme: "default",
-        extraKeys: {
-          Ctrl: "autocomplete"
-        }
-      }
-    };
+        lineWrapping: true
+      };
+    }
   }
 };
 </script>
-<style lang="scss" scoped>
-.editor__raw {
-  .CodeMirror {
-    margin-bottom: 5px;
-    min-height: 220px;
-    .line-count {
-      visibility: hidden;
-    }
-  }
-  small.line-count {
-    display: none;
-  }
 
-  textarea {
-    padding: calc(var(--page-padding) / 2);
-    min-height: inherit;
-  }
-}
-
-.editor__rawformat {
-  transition: min-height 5s ease-in-out;
-  position: absolute;
-  top: -17px;
-  right: 0;
-
-  span {
-    cursor: pointer;
-  }
+<style lang="scss">
+.code-editor .CodeMirror {
+  padding: calc(var(--page-padding) / 2);
+  margin-bottom: 0;
+  border: 0;
 }
 </style>

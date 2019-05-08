@@ -1,58 +1,49 @@
 <template>
-  <div
-    class="interface-wysiwyg-container editor"
-    :id="name"
-    :name="name"
-    @input="$emit('input', $event.target.innerHTML)"
-  >
-    <!-- WYSIWYG Editor Menubar and Bubble components -->
-    <Menubar :options="options" v-if="editor" />
-    <!-- WYSIWYG Editor -->
-    <EditorContent :editor="editor" />
-    <!-- Unformatted raw html view -->
-    <template v-if="showSource">
-      <RawHtmlView
-        :id="name + '-raw'"
-        :options="options"
-        :show-source="showSource"
-        :name="name"
-        :editor-text="editorText"
-        :editor="editor"
-      />
-    </template>
-    <ImageEdit />
+  <div class="interface-wysiwyg-full" :id="name" :name="name">
+    <MenuBar
+      v-if="editor"
+      :buttons="options.extensions"
+      :options="options"
+      :editor="editor"
+      :show-source="rawView"
+      :show-link="linkBubble"
+      :toggle-link="toggleLinkBar"
+      :toggle-source="showSource"
+    />
+    <EditorContent
+      :parent-value="editorText ? editorText : value"
+      :update-value="updateValue"
+      :raw-view="rawView"
+      :editor="editor"
+    />
   </div>
 </template>
 <script>
 import mixin from "@directus/extension-toolkit/mixins/interface";
 import { Editor } from "tiptap";
 import EditorContent from "./components/EditorContent";
-const Menubar = () => import("./components/MenuBar");
-const RawHtmlView = () => import("./components/RawHtmlView");
-import ImageEdit from "./components/ImageEdit";
+import MenuBar from "./components/MenuBar";
 
 import {
+  Bold,
   Blockquote,
+  BulletList,
+  Code,
   CodeBlock,
   HardBreak,
   Heading,
+  History,
   HorizontalRule,
-  OrderedList,
-  BulletList,
-  ListItem,
-  TodoItem,
-  TodoList,
-  Bold,
-  Code,
   Italic,
   Link,
+  ListItem,
+  OrderedList,
   Strike,
-  Underline,
-  History,
   Table,
+  TableCell,
   TableHeader,
   TableRow,
-  TableCell
+  Underline
 } from "tiptap-extensions";
 
 import { Image } from "./extensions";
@@ -60,9 +51,22 @@ import { Image } from "./extensions";
 export default {
   name: "interface-wysiwyg",
   mixins: [mixin],
+  components: {
+    EditorContent,
+    MenuBar
+  },
+  data() {
+    return {
+      editorText: "",
+      editor: null,
+      rawView: false,
+      linkBubble: false
+    };
+  },
+
   watch: {
     value(newVal) {
-      if (newVal && !this.showSource) {
+      if (newVal && !this.rawView) {
         this.editorText = newVal;
       } else {
         this.$emit("input", this.editorText);
@@ -70,133 +74,84 @@ export default {
     }
   },
   methods: {
+    // Private property functions
+    updateValue(value) {
+      this.editorText = value;
+      if (this.editorText !== this.editor.view.dom.innerHTML) {
+        this.editor.view.dom.innerHTML = value;
+      }
+
+      if (value === "<p><br></p>") {
+        // empty value oon toggle to raw mode
+        this.editorText = "";
+        // stage empty value to save in DB
+        this.$emit("input", "");
+      } else {
+        this.$emit("input", value);
+      }
+    },
+    toggleLinkBar() {
+      this.linkBubble = !this.linkBubble;
+    },
+    showSource() {
+      if (!this.rawView) {
+        this.updateValue(this.editor.view.dom.innerHTML);
+      } else {
+        this.updateValue(this.editorText);
+      }
+      return (this.rawView = !this.rawView);
+    },
+    // Init editor
     init() {
-      if (
-        !this.options.toolbarOptions ||
-        (this.options.toolbarOptions !== null && this.options.toolbarOptions.length === 0)
-      ) {
-        this.options.toolbarOptions = [
-          "Paragraph",
-          "Bold",
-          "Strike",
-          "Underline",
-          "Italic",
-          "Blockquote",
-          "ListItem",
-          "BulletList",
-          "OrderedList",
-          "Code",
-          "Table",
-          "Image",
-          "History"
-        ];
-      }
-      const ext = [
-        this.options.toolbarOptions.includes("Blockquote") ? new Blockquote() : "disabled",
-        this.options.toolbarOptions.includes("BulletList") ? new BulletList() : "disabled",
-        this.options.toolbarOptions.includes("CodeBlock") ? new CodeBlock() : "disabled",
-        this.options.toolbarOptions.includes("HardBreak") ? new HardBreak() : "disabled",
-        new Heading({ levels: [1, 2, 3, 4, 5] }),
-        this.options.toolbarOptions.includes("HorizontalRule") ? new HorizontalRule() : "disabled",
-        this.options.toolbarOptions.includes("ListItem") ? new ListItem() : "disabled",
-        this.options.toolbarOptions.includes("OrderedList") ? new OrderedList() : "disabled",
-        this.options.toolbarOptions.includes("TodoItem") ? new TodoItem() : "disabled",
-        this.options.toolbarOptions.includes("TodoList") ? new TodoList() : "disabled",
-        this.options.toolbarOptions.includes("Bold") ? new Bold() : "disabled",
-        this.options.toolbarOptions.includes("Image") ? new Image() : "disabled",
-        this.options.toolbarOptions.includes("Code") ? new Code() : "disabled",
-        this.options.toolbarOptions.includes("Italic") ? new Italic() : "disabled",
-        this.options.toolbarOptions.includes("Link") ? new Link() : "disabled",
-        this.options.toolbarOptions.includes("Strike") ? new Strike() : "disabled",
-        this.options.toolbarOptions.includes("Underline") ? new Underline() : "disabled",
-        this.options.toolbarOptions.includes("History") ? new History() : "disabled",
-        this.options.toolbarOptions.includes("Table") ? new Table() : "disabled",
-        this.options.toolbarOptions.includes("Table") ? new TableHeader() : "disabled",
-        this.options.toolbarOptions.includes("Table") ? new TableCell() : "disabled",
-        this.options.toolbarOptions.includes("Table") ? new TableRow() : "disabled"
-      ];
-      const search_term = "disabled";
-      for (let i = ext.length - 1; i >= 0; i--) {
-        if (ext[i] === search_term) {
-          ext.splice(i, 1);
-        }
-      }
+      const extensions = this.options.extensions
+        .map(ext => {
+          switch (ext) {
+            case "blockquote":
+              return new Blockquote();
+            case "bold":
+              return new Bold();
+            case "bullet_list":
+              return [new ListItem(), new BulletList()];
+            case "code":
+              return new Code();
+            case "code_block":
+              return new CodeBlock();
+            case "hardbreak":
+              return new HardBreak();
+            case "history":
+              return new History();
+            case "horizontal_rule":
+              return new HorizontalRule();
+            case "image":
+              return new Image();
+            case "italic":
+              return new Italic();
+            case "link":
+              return new Link();
+            case "ordered_list":
+              return [new OrderedList(), new ListItem()];
+            case "strike":
+              return new Strike();
+            case "table":
+              return [new Table(), new TableHeader(), new TableCell(), new TableRow()];
+            case "underline":
+              return new Underline();
+            default:
+              return new Heading();
+          }
+        })
+        .filter(ext => ext)
+        .flat();
+
+      this.editorText = this.value ? this.value : "";
       this.editor = new Editor({
-        extensions: ext,
-        content: this.value ? this.value : "",
+        extensions: extensions,
+        content: this.editorText,
         onUpdate: ({ getHTML }) => {
           this.$emit("input", getHTML());
         }
       });
-      this.handleEditorScroll();
-    },
-    updateText($text) {
-      if (this.showSource) {
-        this.editor.view.dom.innerHTML = this.editorText;
-      } else {
-        this.editorText = $text;
-      }
-      this.showSource = !this.showSource;
-    },
-    showLinkMenu(attrs) {
-      this.linkUrl = attrs.href;
-      this.linkMenuIsActive = true;
-      this.$nextTick(() => {
-        this.$refs.linkInput.focus();
-      });
-    },
-    hideLinkMenu() {
-      this.linkUrl = null;
-      this.linkMenuIsActive = false;
-    },
-    setLinkUrl(command, url) {
-      command({ href: url });
-      this.hideLinkMenu();
-      this.editor.focus();
-    },
-    destroy() {
-      this.editor.destroy();
-    },
-    handleEditorScroll() {
-      this.editor.view.dom.onscroll = () => {
-        this.hasSettings ? (this.hasSettings = false) : null;
-      };
     }
-  },
-  components: {
-    EditorContent,
-    Menubar,
-    RawHtmlView,
-    ImageEdit
-  },
-  data() {
-    return {
-      editorExtensions: [],
-      editorText: "",
-      editor: null,
-      showSource: false,
-      showRaw: false,
-      showTableOptions: false,
-      chooseExisting: false,
-      chooseImage: false,
-      newFile: false,
-      linkUrl: null,
-      linkMenuIsActive: false,
-      lineCount: 0,
-      codeMirrorOptions: {},
-      selectionPosition: {
-        pos: null,
-        editorPos: null,
-        alt: {
-          value: null
-        },
-        title: null,
-        src: null,
-        target: null
-      },
-      hasSettings: false,
-      isImageSelection: false
-    };
   },
 
   mounted() {
@@ -205,45 +160,33 @@ export default {
 
   beforeDestroy() {
     this.editor.destroy();
-  },
-  destroyed() {
-    window.removeEventListener("scroll", this.handleEditorScroll);
   }
 };
 </script>
 
-<style lang="scss" scoped>
-.interface-wysiwyg-container,
-.interface-wysiwyg {
-  position: relative;
-  width: 100%;
-  min-height: inherit;
-  max-width: var(--width-x-large);
-}
-.editor {
-  position: relative;
-  min-height: 220px;
-  .editor__inner {
-    min-height: inherit;
-
-    &.shrinked {
-      min-height: 0;
-      .menubar__button:not(.toggler) {
-        display: none;
-      }
-    }
-    .editor__content {
-      &.hidden {
-        min-height: 0;
-        display: none;
-      }
-    }
-    img {
-      max-width: 100%;
-    }
-  }
-}
-</style>
 <style lang="scss">
 @import "assets/scss/editor";
+</style>
+
+<style lang="scss" scoped>
+.interface-wysiwyg-full {
+  --wysiwyg-padding: calc(var(--page-padding) / 2);
+  position: relative;
+  width: 100%;
+  border: var(--input-border-width) solid var(--lighter-gray);
+  border-radius: var(--border-radius);
+  transition: border-color var(--fast) var(--transition);
+
+  &:hover {
+    border-color: var(--light-gray);
+  }
+
+  &:focus-within {
+    border-color: var(--dark-gray);
+  }
+
+  .menubar__wrapper {
+    border-bottom: var(--input-border-width) solid var(--lighter-gray);
+  }
+}
 </style>

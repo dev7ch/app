@@ -213,7 +213,7 @@ export default {
   .body {
     overflow: auto;
     -webkit-overflow-scrolling: touch;
-    height: 70vh;
+    max-height: 70vh;
     position: relative;
     background-color: var(--body-background);
 
@@ -281,7 +281,7 @@ export default {
     text-decoration: none;
     text-transform: uppercase;
     font-size: 12px;
-    font-weight: 700;
+    font-weight: 500;
     position: relative;
 
     &:hover {

@@ -6,11 +6,11 @@
     // Object values are used as project name in the app
     // Don't forget to add the API environment!
     api: {
-      "https://demo-api.directus.app/_/": "Directus Demo API",
-      "https://d7api.campusderkuenste.ch/_/" : "Testumgebung",
       "https://d7api.campusderkuenste.ch/llad/" : "LLAD",
       "https://d7api.campusderkuenste.ch/iid/" : "IID",
-      "https://hgk.dev7.ch/act/" : "ACT Test"
+      "https://hgk.dev7.ch/act/" : "ACT Test",
+      "https://demo-api.directus.app/_/": "Directus Demo API",
+      "https://d7api.campusderkuenste.ch/_/" : "Testumgebung"
     },
 
     // Allow the user to connect to any API by entering a URL in a text field

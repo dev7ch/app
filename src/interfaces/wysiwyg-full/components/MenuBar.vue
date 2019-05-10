@@ -10,15 +10,15 @@
       >
         <!-- loop for basic buttons  -->
         <MenuButton
-          v-for="button in preparedButtons(buttons)"
-          :key="button"
+          v-for="(button, i) in preparedButtons(buttons)"
+          :key="i + button"
           :name="button"
           :label="getLabelConditions(button)"
           :order-index="optionsIndex(button)"
           :command="commands[button] ? commands[button] : () => commands[button]"
-          :active-condition="isActive[button] ? isActive[button] : false"
+          :active-condition="isActive[button] ? isActive[button]() : false"
           :disabled="showSource"
-          v-tooltip="$tc('editor.' + button) || $tc('editor.heading' + button.replace('h', ''))"
+          v-tooltip="$tc('editor.' + button)"
         ></MenuButton>
         <!-- unique buttons (excluded in loop before) -->
         <MenuButton

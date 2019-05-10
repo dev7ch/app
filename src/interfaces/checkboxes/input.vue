@@ -36,6 +36,8 @@ export default {
     draggable
   },
 
+  props: ["disabled"],
+
   computed: {
     dragOptions() {
       return {
@@ -85,6 +87,7 @@ export default {
           };
         });
       }
+
       return [...selected, ...options];
     }
   },
@@ -105,10 +108,9 @@ export default {
       let selection = [...this.selection];
       if (selection.includes(val)) {
         selection.splice(selection.indexOf(val), 1);
-      } else {
+      } else if (val) {
         selection.push(val);
       }
-
       selection = selection.join(",");
 
       if (this.options.wrap && selection.length > 0) {

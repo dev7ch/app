@@ -8,10 +8,10 @@
           'options-is-open': optionsInclude('table') ? isActive.table() : false
         }"
       >
+        <!-- loop for basic buttons  -->
         <MenuButton
           v-for="button in preparedButtons(buttons)"
           :key="button"
-          :title="button"
           :name="button"
           :label="getLabelConditions(button)"
           :order-index="optionsIndex(button)"
@@ -22,6 +22,7 @@
         ></MenuButton>
 
         <!-- unique buttons (excluded in loop before) -->
+
         <MenuButton
           v-if="optionsInclude('link')"
           :order-index="optionsIndex('link')"
@@ -41,8 +42,21 @@
           :disabled="showSource"
           v-tooltip.bottom="$t('editor.image')"
         />
+        <template v-for="n in 6">
+          <template v-if="optionsInclude('h' + n)">
+            <MenuButton
+              :key="n"
+              :order-index="optionsIndex('h' + n)"
+              :label="'H' + n"
+              :command="() => commands.heading({ level: n })"
+              :active-condition="isActive.heading({ level: n })"
+              :disabled="showSource"
+              v-tooltip.bottom="$tc('editor.heading', { level: n }) + ' ' + n"
+            />
+          </template>
+        </template>
 
-        <!-- table toolbar -->
+        <!-- table button -->
 
         <MenuButton
           v-if="optionsInclude('table')"
@@ -60,13 +74,15 @@
           :disabled="showSource"
           v-tooltip.bottom="$t('editor.table')"
         />
+
+        <!-- table toolbar -->
+
         <div
           class="options-fixed"
           v-if="optionsInclude('table') && !showSource ? isActive.table() : false"
           :class="{ 'is-open': isActive.table() }"
         >
           <MenuButton icon="border_left" :command="commands.deleteTable" sup-type="remove" />
-          s
           <MenuButton icon="border_left" :command="commands.addColumnBefore" sup-type="add" />
           <MenuButton icon="border_right" sup-type="add" :command="commands.addColumnAfter" />
           <MenuButton icon="border_outer" sup-type="remove" :command="commands.deleteColumn" />
@@ -243,7 +259,7 @@ export default {
     },
     preparedButtons($val) {
       let btn = $val;
-      let exclude = ["image", "link", "history", "table"];
+      let exclude = ["image", "link", "history", "table", "h1", "h2", "h3", "h4", "h5", "h6"];
 
       // Drop special buttons from the basic ones
       for (let i = 0; i < exclude.length; i++) {

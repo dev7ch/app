@@ -251,19 +251,19 @@ export default {
     }
 
     h1 {
-      font-size: var(--size-1);
+      font-size: calc(var(--size-1) * 2);
     }
 
     h2 {
-      font-size: var(--size-2);
+      font-size: calc(var(--size-2) * 2);
     }
 
     h3 {
-      font-size: var(--size-3);
+      font-size: calc(var(--size-3) * 2);
     }
 
     h4 {
-      font-size: var(--size-4);
+      font-size: calc(var(--size-4) * 2);
     }
 
     p + p {

@@ -70,7 +70,7 @@ export default {
         strike: "format_strikethrough",
         underline: "format_underline",
         code: "code",
-        code_block: "code",
+        code_block: "settings_ethernet",
         italic: "format_italic",
         paragraph: "subject",
         bullet_list: "format_list_bulleted",

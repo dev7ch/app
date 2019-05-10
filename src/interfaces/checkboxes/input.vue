@@ -6,14 +6,14 @@
     v-model="sortableList"
     v-bind="dragOptions"
     @end="saveSort()"
-    :draggable="sortable ? '.sortable-box.active' : false"
+    :draggable="!sortable ? false : '.sortable-box.active'"
   >
     <v-checkbox
       name="list-sorting"
       v-for="(item, idx) in sortableList"
       :key="idx"
       class="sortable-box"
-      :class="{ active: selection.includes(item.val || item) }"
+      :class="{ active: sortable }"
       :id="_uid + idx + '-' + (item.val ? item.val : item)"
       :value="item.val ? item.val : item"
       :disabled="readonly"
@@ -31,12 +31,6 @@ import draggable from "vuedraggable";
 export default {
   name: "interface-checkboxes",
   mixins: [mixin],
-  props: {
-    sortable: {
-      type: Boolean,
-      default: true
-    }
-  },
 
   components: {
     draggable
@@ -49,6 +43,10 @@ export default {
         disabled: !this.editable,
         ghostClass: "ghost"
       };
+    },
+
+    sortable() {
+      return this.$props.options.draggable;
     },
     selection() {
       if (this.value == null) return [];

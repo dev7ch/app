@@ -21,6 +21,13 @@
         "value8": "$t:option 8"
       }
     },
+    "draggable": {
+      "name": "$t:draggable",
+      "comment": "$t:draggable_comment",
+      "interface": "toggle",
+      "type": "BOOLEAN",
+      "default": true
+    },
     "wrap": {
       "name": "$t:wrap",
       "comment": "$t:wrap_comment",
@@ -56,7 +63,9 @@
       "value": "Value",
       "option": "Option",
       "single": "Single Column",
-      "single_comment": "Display Checkboxes in single column"
+      "single_comment": "Display Checkboxes in single column",
+      "draggable": "Draggable Checkboxes",
+      "draggable_comment": "Enable sorting by draggable checkboxes"
 
     },
 	"fr-FR": {

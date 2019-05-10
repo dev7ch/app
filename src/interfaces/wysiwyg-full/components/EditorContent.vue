@@ -155,6 +155,8 @@ export default {
 .options-toggler {
   position: absolute;
   cursor: pointer;
+  text-align: center;
+  max-width: 300px;
   z-index: 1;
   transform: translateY(-50%);
   border: var(--input-border-width) solid var(----accent);
@@ -192,6 +194,7 @@ export default {
 <style lang="scss">
 .editor-content-wrapper {
   min-height: 300px;
+  transition: background-color var(--slow) ease-in-out, color var(--fast) ease-in-out;
 
   &.fullscreen {
     min-height: 100vh;
@@ -199,9 +202,10 @@ export default {
     &.night {
       background-color: var(--black);
     }
-
-    > * {
-      margin: auto;
+    .editor-content {
+      //overflow-y: auto;
+      margin-left: auto;
+      margin-right: auto;
       width: 720px;
       max-width: 100%;
     }

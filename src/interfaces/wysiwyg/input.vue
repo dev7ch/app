@@ -226,6 +226,12 @@ export default {
   width: 100%;
   min-height: inherit;
   max-width: var(--width-x-large);
+  --wysiwyg-padding: calc(var(--page-padding) / 2);
+  border: var(--input-border-width) solid var(--lighter-gray);
+  border-radius: var(--border-radius);
+  -webkit-transition: border-color var(--fast) var(--transition);
+  transition: border-color var(--fast) var(--transition), background-color var(--slow) ease-in-out,
+    color var(--fast) ease-in-out;
 
   &.fullscreen {
     position: fixed;
@@ -237,8 +243,6 @@ export default {
     max-width: 100%;
     max-height: 100%;
     background-color: var(--body-background);
-    transition: background-color 0.4s ease-in-out, color 0.3s ease-in-out,
-      border-bottom 0.35s ease-in-out;
 
     .editor__content {
       min-height: 100vh;
@@ -257,11 +261,15 @@ export default {
       top: -33px;
       width: 100%;
       height: 35px;
-      background-color: var(--body-background);
+      background-color: transparent;
     }
     &.night {
       &:after {
         background-color: var(--black);
+      }
+
+      .fullscreen-info {
+        background-color: var(--darkest-gray);
       }
     }
   }
@@ -284,15 +292,17 @@ export default {
 .fullscreen-info {
   position: absolute;
   padding-left: 10px;
-  top: -24px;
+  top: -50px;
   z-index: 1;
   width: 100%;
+  padding-top: 24px;
   min-height: 24px;
   max-width: 100%;
   font-size: var(--size-2);
   padding-bottom: 6px;
   color: var(--darkest-gray);
-  transition: background-color 0.4s ease-in-out, color 0.3s ease-in-out,
-    border-bottom 0.35s ease-in-out;
+  background-color: var(--body-background);
+  transition: background-color var(--slow) ease-in-out, color var(--fast) ease-in-out,
+    border-bottom 0.3s ease-in-out;
 }
 </style>

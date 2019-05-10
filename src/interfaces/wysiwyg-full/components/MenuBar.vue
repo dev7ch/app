@@ -20,9 +20,7 @@
           :disabled="showSource"
           v-tooltip="$tc('editor.' + button) || $tc('editor.heading' + button.replace('h', ''))"
         ></MenuButton>
-
         <!-- unique buttons (excluded in loop before) -->
-
         <MenuButton
           v-if="optionsInclude('link')"
           :order-index="optionsIndex('link')"
@@ -32,7 +30,6 @@
           :disabled="showSource"
           v-tooltip.bottom="$t('editor.link')"
         />
-
         <MenuButton
           v-if="optionsInclude('image')"
           :order-index="optionsIndex('image')"
@@ -55,9 +52,7 @@
             />
           </template>
         </template>
-
         <!-- table button -->
-
         <MenuButton
           v-if="optionsInclude('table')"
           :order-index="optionsIndex('table')"
@@ -74,9 +69,7 @@
           :disabled="showSource"
           v-tooltip.bottom="$t('editor.table')"
         />
-
         <!-- table toolbar -->
-
         <div
           class="options-fixed"
           v-if="optionsInclude('table') && !showSource ? isActive.table() : false"
@@ -91,9 +84,7 @@
           <MenuButton icon="border_horizontal" sup-type="remove" :command="commands.deleteRow" />
           <MenuButton icon="merge_type" :command="commands.toggleCellMerge" />
         </div>
-
         <!-- right aligned option buttons -->
-
         <div
           class="history__actions toggler"
           v-if="optionsInclude('history')"
@@ -119,7 +110,7 @@
         >
           <v-icon name="code" :color="showSource ? 'accent' : 'light-gray'" />
         </button>
-
+        <!-- link bar -->
         <template v-if="optionsInclude('link') && showLink">
           <LinkBar
             v-show="!showSource && showLink"
@@ -132,7 +123,6 @@
         </template>
       </div>
     </editor-menu-bar>
-
     <!-- image selection modal interface  -->
     <portal to="modal" v-if="chooseImage">
       <v-modal

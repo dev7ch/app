@@ -136,7 +136,7 @@ export default {
               return [new Table(), new TableHeader(), new TableCell(), new TableRow()];
             case "underline":
               return new Underline();
-            case "h1" || "h2":
+            default:
               return new Heading();
           }
         })

@@ -261,7 +261,7 @@ export default {
       top: -33px;
       width: 100%;
       height: 35px;
-      background-color: transparent;
+      background-color: var(--darkest-gray);
     }
     &.night {
       &:after {
@@ -292,7 +292,7 @@ export default {
 .fullscreen-info {
   position: absolute;
   padding-left: 10px;
-  top: -50px;
+  top: -48px;
   z-index: 1;
   width: 100%;
   padding-top: 24px;

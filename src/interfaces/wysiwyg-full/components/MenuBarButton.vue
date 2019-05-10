@@ -15,7 +15,12 @@
       />
     </span>
     <span v-if="label" class="label">{{ label }}</span>
-    <v-icon v-if="!!icon" class="icon" :name="icon" />
+    <v-icon
+      v-if="!!name && !icon"
+      class="icon"
+      :name="toolbarIcons[name] ? toolbarIcons[name] : name"
+    />
+    <v-icon v-else-if="!!icon" class="icon" :name="icon" />
   </button>
 </template>
 <script>
@@ -25,6 +30,10 @@ export default {
     icon: {
       type: String,
       default: null
+    },
+    name: {
+      type: String,
+      default: ""
     },
     supType: {
       type: String,
@@ -51,6 +60,27 @@ export default {
     orderIndex: {
       type: Number,
       default: -1
+    }
+  },
+
+  computed: {
+    toolbarIcons() {
+      return {
+        bold: "format_bold",
+        strike: "format_strikethrough",
+        underline: "format_underline",
+        code: "code",
+        code_block: "code",
+        italic: "format_italic",
+        paragraph: "subject",
+        bullet_list: "format_list_bulleted",
+        ordered_list: "format_list_numbered",
+        blockquote: "format_quote",
+        horizontal_rule: "maximize",
+        link: "format_list_bulleted",
+        hard_break: "wrap_text",
+        table: "table_chart"
+      };
     }
   }
 };

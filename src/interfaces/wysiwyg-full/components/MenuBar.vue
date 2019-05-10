@@ -8,114 +8,20 @@
           'options-is-open': optionsInclude('table') ? isActive.table() : false
         }"
       >
-        <!--<MenuButton-->
-        <!--v-for="button in buttons"-->
-        <!--:key="button"-->
-        <!--:title="button"-->
-        <!--:icon="'format_bold'"-->
-        <!--:order-index="optionsIndex('button')"-->
-        <!--:command="commands[button] ? commands[button] : () => commands[button]"-->
-        <!--:active-condition="isActive[button] ? isActive[button] : false"-->
-        <!--:disabled="showSource"-->
-        <!--v-tooltip.bottom="$t('editor.' + button)"-->
-        <!--&gt;-->
-        <!--</MenuButton>-->
         <MenuButton
-          v-if="optionsInclude('bold')"
-          :order-index="optionsIndex('bold')"
-          icon="format_bold"
-          :command="commands.bold"
-          :active-condition="isActive.bold()"
+          v-for="button in preparedButtons(buttons)"
+          :key="button"
+          :title="button"
+          :name="button"
+          :label="getLabelConditions(button)"
+          :order-index="optionsIndex(button)"
+          :command="commands[button] ? commands[button] : () => commands[button]"
+          :active-condition="isActive[button] ? isActive[button] : false"
           :disabled="showSource"
-          v-tooltip.bottom="$t('editor.bold')"
+          v-tooltip="$tc('editor.' + button) || $tc('editor.heading' + button.replace('h', ''))"
         ></MenuButton>
-        <MenuButton
-          v-if="optionsInclude('italic')"
-          :order-index="optionsIndex('italic')"
-          icon="format_italic"
-          :command="commands.italic"
-          :active-condition="isActive.italic()"
-          :disabled="showSource"
-          v-tooltip.bottom="$t('editor.italic')"
-        />
-        <MenuButton
-          v-if="optionsInclude('strike')"
-          :order-index="optionsIndex('strike')"
-          icon="format_strikethrough"
-          :command="commands.strike"
-          :active-condition="isActive.strike()"
-          :disabled="showSource"
-          v-tooltip.bottom="$t('editor.strike')"
-        />
 
-        <MenuButton
-          v-if="optionsInclude('underline')"
-          :order-index="optionsIndex('underline')"
-          icon="format_underline"
-          :command="commands.underline"
-          :active-condition="isActive.underline()"
-          :disabled="showSource"
-          v-tooltip.bottom="$t('editor.underline')"
-        />
-
-        <MenuButton
-          v-if="optionsInclude('code')"
-          :order-index="optionsIndex('code')"
-          icon="code"
-          :command="commands.code"
-          :active-condition="isActive.code()"
-          :disabled="showSource"
-          v-tooltip.bottom="$t('editor.code')"
-        />
-
-        <MenuButton
-          v-if="optionsInclude('code_block')"
-          :order-index="optionsIndex('code_block')"
-          icon="code"
-          :command="commands.code_block"
-          :active-condition="isActive.code_block()"
-          :disabled="showSource"
-          v-tooltip.bottom="$t('editor.code_block')"
-        />
-
-        <MenuButton
-          :order-index="optionsIndex('paragraph')"
-          icon="subject"
-          :command="commands.paragraph"
-          :active-condition="isActive.paragraph()"
-          :disabled="showSource"
-          v-tooltip.bottom="$t('editor.paragraph')"
-        />
-
-        <MenuButton
-          v-if="optionsInclude('bullet_list')"
-          :order-index="optionsIndex('bullet_list')"
-          icon="format_list_bulleted"
-          :command="commands.bullet_list"
-          :active-condition="isActive.bullet_list()"
-          :disabled="showSource"
-          v-tooltip.bottom="$t('editor.bullet_list')"
-        />
-
-        <MenuButton
-          v-if="optionsInclude('ordered_list')"
-          :order-index="optionsIndex('ordered_list')"
-          icon="format_list_numbered"
-          :command="commands.ordered_list"
-          :active-condition="isActive.ordered_list()"
-          :disabled="showSource"
-          v-tooltip.bottom="$t('editor.ordered_list')"
-        />
-        <MenuButton
-          v-if="optionsInclude('blockquote')"
-          :order-index="optionsIndex('blockquote')"
-          icon="format_quote"
-          :command="commands.blockquote"
-          :active-condition="isActive.blockquote()"
-          :disabled="showSource"
-          v-tooltip.bottom="$t('editor.blockquote')"
-        />
-
+        <!-- unique buttons (excluded in loop before) -->
         <MenuButton
           v-if="optionsInclude('link')"
           :order-index="optionsIndex('link')"
@@ -136,19 +42,12 @@
           v-tooltip.bottom="$t('editor.image')"
         />
 
-        <MenuButton
-          v-if="optionsInclude('horizontal_rule')"
-          :order-index="optionsIndex('horizontal_rule')"
-          icon="maximize"
-          :command="commands.horizontal_rule"
-          :disabled="showSource"
-          v-tooltip.bottom="$t('editor.horizontal_rule')"
-        />
-        <!-- table and table toolbar -->
+        <!-- table toolbar -->
+
         <MenuButton
           v-if="optionsInclude('table')"
           :order-index="optionsIndex('table')"
-          icon="table_chart"
+          name="table"
           :command="
             () =>
               commands.createTable({
@@ -161,48 +60,23 @@
           :disabled="showSource"
           v-tooltip.bottom="$t('editor.table')"
         />
-
         <div
           class="options-fixed"
           v-if="optionsInclude('table') && !showSource ? isActive.table() : false"
           :class="{ 'is-open': isActive.table() }"
         >
-          <MenuButton
-            v-if="optionsInclude('table')"
-            :order-index="optionsIndex('table')"
-            icon="table_chart"
-            :command="commands.deleteTable"
-            sup-type="remove"
-          />
-
+          <MenuButton icon="border_left" :command="commands.deleteTable" sup-type="remove" />
+          s
           <MenuButton icon="border_left" :command="commands.addColumnBefore" sup-type="add" />
-
           <MenuButton icon="border_right" sup-type="add" :command="commands.addColumnAfter" />
-
           <MenuButton icon="border_outer" sup-type="remove" :command="commands.deleteColumn" />
-
           <MenuButton icon="border_top" sup-type="add" :command="commands.addRowBefore" />
-
           <MenuButton icon="border_bottom" sup-type="add" :command="commands.addRowAfter" />
-
           <MenuButton icon="border_horizontal" sup-type="remove" :command="commands.deleteRow" />
-
           <MenuButton icon="merge_type" :command="commands.toggleCellMerge" />
         </div>
 
-        <template v-for="n in 6">
-          <template v-if="optionsInclude('h' + n)">
-            <MenuButton
-              :key="n"
-              :order-index="optionsIndex('h' + n)"
-              :label="'H' + n"
-              :command="() => commands.heading({ level: n })"
-              :active-condition="isActive.heading({ level: n })"
-              :disabled="showSource"
-              v-tooltip.bottom="$tc('editor.heading', { level: n }) + ' ' + n"
-            />
-          </template>
-        </template>
+        <!-- right aligned option buttons -->
 
         <div
           class="history__actions toggler"
@@ -211,12 +85,7 @@
             order: 95
           }"
         >
-          <MenuButton
-            class="menubar__button"
-            icon="undo"
-            :command="commands.undo"
-            :disabled="showSource"
-          />
+          <MenuButton icon="undo" :command="commands.undo" :disabled="showSource" />
           <MenuButton
             class="menubar__button"
             icon="redo"
@@ -301,7 +170,6 @@
 import MenuButton from "./MenuBarButton";
 import { EditorMenuBar } from "tiptap";
 import LinkBar from "./LinkBar";
-
 export default {
   props: {
     options: {
@@ -340,6 +208,7 @@ export default {
       chooseImage: false,
       imageUrlRaw: "",
       imageUrlRawBroken: false,
+      buttonsSimple: [],
       viewOptions: {
         title: "title",
         subtitle: "type",
@@ -366,18 +235,33 @@ export default {
     optionsIndex($val) {
       return this.$props.buttons.indexOf($val);
     },
+    getLabelConditions($val) {
+      // check for h1 - h2
+      let pattern = /\/?h[1-6]/gi;
+      let str = pattern.test($val) ? $val : null;
+      return str ? str.toUpperCase() : null;
+    },
+    preparedButtons($val) {
+      let btn = $val;
+      let exclude = ["image", "link", "history", "table"];
+
+      // Drop special buttons from the basic ones
+      for (let i = 0; i < exclude.length; i++) {
+        btn = btn.filter(e => e !== exclude[i]);
+      }
+
+      return btn;
+    },
     addImageCommand(data) {
       if (data.command !== null && !this.imageUrlRaw) {
         this.editor.commands.image({
           src: data.full_url
         });
-
         this.chooseImage = false;
       } else if (data.command !== null && this.imageUrlRaw !== "") {
         this.editor.commands.image({
           src: this.imageUrlRaw
         });
-
         this.chooseImage = false;
       }
     },

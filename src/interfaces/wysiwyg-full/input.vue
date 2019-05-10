@@ -6,7 +6,7 @@
       :options="options"
       :editor="editor"
       :show-source="rawView"
-      :show-link="linkBubble"
+      :show-link="showLinkBar"
       :toggle-link="toggleLinkBar"
       :toggle-source="showSource"
     />
@@ -60,7 +60,7 @@ export default {
       editorText: "",
       editor: null,
       rawView: false,
-      linkBubble: false
+      showLinkBar: false
     };
   },
 
@@ -81,8 +81,8 @@ export default {
         this.editor.view.dom.innerHTML = value;
       }
 
-      if (value === "<p><br></p>") {
-        // empty value oon toggle to raw mode
+      if (value === "<p><br></p>" || value === "<p></p>") {
+        // remove empty value on toggle to raw mode
         this.editorText = "";
         // stage empty value to save in DB
         this.$emit("input", "");
@@ -91,7 +91,7 @@ export default {
       }
     },
     toggleLinkBar() {
-      this.linkBubble = !this.linkBubble;
+      this.showLinkBar = !this.showLinkBar;
     },
     showSource() {
       if (!this.rawView) {
@@ -136,7 +136,7 @@ export default {
               return [new Table(), new TableHeader(), new TableCell(), new TableRow()];
             case "underline":
               return new Underline();
-            default:
+            case "h1" || "h2":
               return new Heading();
           }
         })

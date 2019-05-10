@@ -140,13 +140,15 @@ export default {
     },
 
     findLabel(choice, k) {
-      if (k && choice.find(x => x.val === k)) {
+      if (choice.find(x => x.val === k)) {
+        // find labels in in interface options
         if (choice.find(x => x.val === k).label) {
           return choice.find(x => x.val === k).label;
         } else {
           return choice.find(x => x.val === k);
         }
       } else {
+        // return key if no label was found
         return k;
       }
     }
@@ -179,31 +181,36 @@ export default {
   &.draggable {
     max-width: 100%;
     .sortable-box {
+      position: relative;
       transition: opacity ease-in-out 0.2s, background-color ease-in-out 0.3s;
       &.active {
         &.ghost {
-          position: relative;
           &.sortable-chosen {
             opacity: 0.4;
             + .sortable-box.active {
               opacity: 0.7;
+              color: var(--dark-gray);
+            }
+
+            &:after {
+              color: var(--dark-gray);
             }
           }
-          :after {
-            position: absolute;
-            font-family: "Material Icons", sans-serif;
-            display: inline-block;
-            line-height: 1;
-            letter-spacing: normal;
-            vertical-align: middle;
-            content: "drag_indicator";
-            height: 100%;
-            width: 24px;
-            font-size: 24px;
-            left: 0;
-            color: var(--darker-gray);
-            background-color: var(--white);
-          }
+        }
+        margin-left: 12px;
+        :after {
+          position: absolute;
+          font-family: "Material Icons", sans-serif;
+          display: inline-block;
+          line-height: 1;
+          letter-spacing: normal;
+          vertical-align: middle;
+          content: "drag_indicator";
+          height: 100%;
+          width: 24px;
+          font-size: 24px;
+          left: -20px;
+          color: var(--lighter-gray);
         }
       }
     }

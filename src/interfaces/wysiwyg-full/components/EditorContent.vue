@@ -1,8 +1,8 @@
 <template>
   <div class="editor-content-wrapper" :class="{ fullscreen: isFullscreen, night: isBlackmode }">
-    <editor-content v-show="!rawView" ref="editor" class="editor-content" :editor="editor" />
+    <editor-content v-show="!showSource" ref="editor" class="editor-content" :editor="editor" />
     <span
-      v-if="showImageEdit && !rawView"
+      v-if="showImageEdit && !showSource"
       class="options-toggler"
       @click="toggleImageEdit"
       :style="{
@@ -19,7 +19,12 @@
       :is-image-edit="editImage"
       :selection-position="selectionPosition"
     />
-    <RawHtmlView v-if="rawView" :value="parentValue" @input="updateValue" />
+    <RawHtmlView
+      v-if="showSource"
+      :value="!!parentJson ? parentJson : parentValue"
+      :options="options"
+      @input="updateValue"
+    />
   </div>
 </template>
 <script>
@@ -32,7 +37,10 @@ export default {
     editor: {
       required: true
     },
-    rawView: {
+    options: {
+      type: [String, Object]
+    },
+    showSource: {
       type: Boolean,
       default: false,
       required: true
@@ -40,6 +48,10 @@ export default {
     parentValue: {
       type: [String, Object],
       default: "" || {}
+    },
+    parentJson: {
+      type: [String, Object],
+      default: () => null
     },
     updateValue: {
       type: Function

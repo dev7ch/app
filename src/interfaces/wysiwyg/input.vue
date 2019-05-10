@@ -11,7 +11,7 @@
     <EditorContent
       :parent-value="editorText ? editorText : value"
       :update-value="updateValue"
-      :raw-view="rawView"
+      :show-source="rawView"
       :editor="editor"
       :is-blackmode="blackMode"
       :is-fullscreen="distractionFree"
@@ -27,11 +27,7 @@
       :toggle-link="toggleLinkBar"
     />
 
-    <p
-      class="fullscreen-info"
-      v-if="$parent.$parent.field.name && distractionFree"
-      v-show="!rawView"
-    >
+    <p class="fullscreen-info" v-if="$parent.$parent.field.name && distractionFree">
       {{ $parent.$parent.field.name }}
     </p>
 
@@ -94,13 +90,12 @@ import {
   Strike,
   Underline,
   History,
-  Table,
   TableHeader,
   TableRow,
   TableCell
 } from "tiptap-extensions";
 
-import { Image } from "./../wysiwyg-full/extensions";
+import { Image, Table } from "./../wysiwyg-full/extensions";
 
 export default {
   name: "interface-wysiwyg",

@@ -11,9 +11,11 @@
       :toggle-source="showSource"
     />
     <EditorContent
+      :options="options"
       :parent-value="editorText ? editorText : value"
+      :parent-json="editorJson"
       :update-value="updateValue"
-      :raw-view="rawView"
+      :show-source="rawView"
       :editor="editor"
     />
   </div>
@@ -39,14 +41,13 @@ import {
   ListItem,
   OrderedList,
   Strike,
-  Table,
   TableCell,
   TableHeader,
   TableRow,
   Underline
 } from "tiptap-extensions";
 
-import { Image } from "./extensions";
+import { Table, Image, Iframe } from "./extensions";
 
 export default {
   name: "interface-wysiwyg",
@@ -58,6 +59,7 @@ export default {
   data() {
     return {
       editorText: "",
+      editorJson: this.options.json_output ? (this.value ? this.value : {}) : null,
       editor: null,
       rawView: false,
       showLinkBar: false
@@ -68,7 +70,15 @@ export default {
     value(newVal) {
       if (newVal && !this.rawView) {
         this.editorText = newVal;
-      } else {
+      } else if (!this.$props.options.json_output) {
+        this.$emit("input", this.editorText);
+      } else if (this.type === "json") {
+        this.$emit("input", this.editorJson);
+      }
+
+      // Allow saving a string in json mode to DB
+      if (this.type === "string" && this.$props.options.json_output) {
+        this.editorText = JSON.stringify(this.editorJson);
         this.$emit("input", this.editorText);
       }
     }
@@ -76,28 +86,48 @@ export default {
   methods: {
     updateValue(value) {
       this.editorText = value;
-      if (this.editorText !== this.editor.view.dom.innerHTML) {
+      if (this.editorText !== this.editor.view.dom.innerHTML && !this.$props.options.json_output) {
         this.editor.view.dom.innerHTML = value;
+      } else {
+        // Fallback set, is dropping Tip tap History
+        this.editor.setContent(value);
       }
 
-      if (value === "<p><br></p>" || value === "<p></p>") {
-        // remove empty value on toggle to raw mode
-        this.editorText = "";
-        // stage empty value to save in DB
-        this.$emit("input", "");
+      if (!this.$props.options.json_output) {
+        if (value === "<p><br></p>" || value === "<p></p>") {
+          // remove empty value on toggle to raw mode
+          this.editorText = "";
+          // stage empty value to save in DB
+          this.$emit("input", "");
+        } else {
+          this.$emit("input", value);
+        }
       } else {
-        this.$emit("input", value);
+        try {
+          JSON.parse(value);
+          let jsonObject = JSON.parse(value);
+          this.editorJson = jsonObject;
+          console.log(this.editorJson);
+          this.$emit("input", this.editorJson);
+        } catch (e) {
+          this.$emit("input", value);
+        }
+        //this.$emit("input", this.editorJson);
       }
     },
+
     toggleLinkBar() {
       this.showLinkBar = !this.showLinkBar;
     },
     showSource() {
-      if (!this.rawView) {
+      if (!this.rawView && !this.$props.options.json_output) {
         this.updateValue(this.editor.view.dom.innerHTML);
-      } else {
+      } else if (!this.editorJson) {
         this.updateValue(this.editorText);
+      } else {
+        this.updateValue(this.editorJson);
       }
+
       return (this.rawView = !this.rawView);
     },
 
@@ -135,6 +165,8 @@ export default {
               return [new Table(), new TableHeader(), new TableCell(), new TableRow()];
             case "underline":
               return new Underline();
+            case "iframe":
+              return new Iframe();
             default:
               return new Heading();
           }
@@ -144,11 +176,12 @@ export default {
 
       this.editorText = this.value ? this.value : "";
 
-      if (this.$props.options.json_output) {
+      if (this.options.json_output) {
         this.editor = new Editor({
           extensions: extensions,
-          content: this.editorText,
+          content: this.editorJson,
           onUpdate: ({ getJSON }) => {
+            this.editorJson = getJSON();
             this.$emit("input", getJSON());
           }
         });

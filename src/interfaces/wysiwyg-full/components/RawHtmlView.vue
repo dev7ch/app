@@ -1,9 +1,11 @@
 <template>
   <codemirror
+    v-if="options && value"
     class="code-editor"
-    :value="value"
+    :value="options.json_output ? JSON.stringify(value, null, 1) : value"
     @input="$emit('input', $event)"
-    :options="cmOptions"
+    :options="options.json_output ? jsonOptions : cmOptions"
+    ref="codeMirror"
   ></codemirror>
 </template>
 <script>
@@ -19,9 +21,17 @@ export default {
   },
   props: {
     value: {
-      type: String,
+      type: [String, Object],
       required: true
+    },
+    options: {
+      type: [String, Object]
     }
+  },
+  data() {
+    return {
+      loaded: false
+    };
   },
   computed: {
     cmOptions() {
@@ -33,6 +43,20 @@ export default {
         showCursorWhenSelecting: true,
         theme: "default",
         lineWrapping: true
+      };
+    },
+    jsonOptions() {
+      return {
+        tabSize: 4,
+        autoRefresh: false,
+        indentUnit: 4,
+        readOnly: this.readonly ? "nocursor" : false,
+        line: false,
+        lineNumbers: false,
+        mode: "application/json",
+        showCursorWhenSelecting: true,
+        theme: "default",
+        lint: true
       };
     }
   }

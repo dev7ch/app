@@ -39,6 +39,7 @@
           :disabled="showSource"
           v-tooltip.bottom="$t('editor.image')"
         />
+        <!-- headings -->
         <template v-for="n in 6">
           <template v-if="optionsInclude('h' + n)">
             <MenuButton
@@ -62,7 +63,7 @@
               commands.createTable({
                 rowsCount: 3,
                 colsCount: 3,
-                withHeaderRow: false
+                withHeaderRow: options.table_header
               })
           "
           :active-condition="isActive.table()"
@@ -249,7 +250,19 @@ export default {
     },
     preparedButtons($val) {
       let btn = $val;
-      let exclude = ["image", "link", "history", "table", "h1", "h2", "h3", "h4", "h5", "h6"];
+      let exclude = [
+        "image",
+        "link",
+        "history",
+        "table",
+        "h1",
+        "h2",
+        "h3",
+        "h4",
+        "h5",
+        "h6",
+        "iframe"
+      ];
 
       // Drop special buttons from the basic ones
       for (let i = 0; i < exclude.length; i++) {
@@ -257,6 +270,12 @@ export default {
       }
 
       return btn;
+    },
+    showImagePrompt(command) {
+      const src = prompt("Enter the url of your image here");
+      if (src !== null) {
+        command({ src });
+      }
     },
     addImageCommand(data) {
       if (data.command !== null && !this.imageUrlRaw) {

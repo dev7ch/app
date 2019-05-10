@@ -74,7 +74,6 @@ export default {
     }
   },
   methods: {
-    // Private property functions
     updateValue(value) {
       this.editorText = value;
       if (this.editorText !== this.editor.view.dom.innerHTML) {
@@ -101,7 +100,7 @@ export default {
       }
       return (this.rawView = !this.rawView);
     },
-    // Init editor
+
     init() {
       const extensions = this.options.extensions
         .map(ext => {
@@ -144,13 +143,24 @@ export default {
         .flat();
 
       this.editorText = this.value ? this.value : "";
-      this.editor = new Editor({
-        extensions: extensions,
-        content: this.editorText,
-        onUpdate: ({ getHTML }) => {
-          this.$emit("input", getHTML());
-        }
-      });
+
+      if (this.$props.options.json_output) {
+        this.editor = new Editor({
+          extensions: extensions,
+          content: this.editorText,
+          onUpdate: ({ getJSON }) => {
+            this.$emit("input", getJSON());
+          }
+        });
+      } else {
+        this.editor = new Editor({
+          extensions: extensions,
+          content: this.editorText,
+          onUpdate: ({ getHTML }) => {
+            this.$emit("input", getHTML());
+          }
+        });
+      }
     }
   },
 

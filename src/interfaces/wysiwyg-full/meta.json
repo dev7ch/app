@@ -1,7 +1,7 @@
 {
   "name": "$t:wysiwyg_full",
   "version": "1.1.0",
-  "types": ["string"],
+  "types": ["string", "json"],
   "icon": "format_quote",
   "recommended": {
     "length": 65534
@@ -13,12 +13,12 @@
       "interface": "text-input",
       "length": 200
     },
-    "show_history": {
-      "name": "$t:show_history",
-      "comment": "$t:show_history_commet",
+    "json_output": {
+      "name": "$t:json_output",
+      "comment": "$t:json_output_comment",
       "interface": "toggle",
       "type": "BOOLEAN",
-      "default": true
+      "default": false
     },
     "custom_url": {
       "name": "$t:custom_url",
@@ -67,6 +67,8 @@
       "wysiwyg_full": "Advanced WYSIWYG",
       "placeholder": "Placeholder",
       "placeholder_comment": "Enter placeholder text",
+      "json_output": "Save as JSON",
+      "json_output_comment": "Saves input as JSON, instead of HTML",
       "link_add": "Click to add Link",
       "link_edit": "Edit Link",
       "link_info": "Type link and hit enter ...",
@@ -82,7 +84,6 @@
       "toolbar_options_comment": "Enable and sort extensions in the toolbar of ***ADD LINK TO README IN EXTENSION***",
       "toolbar_cm_options": "Code Mirror Options",
       "toolbar_cm_options_comment": "Code Mirror Options for the formatted raw view of this editor",
-      "show_history": "Show History",
       "show_history_comment": "Show History in Editor menu toolbar",
       "custom_url": "URL base for images",
       "custom_url_comment": "Optional custom URL base for images including last '/'",

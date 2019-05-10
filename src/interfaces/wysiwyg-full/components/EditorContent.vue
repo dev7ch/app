@@ -38,8 +38,8 @@ export default {
       required: true
     },
     parentValue: {
-      type: String,
-      default: ""
+      type: [String, Object],
+      default: "" || {}
     },
     updateValue: {
       type: Function

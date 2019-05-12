@@ -36,8 +36,6 @@ export default {
     draggable
   },
 
-  props: ["disabled"],
-
   computed: {
     dragOptions() {
       return {

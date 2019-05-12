@@ -41,13 +41,14 @@ import {
   ListItem,
   OrderedList,
   Strike,
+  Table,
   TableCell,
   TableHeader,
   TableRow,
   Underline
 } from "tiptap-extensions";
 
-import { Table, Image, Iframe } from "./extensions";
+import { Image } from "./extensions";
 
 export default {
   name: "interface-wysiwyg",
@@ -165,8 +166,6 @@ export default {
               return [new Table(), new TableHeader(), new TableCell(), new TableRow()];
             case "underline":
               return new Underline();
-            case "iframe":
-              return new Iframe();
             default:
               return new Heading();
           }

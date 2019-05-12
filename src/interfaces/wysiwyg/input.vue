@@ -92,10 +92,11 @@ import {
   History,
   TableHeader,
   TableRow,
-  TableCell
+  TableCell,
+  Table
 } from "tiptap-extensions";
 
-import { Image, Table } from "./../wysiwyg-full/extensions";
+import { Image } from "./../wysiwyg-full/extensions";
 
 export default {
   name: "interface-wysiwyg",

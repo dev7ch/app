@@ -79,7 +79,8 @@ export default {
         horizontal_rule: "maximize",
         link: "format_list_bulleted",
         hard_break: "wrap_text",
-        table: "table_chart"
+        table: "table_chart",
+        span: "format_shapes"
       };
     }
   }

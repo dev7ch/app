@@ -1,6 +1,6 @@
 <template>
   <codemirror
-    v-if="options && value"
+    v-if="options"
     class="code-editor"
     :value="options.json_output ? JSON.stringify(value, null, 1) : value"
     @input="$emit('input', $event)"

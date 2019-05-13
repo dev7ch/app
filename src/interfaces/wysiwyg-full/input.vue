@@ -48,7 +48,7 @@ import {
   Underline
 } from "tiptap-extensions";
 
-import { Image } from "./extensions";
+import { Image, Span } from "./extensions";
 
 export default {
   name: "interface-wysiwyg",
@@ -61,6 +61,8 @@ export default {
     return {
       editorText: "",
       editorJson: this.options.json_output ? (this.value ? this.value : {}) : null,
+      stagedJson: null,
+      stagedMarkdown: "",
       editor: null,
       rawView: false,
       showLinkBar: false
@@ -73,8 +75,10 @@ export default {
         this.editorText = newVal;
       } else if (!this.$props.options.json_output) {
         this.$emit("input", this.editorText);
-      } else if (this.type === "json") {
+      } else if (this.type === "json" && !this.stagedJson) {
         this.$emit("input", this.editorJson);
+      } else if (this.stagedJson) {
+        this.$emit("input", this.stagedJson);
       }
 
       // Allow saving a string in json mode to DB
@@ -95,25 +99,25 @@ export default {
       }
 
       if (!this.$props.options.json_output) {
+        // remove empty value on toggle to raw mode
         if (value === "<p><br></p>" || value === "<p></p>") {
-          // remove empty value on toggle to raw mode
           this.editorText = "";
           // stage empty value to save in DB
           this.$emit("input", "");
         } else {
           this.$emit("input", value);
         }
-      } else {
+        // stage mardown if enabled
+      } else if (this.$props.options.json_output && !this.stagedJson) {
         try {
           JSON.parse(value);
-          let jsonObject = JSON.parse(value);
-          this.editorJson = jsonObject;
-          console.log(this.editorJson);
+          this.editorJson = JSON.parse(value);
           this.$emit("input", this.editorJson);
         } catch (e) {
           this.$emit("input", value);
         }
-        //this.$emit("input", this.editorJson);
+      } else if (this.stagedJson) {
+        this.$emit("input", this.stagedJson);
       }
     },
 
@@ -132,7 +136,7 @@ export default {
       return (this.rawView = !this.rawView);
     },
 
-    init() {
+    initEditor() {
       const extensions = this.options.extensions
         .map(ext => {
           switch (ext) {
@@ -166,6 +170,8 @@ export default {
               return [new Table(), new TableHeader(), new TableCell(), new TableRow()];
             case "underline":
               return new Underline();
+            case "span":
+              return new Span();
             default:
               return new Heading();
           }
@@ -188,16 +194,21 @@ export default {
         this.editor = new Editor({
           extensions: extensions,
           content: this.editorText,
-          onUpdate: ({ getHTML }) => {
-            this.$emit("input", getHTML());
+          onUpdate: ({ getHTML, getJSON }) => {
+            if (this.type === "json") {
+              this.stagedJson = getJSON();
+              this.$emit("input", getJSON());
+            } else {
+              this.$emit("input", getHTML());
+            }
           }
         });
       }
     }
   },
 
-  mounted() {
-    this.init();
+  created() {
+    this.initEditor();
   },
 
   beforeDestroy() {

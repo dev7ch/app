@@ -250,6 +250,7 @@ export default {
     },
     preparedButtons($val) {
       let btn = $val;
+      // list to exclude exceptional buttons
       let exclude = [
         "image",
         "link",
@@ -264,19 +265,13 @@ export default {
         "iframe"
       ];
 
-      // Drop special buttons from the basic ones
       for (let i = 0; i < exclude.length; i++) {
         btn = btn.filter(e => e !== exclude[i]);
       }
 
       return btn;
     },
-    showImagePrompt(command) {
-      const src = prompt("Enter the url of your image here");
-      if (src !== null) {
-        command({ src });
-      }
-    },
+
     addImageCommand(data) {
       if (data.command !== null && !this.imageUrlRaw) {
         this.editor.commands.image({

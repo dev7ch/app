@@ -55,8 +55,10 @@
           "horizontal_rule": "Horizontal Rule",
           "image": "Image",
           "link": "Link",
+          "iframe": "Iframe",
           "code": "Code",
           "table": "Table",
+          "span": "Span around",
           "code_block": "Code Block",
           "history": "History (undo / redo)"
         }

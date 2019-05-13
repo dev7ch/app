@@ -25,7 +25,7 @@ import mixin from "@directus/extension-toolkit/mixins/interface";
 import { Editor } from "tiptap";
 import EditorContent from "./components/EditorContent";
 import MenuBar from "./components/MenuBar";
-
+import showdown from "showdown";
 import {
   Bold,
   Blockquote,
@@ -57,8 +57,10 @@ export default {
     EditorContent,
     MenuBar
   },
+
   data() {
     return {
+      // set default options of showdown (will override the flavor options)
       editorText: "",
       editorJson: this.options.json_output ? (this.value ? this.value : {}) : null,
       stagedJson: null,
@@ -86,9 +88,22 @@ export default {
         this.editorText = JSON.stringify(this.editorJson);
         this.$emit("input", this.editorText);
       }
+
+      this.convertMarkdown(newVal);
     }
   },
   methods: {
+    convertMarkdown($val) {
+      if ($val) {
+        showdown.setFlavor("github");
+        console.log(showdown.getFlavor());
+        console.log(showdown.getOptions());
+        let converter = new showdown.Converter();
+        this.stagedMarkdown = converter.makeMd($val);
+        console.log(this.stagedMarkdown);
+      }
+    },
+
     updateValue(value) {
       this.editorText = value;
       if (this.editorText !== this.editor.view.dom.innerHTML && !this.$props.options.json_output) {

@@ -106,48 +106,53 @@ export default {
       return $elem.getBoundingClientRect().width
         ? $elem.getBoundingClientRect().width / 2 - 12 + "px"
         : "0";
+    },
+
+    updateObserver: async function() {
+      if (this.$refs.editor.$el && this.editor && !this.observer) {
+        this.observer = new MutationObserver(mutations => {
+          for (const m of mutations) {
+            if (m.type === "attributes" && m.target.localName === "img") {
+              this.selectionPosition = {
+                title: m.target.attributes.title ? m.target.attributes.title.value : "",
+                alt: m.target.attributes.alt ? m.target.attributes.alt.value : "",
+                target: m.target,
+                src: m.target.src,
+                classes: m.target.className.includes("ProseMirror-selectednode")
+                  ? m.target.className.replace(/ProseMirror-selectednode/gi, "")
+                  : m.target.className,
+                height: m.target.height,
+                width: m.target.width
+              };
+              this.showImageEdit = true;
+            } else if (m.type !== "attributes") {
+              this.showImageEdit = false;
+            }
+          }
+        });
+      }
+      await this.$nextTick(function() {
+        // define detached observer for editor default html element
+        if (this.$refs.editor.$el) {
+          this.observer.observe(this.$refs.editor.$el, {
+            nodeList: false,
+            childList: true,
+            subtree: true, // observe deep
+            attributeFilter: ["class"] // filter attributes to observer for better performance
+          });
+        }
+      });
     }
   },
   beforeUpdate() {
-    // creating observer outside of proseMirror context to direct interaction with vue js
-    if (this.$refs.editor.$el && this.editor) {
-      this.observer = new MutationObserver(mutations => {
-        for (const m of mutations) {
-          if (m.type === "attributes" && m.target.localName === "img") {
-            this.selectionPosition = {
-              title: m.target.attributes.title ? m.target.attributes.title.value : "",
-              alt: m.target.attributes.alt ? m.target.attributes.alt.value : "",
-              target: m.target,
-              src: m.target.src,
-              classes: m.target.className.includes("ProseMirror-selectednode")
-                ? m.target.className.replace(/ProseMirror-selectednode/gi, "")
-                : m.target.className,
-              height: m.target.height,
-              width: m.target.width
-            };
-            this.showImageEdit = true;
-          } else if (m.type !== "attributes") {
-            this.showImageEdit = false;
-          }
-        }
-      });
-
-      if (this.showImageEdit) {
-        this.editor.view.dom.onscroll = () => (this.showImageEdit = false);
-      }
+    if (this.showImageEdit) {
+      this.editor.view.dom.onscroll = () => (this.showImageEdit = false);
     }
   },
   mounted() {
     this.$nextTick(function() {
-      // define detached observer for editor default html element
-      if (this.$refs.editor.$el) {
-        this.observer.observe(this.$refs.editor.$el, {
-          nodeList: false,
-          childList: true,
-          subtree: true, // observe deep
-          attributeFilter: ["class"] // filter attributes to observer for better performance
-        });
-      }
+      // creating observer outside of proseMirror context to direct eventListener interaction
+      this.updateObserver();
     });
   },
   beforeDestroy() {
@@ -156,8 +161,8 @@ export default {
     }
   },
   destroyed() {
-    if (this.observer) {
-      this.observer.disconnect();
+    if (this.editor) {
+      this.editor.destroy();
     }
   }
 };

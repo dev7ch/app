@@ -1,0 +1,10 @@
+{
+    "name": "dev7ch/directus-app",
+    "authors": [
+        {
+            "name": "dev7ch",
+            "email": "silvan@dev7.ch"
+        }
+    ],
+    "require": {}
+}

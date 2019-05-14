@@ -1,0 +1,16 @@
+#! /bin/bash
+
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
+if [[ "$BRANCH" == "prod" ]]; then
+  if [[ `git status --porcelain` ]]; then
+    echo 'ERROR! Aborting script.';
+    echo '===> Local branch and upstream prod are not equal';
+    exit 1;
+  else
+    echo 'Starting generation and deployment to PROD stage from prod branch';
+    echo 'Starting deploy to PROD Stage ...';
+    echo '===> prod branch';
+    npm run build && ./vendor/bin/dep deploy prod
+  fi
+fi

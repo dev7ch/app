@@ -50,3 +50,6 @@ typings/
 // Custom extensions
 
 custom/*
+
+/vendor/
+deploy.php

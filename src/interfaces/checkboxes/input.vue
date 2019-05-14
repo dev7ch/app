@@ -1,9 +1,9 @@
 <template>
   <draggable
+    element="div"
     class="interface-checkboxes"
     :class="{ draggable: sortable, single: options.single }"
-    element="div"
-    v-model="sortableList"
+    :model="sortableList"
     v-bind="dragOptions"
     @end="saveSort()"
     :draggable="!sortable ? false : '.sortable-box.active'"
@@ -26,15 +26,10 @@
 
 <script>
 import mixin from "@directus/extension-toolkit/mixins/interface";
-import draggable from "vuedraggable";
 
 export default {
   name: "interface-checkboxes",
   mixins: [mixin],
-
-  components: {
-    draggable
-  },
 
   computed: {
     dragOptions() {

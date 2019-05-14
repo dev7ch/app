@@ -13,7 +13,7 @@
         :id="name"
         :placeholder="options.placeholder || ''"
         :options="selectOptions"
-        :disabled="disabled || readonly"
+        :disabled="readonly"
         :value="valuePK"
         :icon="options.icon"
         @input="$emit('input', $event)"
@@ -75,7 +75,6 @@ import mixin from "@directus/extension-toolkit/mixins/interface";
 export default {
   name: "interface-many-to-one",
   mixins: [mixin],
-  props: ["disabled"],
   data() {
     return {
       loading: false,

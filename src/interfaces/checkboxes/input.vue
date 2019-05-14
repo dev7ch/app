@@ -78,7 +78,7 @@ export default {
       }
       if (selected.length > 0) {
         let _this = this;
-        selected = this.$lodash.map(selected, k => {
+        selected = _.map(selected, k => {
           return {
             val: k,
             label: _this.findLabel(options, k)
@@ -124,7 +124,7 @@ export default {
 
     saveSort() {
       let selection = this.selection;
-      let staged = this.$lodash.map(this.sortableList, function(k) {
+      let staged = _.map(this.sortableList, function(k) {
         return k.val ? k.val : k;
       });
       staged = staged.filter(val => selection.includes(val));

@@ -6,14 +6,16 @@
       :options="options"
       :editor="editor"
       :show-source="rawView"
-      :show-link="linkBubble"
+      :show-link="showLinkBar"
       :toggle-link="toggleLinkBar"
       :toggle-source="showSource"
     />
     <EditorContent
+      :options="options"
       :parent-value="editorText ? editorText : value"
+      :parent-json="editorJson"
       :update-value="updateValue"
-      :raw-view="rawView"
+      :show-source="rawView"
       :editor="editor"
     />
   </div>
@@ -46,7 +48,7 @@ import {
   Underline
 } from "tiptap-extensions";
 
-import { Image } from "./extensions";
+import { Image, Span } from "./extensions";
 
 export default {
   name: "interface-wysiwyg",
@@ -58,9 +60,12 @@ export default {
   data() {
     return {
       editorText: "",
+      editorJson: this.options.json_output ? (this.value ? this.value : {}) : null,
+      stagedJson: null,
+      stagedMarkdown: "",
       editor: null,
       rawView: false,
-      linkBubble: false
+      showLinkBar: false
     };
   },
 
@@ -68,41 +73,70 @@ export default {
     value(newVal) {
       if (newVal && !this.rawView) {
         this.editorText = newVal;
-      } else {
+      } else if (!this.$props.options.json_output) {
+        this.$emit("input", this.editorText);
+      } else if (this.type === "json" && !this.stagedJson) {
+        this.$emit("input", this.editorJson);
+      } else if (this.stagedJson) {
+        this.$emit("input", this.stagedJson);
+      }
+
+      // Allow saving a string in json mode to DB
+      if (this.type === "string" && this.$props.options.json_output) {
+        this.editorText = JSON.stringify(this.editorJson);
         this.$emit("input", this.editorText);
       }
     }
   },
   methods: {
-    // Private property functions
     updateValue(value) {
       this.editorText = value;
-      if (this.editorText !== this.editor.view.dom.innerHTML) {
+      if (this.editorText !== this.editor.view.dom.innerHTML && !this.$props.options.json_output) {
         this.editor.view.dom.innerHTML = value;
+      } else {
+        // Fallback set, is dropping Tip tap History
+        this.editor.setContent(value);
       }
 
-      if (value === "<p><br></p>") {
-        // empty value oon toggle to raw mode
-        this.editorText = "";
-        // stage empty value to save in DB
-        this.$emit("input", "");
-      } else {
-        this.$emit("input", value);
+      if (!this.$props.options.json_output) {
+        // remove empty value on toggle to raw mode
+        if (value === "<p><br></p>" || value === "<p></p>") {
+          this.editorText = "";
+          // stage empty value to save in DB
+          this.$emit("input", "");
+        } else {
+          this.$emit("input", value);
+        }
+        // stage mardown if enabled
+      } else if (this.$props.options.json_output && !this.stagedJson) {
+        try {
+          JSON.parse(value);
+          this.editorJson = JSON.parse(value);
+          this.$emit("input", this.editorJson);
+        } catch (e) {
+          this.$emit("input", value);
+        }
+      } else if (this.stagedJson) {
+        this.$emit("input", this.stagedJson);
       }
     },
+
     toggleLinkBar() {
-      this.linkBubble = !this.linkBubble;
+      this.showLinkBar = !this.showLinkBar;
     },
     showSource() {
-      if (!this.rawView) {
+      if (!this.rawView && !this.$props.options.json_output) {
         this.updateValue(this.editor.view.dom.innerHTML);
-      } else {
+      } else if (!this.editorJson) {
         this.updateValue(this.editorText);
+      } else {
+        this.updateValue(this.editorJson);
       }
+
       return (this.rawView = !this.rawView);
     },
-    // Init editor
-    init() {
+
+    initEditor() {
       const extensions = this.options.extensions
         .map(ext => {
           switch (ext) {
@@ -136,6 +170,8 @@ export default {
               return [new Table(), new TableHeader(), new TableCell(), new TableRow()];
             case "underline":
               return new Underline();
+            case "span":
+              return new Span();
             default:
               return new Heading();
           }
@@ -144,18 +180,35 @@ export default {
         .flat();
 
       this.editorText = this.value ? this.value : "";
-      this.editor = new Editor({
-        extensions: extensions,
-        content: this.editorText,
-        onUpdate: ({ getHTML }) => {
-          this.$emit("input", getHTML());
-        }
-      });
+
+      if (this.options.json_output) {
+        this.editor = new Editor({
+          extensions: extensions,
+          content: this.editorJson,
+          onUpdate: ({ getJSON }) => {
+            this.editorJson = getJSON();
+            this.$emit("input", getJSON());
+          }
+        });
+      } else {
+        this.editor = new Editor({
+          extensions: extensions,
+          content: this.editorText,
+          onUpdate: ({ getHTML, getJSON }) => {
+            if (this.type === "json") {
+              this.stagedJson = getJSON();
+              this.$emit("input", getJSON());
+            } else {
+              this.$emit("input", getHTML());
+            }
+          }
+        });
+      }
     }
   },
 
-  mounted() {
-    this.init();
+  created() {
+    this.initEditor();
   },
 
   beforeDestroy() {

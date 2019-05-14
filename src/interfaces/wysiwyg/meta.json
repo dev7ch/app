@@ -54,6 +54,7 @@
           "link": "Link",
           "code": "Code",
           "table": "Table",
+          "span": "Spo",
           "code_block": "Code Block",
           "history": "History (undo / redo)"
         }
@@ -83,7 +84,10 @@
       "show_history": "Show History",
       "show_history_comment": "Show History in Editor menu toolbar",
       "custom_url": "URL base for images",
-      "custom_url_comment": "Optional custom URL base for images including last '/'"
+      "custom_url_comment": "Optional custom URL base for images including last '/'",
+      "distraction_free_mode": "Distraction Free Mode",
+      "distraction_free_mode_exit": "Exit Fullscreen Mode",
+      "dark_mode": "Dark Mode"
     },
     "fr-FR": {
       "wysiwyg_full": "Editeur avancé de contenu avec présentation « tel écran, tel écrit »",

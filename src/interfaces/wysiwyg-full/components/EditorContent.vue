@@ -1,8 +1,8 @@
 <template>
   <div class="editor-content-wrapper" :class="{ fullscreen: isFullscreen, night: isBlackmode }">
-    <editor-content v-show="!rawView" ref="editor" class="editor-content" :editor="editor" />
+    <editor-content v-show="!showSource" ref="editor" class="editor-content" :editor="editor" />
     <span
-      v-if="showImageEdit && !rawView"
+      v-if="showImageEdit && !showSource"
       class="options-toggler"
       @click="toggleImageEdit"
       :style="{
@@ -19,7 +19,12 @@
       :is-image-edit="editImage"
       :selection-position="selectionPosition"
     />
-    <RawHtmlView v-if="rawView" :value="parentValue" @input="updateValue" />
+    <RawHtmlView
+      v-if="showSource"
+      :value="!!parentJson ? parentJson : parentValue"
+      :options="options"
+      @input="updateValue"
+    />
   </div>
 </template>
 <script>
@@ -32,14 +37,21 @@ export default {
     editor: {
       required: true
     },
-    rawView: {
+    options: {
+      type: [String, Object]
+    },
+    showSource: {
       type: Boolean,
       default: false,
       required: true
     },
     parentValue: {
-      type: String,
-      default: ""
+      type: [String, Object],
+      default: "" || {}
+    },
+    parentJson: {
+      type: [String, Object],
+      default: () => null
     },
     updateValue: {
       type: Function
@@ -94,48 +106,53 @@ export default {
       return $elem.getBoundingClientRect().width
         ? $elem.getBoundingClientRect().width / 2 - 12 + "px"
         : "0";
+    },
+
+    updateObserver: async function() {
+      if (this.$refs.editor.$el && this.editor && !this.observer) {
+        this.observer = new MutationObserver(mutations => {
+          for (const m of mutations) {
+            if (m.type === "attributes" && m.target.localName === "img") {
+              this.selectionPosition = {
+                title: m.target.attributes.title ? m.target.attributes.title.value : "",
+                alt: m.target.attributes.alt ? m.target.attributes.alt.value : "",
+                target: m.target,
+                src: m.target.src,
+                classes: m.target.className.includes("ProseMirror-selectednode")
+                  ? m.target.className.replace(/ProseMirror-selectednode/gi, "")
+                  : m.target.className,
+                height: m.target.height,
+                width: m.target.width
+              };
+              this.showImageEdit = true;
+            } else if (m.type !== "attributes") {
+              this.showImageEdit = false;
+            }
+          }
+        });
+      }
+      await this.$nextTick(function() {
+        // define detached observer for editor default html element
+        if (this.$refs.editor.$el) {
+          this.observer.observe(this.$refs.editor.$el, {
+            nodeList: false,
+            childList: true,
+            subtree: true, // observe deep
+            attributeFilter: ["class"] // filter attributes to observer for better performance
+          });
+        }
+      });
     }
   },
   beforeUpdate() {
-    // creating observer outside of proseMirror context to direct interaction with vue js
-    if (this.$refs.editor.$el && this.editor) {
-      this.observer = new MutationObserver(mutations => {
-        for (const m of mutations) {
-          if (m.type === "attributes" && m.target.localName === "img") {
-            this.selectionPosition = {
-              title: m.target.attributes.title ? m.target.attributes.title.value : "",
-              alt: m.target.attributes.alt ? m.target.attributes.alt.value : "",
-              target: m.target,
-              src: m.target.src,
-              classes: m.target.className.includes("ProseMirror-selectednode")
-                ? m.target.className.replace(/ProseMirror-selectednode/gi, "")
-                : m.target.className,
-              height: m.target.height,
-              width: m.target.width
-            };
-            this.showImageEdit = true;
-          } else if (m.type !== "attributes") {
-            this.showImageEdit = false;
-          }
-        }
-      });
-
-      if (this.showImageEdit) {
-        this.editor.view.dom.onscroll = () => (this.showImageEdit = false);
-      }
+    if (this.showImageEdit) {
+      this.editor.view.dom.onscroll = () => (this.showImageEdit = false);
     }
   },
   mounted() {
     this.$nextTick(function() {
-      // define detached observer for editor default html element
-      if (this.$refs.editor.$el) {
-        this.observer.observe(this.$refs.editor.$el, {
-          nodeList: false,
-          childList: true,
-          subtree: true, // observe deep
-          attributeFilter: ["class"] // filter attributes to observer for better performance
-        });
-      }
+      // creating observer outside of proseMirror context to direct eventListener interaction
+      this.updateObserver();
     });
   },
   beforeDestroy() {
@@ -144,8 +161,8 @@ export default {
     }
   },
   destroyed() {
-    if (this.observer) {
-      this.observer.disconnect();
+    if (this.editor) {
+      this.editor.destroy();
     }
   }
 };
@@ -155,6 +172,8 @@ export default {
 .options-toggler {
   position: absolute;
   cursor: pointer;
+  text-align: center;
+  max-width: 300px;
   z-index: 1;
   transform: translateY(-50%);
   border: var(--input-border-width) solid var(----accent);
@@ -192,6 +211,7 @@ export default {
 <style lang="scss">
 .editor-content-wrapper {
   min-height: 300px;
+  transition: background-color var(--slow) ease-in-out, color var(--fast) ease-in-out;
 
   &.fullscreen {
     min-height: 100vh;
@@ -199,9 +219,10 @@ export default {
     &.night {
       background-color: var(--black);
     }
-
-    > * {
-      margin: auto;
+    .editor-content {
+      //overflow-y: auto;
+      margin-left: auto;
+      margin-right: auto;
       width: 720px;
       max-width: 100%;
     }
@@ -251,19 +272,19 @@ export default {
     }
 
     h1 {
-      font-size: var(--size-1);
+      font-size: calc(var(--size-1) * 2);
     }
 
     h2 {
-      font-size: var(--size-2);
+      font-size: calc(var(--size-2) * 2);
     }
 
     h3 {
-      font-size: var(--size-3);
+      font-size: calc(var(--size-3) * 2);
     }
 
     h4 {
-      font-size: var(--size-4);
+      font-size: calc(var(--size-4) * 2);
     }
 
     p + p {

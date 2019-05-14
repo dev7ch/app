@@ -158,7 +158,7 @@
     }
     .editor__raw {
       .textarea, textarea {
-        transition: background-color .4s ease-in-out, color .3s ease-in-out;
+        transition: background-color var(--slow) ease-in-out, color var(--fast) ease-in-out;
         border: 0;
       }
     }
@@ -174,11 +174,11 @@
         max-width: 780px;
         margin-left: auto;
         margin-right: auto;
-        transition: background-color .4s ease-in-out, color .3s ease-in-out;
+        transition: background-color var(--slow) ease-in-out, color var(--fast) ease-in-out;
       }
       .ProseMirror {
         min-height: inherit;
-        transition: background-color .4s ease-in-out, color .3s ease-in-out;
+        transition: background-color var(--slow) ease-in-out, color var(--fast) ease-in-out;
         border-color: transparent;
       }
     }
@@ -223,7 +223,6 @@
       }
       .ProseMirror {
         border-color: transparent;
-        background-color: var(--black);
       }
       .options {
         i {

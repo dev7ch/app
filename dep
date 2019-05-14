@@ -16,7 +16,7 @@ if [[ "$BRANCH" == "prod" ]]; then
     mv ./public/config_example.js ./public/config.js
 
     echo 'Use example_config.js as config ...';
-    echo '===> prod branch';
+    echo '===> example config renamed and used as deployed config';
 
     npm run build && ./vendor/bin/dep deploy prod
     mv ./public/config.js ./public/config_example.js

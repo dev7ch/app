@@ -11,6 +11,15 @@ if [[ "$BRANCH" == "prod" ]]; then
     echo 'Starting generation and deployment to PROD stage from prod branch';
     echo 'Starting deploy to PROD Stage ...';
     echo '===> prod branch';
+
+    mv ./public/config.js ./public/config.js.dis
+    mv ./public/config_example.js ./public/config.js
+
+    echo 'Use example_config.js as config ...';
+    echo '===> prod branch';
+
     npm run build && ./vendor/bin/dep deploy prod
+    mv ./public/config.js ./public/config_example.js
+    mv ./public/config.js.dis ./public/config.js
   fi
 fi

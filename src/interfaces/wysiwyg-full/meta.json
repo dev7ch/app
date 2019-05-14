@@ -13,19 +13,25 @@
       "interface": "text-input",
       "length": 200
     },
-    "json_output": {
-      "name": "$t:json_output",
-      "comment": "$t:json_output_comment",
-      "interface": "toggle",
-      "type": "BOOLEAN",
-      "default": false
+    "save_output": {
+      "name": "$t:save_output",
+      "comment": "$t:save_output_comment",
+      "interface": "dropdown",
+      "default": "html",
+      "options": {
+        "choices": {
+          "html": "$t:save_html",
+          "json": "$t:save_json",
+          "md": "$t:save_md"
+        }
+      }
     },
     "table_header": {
       "name": "$t:table_header",
       "comment": "$t:table_header_comment",
       "interface": "toggle",
       "type": "BOOLEAN",
-      "default": false
+      "default": "html"
     },
     "extensions": {
       "name": "Extensions",
@@ -70,8 +76,11 @@
       "wysiwyg_full": "Advanced WYSIWYG",
       "placeholder": "Placeholder",
       "placeholder_comment": "Enter placeholder text",
-      "json_output": "Save as JSON",
-      "json_output_comment": "Saves input as JSON, instead of HTML (Keep in mind to change the Schema type too)",
+      "save_output": "Editor Format Mode",
+      "save_output_comment": "Saves value to different types",
+      "save_json": "Save as JSON",
+      "save_md": "Save as JSON",
+      "save_html": "Save as HTML",
       "link_add": "Click to add Link",
       "link_edit": "Edit Link",
       "link_info": "Type link and hit enter ...",

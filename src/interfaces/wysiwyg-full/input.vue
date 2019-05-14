@@ -62,7 +62,7 @@ export default {
     return {
       // set default options of showdown (will override the flavor options)
       editorText: "",
-      editorJson: this.options.json_output ? (this.value ? this.value : {}) : null,
+      editorJson: this.options.save_output === "json" ? (this.value ? this.value : {}) : null,
       stagedJson: null,
       stagedMarkdown: "",
       editor: null,
@@ -75,7 +75,7 @@ export default {
     value(newVal) {
       if (newVal && !this.rawView) {
         this.editorText = newVal;
-      } else if (!this.$props.options.json_output) {
+      } else if (this.$props.options.save_output !== "json") {
         this.$emit("input", this.editorText);
       } else if (this.type === "json" && !this.stagedJson) {
         this.$emit("input", this.editorJson);
@@ -84,7 +84,7 @@ export default {
       }
 
       // Allow saving a string in json mode to DB
-      if (this.type === "string" && this.$props.options.json_output) {
+      if (this.type === "string" && this.$props.options.save_output === "json") {
         this.editorText = JSON.stringify(this.editorJson);
         this.$emit("input", this.editorText);
       }
@@ -99,21 +99,33 @@ export default {
         console.log(showdown.getFlavor());
         console.log(showdown.getOptions());
         let converter = new showdown.Converter();
-        this.stagedMarkdown = converter.makeMd($val);
-        console.log(this.stagedMarkdown);
+        return (this.stagedMarkdown = converter.makeMd($val));
+        //console.log(this.stagedMarkdown);
+      }
+    },
+
+    convertHtml($val) {
+      if ($val) {
+        console.log(showdown.getFlavor());
+        console.log(showdown.getOptions());
+        let converter = new showdown.Converter();
+        return converter.makeHtml($val);
       }
     },
 
     updateValue(value) {
       this.editorText = value;
-      if (this.editorText !== this.editor.view.dom.innerHTML && !this.$props.options.json_output) {
+      if (
+        this.editorText !== this.editor.view.dom.innerHTML &&
+        this.$props.options.save_output !== "json"
+      ) {
         this.editor.view.dom.innerHTML = value;
       } else {
         // Fallback set, is dropping Tip tap History
         this.editor.setContent(value);
       }
 
-      if (!this.$props.options.json_output) {
+      if (this.$props.options.save_output !== "json") {
         // remove empty value on toggle to raw mode
         if (value === "<p><br></p>" || value === "<p></p>") {
           this.editorText = "";
@@ -122,8 +134,8 @@ export default {
         } else {
           this.$emit("input", value);
         }
-        // stage mardown if enabled
-      } else if (this.$props.options.json_output && !this.stagedJson) {
+        // stage markdown if enabled
+      } else if (this.$props.options.save_output === "json" && !this.stagedJson) {
         try {
           JSON.parse(value);
           this.editorJson = JSON.parse(value);
@@ -140,7 +152,7 @@ export default {
       this.showLinkBar = !this.showLinkBar;
     },
     showSource() {
-      if (!this.rawView && !this.$props.options.json_output) {
+      if (!this.rawView && this.$props.options.save_output !== "json") {
         this.updateValue(this.editor.view.dom.innerHTML);
       } else if (!this.editorJson) {
         this.updateValue(this.editorText);
@@ -196,7 +208,7 @@ export default {
 
       this.editorText = this.value ? this.value : "";
 
-      if (this.options.json_output) {
+      if (this.options.save_output === "json") {
         this.editor = new Editor({
           extensions: extensions,
           content: this.editorJson,
@@ -213,6 +225,9 @@ export default {
             if (this.type === "json") {
               this.stagedJson = getJSON();
               this.$emit("input", getJSON());
+            } else if (this.options.save_output === "md") {
+              //this.stagedMarkdown = this.convertMarkdown(getHTML()),
+              this.$emit("input", this.stagedMarkdown);
             } else {
               this.$emit("input", getHTML());
             }
@@ -222,7 +237,7 @@ export default {
     }
   },
 
-  created() {
+  beforeMount() {
     this.initEditor();
   },
 

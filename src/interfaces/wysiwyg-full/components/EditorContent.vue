@@ -109,7 +109,7 @@ export default {
     },
 
     updateObserver: async function() {
-      if (this.$refs.editor.$el && this.editor && !this.observer) {
+      if (this.$refs.editor.$el && this.editor) {
         this.observer = new MutationObserver(mutations => {
           for (const m of mutations) {
             if (m.type === "attributes" && m.target.localName === "img") {

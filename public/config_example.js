@@ -9,8 +9,9 @@
       "https://d7api.campusderkuenste.ch/llad/" : "LLAD",
       "https://d7api.campusderkuenste.ch/iid/" : "IID",
       "https://hgk.dev7.ch/act/" : "ACT Test",
-      "https://demo-api.directus.app/_/": "Directus Demo API",
-      "https://d7api.campusderkuenste.ch/_/" : "Testumgebung"
+      "https://d7api.campusderkuenste.ch/cdk/" : "CDK",
+      "https://d7api.campusderkuenste.ch/_/" : "Testumgebung",
+      "https://demo-api.directus.app/_/": "Directus Demo API"
     },
 
     // Allow the user to connect to any API by entering a URL in a text field

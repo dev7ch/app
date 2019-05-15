@@ -113,17 +113,23 @@ export default {
           // stage empty value to save in DB
           this.$emit("input", "");
         } else {
+          if (this.type === "json" && this.$props.options.output_format !== "json") {
+            // Override Json output for raw view mode in HTML mode
+            this.editorJson = value;
+          }
           this.$emit("input", value);
         }
-      } else if (this.$props.options.output_format === "json" && !this.stagedJson) {
-        try {
-          this.editorJson = JSON.parse(value);
-          this.$emit("input", this.editorJson);
-        } catch (e) {
-          this.$emit("input", value);
+      } else if (this.$props.options.output_format === "json") {
+        if (!this.stagedJson) {
+          try {
+            this.editorJson = JSON.parse(value);
+            this.$emit("input", this.editorJson);
+          } catch (e) {
+            this.$emit("input", value);
+          }
+        } else if (this.stagedJson) {
+          this.$emit("input", this.stagedJson);
         }
-      } else if (this.stagedJson) {
-        this.$emit("input", this.stagedJson);
       }
     },
 
@@ -201,12 +207,9 @@ export default {
           extensions: extensions,
           content: this.editorText,
           onUpdate: ({ getHTML, getJSON }) => {
-            if (this.type === "json") {
-              this.stagedJson = getJSON();
-              this.$emit("input", getJSON());
-            } else {
-              this.$emit("input", getHTML());
-            }
+            this.stagedJson = getJSON();
+            //this.$emit("input", getJSON());
+            this.$emit("input", getHTML());
           }
         });
       }

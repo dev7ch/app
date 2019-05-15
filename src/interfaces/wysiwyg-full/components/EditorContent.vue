@@ -21,6 +21,7 @@
     />
     <RawHtmlView
       v-if="showSource"
+      :type="type"
       :value="!!parentJson ? parentJson : parentValue"
       :options="options"
       @input="updateValue"
@@ -39,6 +40,9 @@ export default {
     },
     options: {
       type: [String, Object]
+    },
+    type: {
+      type: String
     },
     showSource: {
       type: Boolean,
@@ -142,6 +146,10 @@ export default {
           });
         }
       });
+
+      if (this.showImageEdit) {
+        this.editor.view.dom.onscroll = () => (this.showImageEdit = false);
+      }
     }
   },
   beforeUpdate() {

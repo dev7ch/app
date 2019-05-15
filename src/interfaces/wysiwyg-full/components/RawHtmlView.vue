@@ -2,7 +2,7 @@
   <codemirror
     v-if="options"
     class="code-editor"
-    :value="options.output_format === 'json' ? JSON.stringify(value, null, 1) : value"
+    :value="options.output_format === 'json' ? JSON.stringify(value, null, 2) : value"
     @input="$emit('input', $event)"
     :options="options.output_format === 'json' ? jsonOptions : cmOptions"
     ref="codeMirror"
@@ -26,6 +26,9 @@ export default {
     },
     options: {
       type: [String, Object]
+    },
+    type: {
+      type: String
     }
   },
   data() {

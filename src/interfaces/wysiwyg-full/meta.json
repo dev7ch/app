@@ -25,16 +25,16 @@
         }
       }
     },
-    "json_output": {
-      "name": "$t:json_output",
-      "comment": "$t:json_output_comment",
+    "table_header": {
+      "name": "$t:table_header",
+      "comment": "$t:table_header_comment",
       "interface": "toggle",
       "type": "BOOLEAN",
       "default": false
     },
-    "table_header": {
-      "name": "$t:table_header",
-      "comment": "$t:table_header_comment",
+    "raw_default": {
+      "name": "$t:raw_default",
+      "comment": "$t:raw_default_comment",
       "interface": "toggle",
       "type": "BOOLEAN",
       "default": false
@@ -100,7 +100,8 @@
       "table_header_comment": "Enable headers for tables by default",
       "distraction_free_mode": "Distraction Free Mode",
       "distraction_free_mode_exit": "Exit Fullscreen Mode",
-      "output_format": "Editor Mode and Saving Format",
+      "raw_default": "Raw view as Default",
+      "output_format": "View Mode and Saving Format",
       "output_format_comment": "Select Editor mode and the format to save in DB, keep in mind the schema type of the field as well on change. Be very carefully if your field is not empty!",
       "output_html": "Save as HTML",
       "output_json": "Save as JSON",

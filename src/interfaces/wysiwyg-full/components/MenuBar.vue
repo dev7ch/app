@@ -24,8 +24,8 @@
         <MenuButton
           v-if="optionsInclude('link')"
           :order-index="optionsIndex('link')"
-          icon="link"
           :command="setLink"
+          name="link"
           :active-condition="showLink || isActive.link()"
           :disabled="showSource"
           v-tooltip.bottom="$t('editor.link')"
@@ -33,7 +33,7 @@
         <MenuButton
           v-if="optionsInclude('image')"
           :order-index="optionsIndex('image')"
-          icon="image"
+          name="image"
           :command="() => (chooseImage = !chooseImage)"
           :active-condition="chooseImage"
           :disabled="showSource"

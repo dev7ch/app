@@ -13,16 +13,28 @@
       "interface": "text-input",
       "length": 200
     },
-    "json_output": {
-      "name": "$t:json_output",
-      "comment": "$t:json_output_comment",
-      "interface": "toggle",
-      "type": "BOOLEAN",
-      "default": false
+    "output_format": {
+      "name": "$t:output_format",
+      "comment": "$t:output_format_comment",
+      "interface": "dropdown",
+      "default": "html",
+      "options": {
+        "choices": {
+          "html": "$t:output_html",
+          "json": "$t:output_json"
+        }
+      }
     },
     "table_header": {
       "name": "$t:table_header",
       "comment": "$t:table_header_comment",
+      "interface": "toggle",
+      "type": "BOOLEAN",
+      "default": false
+    },
+    "raw_default": {
+      "name": "$t:raw_default",
+      "comment": "$t:raw_default_comment",
       "interface": "toggle",
       "type": "BOOLEAN",
       "default": false
@@ -58,7 +70,7 @@
           "iframe": "Iframe",
           "code": "Code",
           "table": "Table",
-          "span": "Span around",
+          "span": "Span Tag",
           "code_block": "Code Block",
           "history": "History (undo / redo)"
         }
@@ -70,8 +82,6 @@
       "wysiwyg_full": "Advanced WYSIWYG",
       "placeholder": "Placeholder",
       "placeholder_comment": "Enter placeholder text",
-      "json_output": "Save as JSON",
-      "json_output_comment": "Saves input as JSON, instead of HTML (Keep in mind to change the Schema type too)",
       "link_add": "Click to add Link",
       "link_edit": "Edit Link",
       "link_info": "Type link and hit enter ...",
@@ -89,7 +99,13 @@
       "table_header": "Table Headers",
       "table_header_comment": "Enable headers for tables by default",
       "distraction_free_mode": "Distraction Free Mode",
-      "distraction_free_mode_exit": "Exit Fullscreen Mode"
+      "distraction_free_mode_exit": "Exit Fullscreen Mode",
+      "raw_default": "Raw view as Default",
+      "output_format": "View Mode and Saving Format",
+      "output_format_comment": "Select Editor mode and the format to save in DB, keep in mind the schema type of the field as well on change. Be very carefully if your field is not empty!",
+      "output_html": "Save as HTML",
+      "output_json": "Save as JSON",
+      "output_md": "Save as Markdown"
     },
 	"fr-FR": {
       "wysiwyg_full": "Editeur avancé de contenu avec présentation « tel écran, tel écrit »",

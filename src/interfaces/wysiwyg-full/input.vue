@@ -12,7 +12,7 @@
     />
     <EditorContent
       :options="options"
-      :parent-value="editorText ? editorText : value"
+      :parent-value="editorText"
       :parent-json="editorJson"
       :update-value="updateValue"
       :show-source="rawView"
@@ -192,6 +192,12 @@ export default {
         .flat();
 
       this.editorText = this.value ? this.value : "";
+
+      if (this.type === "string" && this.options.output_format === "json") {
+        if (JSON.parse(this.editorText)) {
+          this.editorJson = JSON.parse(this.editorText);
+        }
+      }
 
       if (this.$props.options.output_format === "json") {
         this.editor = new Editor({

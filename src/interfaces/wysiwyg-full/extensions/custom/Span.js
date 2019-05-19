@@ -1,5 +1,5 @@
 import { Mark } from "tiptap";
-import { updateMark, markInputRule } from "tiptap-commands";
+import { markInputRule, toggleMark } from "tiptap-commands";
 
 export default class Span extends Mark {
   get name() {
@@ -35,7 +35,7 @@ export default class Span extends Mark {
   }
 
   commands({ type }) {
-    return () => updateMark(type);
+    return () => toggleMark(type);
   }
 
   inputRules({ type }) {

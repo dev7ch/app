@@ -192,7 +192,6 @@ export default {
         .flat();
 
       this.editorText = this.value ? this.value : "";
-
       if (this.type === "string" && this.options.output_format === "json") {
         if (JSON.parse(this.editorText)) {
           this.editorJson = JSON.parse(this.editorText);

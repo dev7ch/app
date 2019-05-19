@@ -96,10 +96,8 @@ export default {
   },
   methods: {
     updateValue(value) {
-      if (
-        value !== this.editor.view.dom.innerHTML &&
-        this.$props.options.output_format !== "json"
-      ) {
+      if (value !== this.editorText && this.$props.options.output_format !== "json") {
+        this.editorText = value;
         this.editor.view.dom.innerHTML = value;
       } else {
         // Fallback set, is dropping Tip tap History

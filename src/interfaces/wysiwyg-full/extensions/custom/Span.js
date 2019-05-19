@@ -1,7 +1,7 @@
-import { Node } from "tiptap";
-import { toggleBlockType, textblockTypeInputRule } from "tiptap-commands";
+import { Mark } from "tiptap";
+import { updateMark, markInputRule } from "tiptap-commands";
 
-export default class Span extends Node {
+export default class Span extends Mark {
   get name() {
     return "span";
   }
@@ -16,9 +16,10 @@ export default class Span extends Node {
           default: null
         }
       },
+      inline: true,
+      inclusive: true,
+      editable: true,
       content: "text*",
-      group: "block",
-      draggable: false,
       parseDOM: [
         {
           tag: "span",
@@ -29,21 +30,15 @@ export default class Span extends Node {
         }
       ],
 
-      toDOM: node => [
-        "span",
-        {
-          class: node.attrs.class,
-          style: node.attrs.style
-        },
-        ["p", 0]
-      ]
+      toDOM: mark => ["span", mark.attrs, 0]
     };
   }
+
   commands({ type }) {
-    return () => toggleBlockType(type);
+    return () => updateMark(type);
   }
 
   inputRules({ type }) {
-    return [textblockTypeInputRule(/^<span>$/, type)];
+    return [markInputRule(/^<span>(.*)<\/$/, type)];
   }
 }

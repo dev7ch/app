@@ -131,7 +131,7 @@ export default {
       if (value !== this.editorText && this.options.output_format !== "json") {
         this.editorText = value;
         this.editor.view.dom.innerHTML = value;
-      } else {
+      } else if (value) {
         //Fallback set, is dropping Tip tap History
         this.editor.setContent(value);
       }

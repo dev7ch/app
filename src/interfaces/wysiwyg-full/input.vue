@@ -75,7 +75,7 @@ export default {
       if (newVal && !this.rawView) {
         this.editorText = newVal;
       } else if (this.$props.options.output_format !== "json" && this.type === "string") {
-        this.$emit("input", this.editorText);
+        this.$emit("input", this.editorText ? this.editorText : newVal);
       } else if (this.type === "json" && !this.stagedJson) {
         this.$emit("input", this.editorJson);
       } else if (this.stagedJson && this.type === "json") {
@@ -99,7 +99,7 @@ export default {
       if (value !== this.editorText && this.$props.options.output_format !== "json") {
         this.editorText = value;
         this.editor.view.dom.innerHTML = value;
-      } else {
+      } else if (value) {
         // Fallback set, is dropping Tip tap History
         this.editor.setContent(value);
       }
@@ -110,13 +110,13 @@ export default {
           this.editorText = "";
           // stage empty value to save in DB
           this.$emit("input", "");
-        } else {
-          if (this.type === "json" && this.$props.options.output_format !== "json") {
-            // Override Json output for raw view mode in HTML mode
-            this.editorJson = value;
-          }
-          this.$emit("input", value);
         }
+
+        if (this.type === "json" && this.$props.options.output_format !== "json") {
+          // Override Json output for raw view mode in HTML mode
+          this.editorJson = value;
+        }
+        //this.$emit("input", value);
       } else if (this.$props.options.output_format === "json") {
         if (!this.stagedJson) {
           try {
@@ -143,6 +143,7 @@ export default {
       } else {
         this.updateValue(this.editorJson);
       }
+
       return (this.rawView = !this.rawView);
     },
 
@@ -190,6 +191,7 @@ export default {
         .flat();
 
       this.editorText = this.value ? this.value : "";
+
       if (this.type === "string" && this.options.output_format === "json") {
         if (JSON.parse(this.editorText)) {
           this.editorJson = JSON.parse(this.editorText);
@@ -211,8 +213,11 @@ export default {
           content: this.editorText,
           onUpdate: ({ getHTML, getJSON }) => {
             this.stagedJson = getJSON();
-            //this.$emit("input", getJSON());
-            this.$emit("input", getHTML());
+            if (this.type === "json") {
+              this.$emit("input", this.stagedJson);
+            } else {
+              this.$emit("input", getHTML());
+            }
           }
         });
       }

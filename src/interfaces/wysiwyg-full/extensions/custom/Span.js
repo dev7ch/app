@@ -39,6 +39,6 @@ export default class Span extends Mark {
   }
 
   inputRules({ type }) {
-    return [markInputRule(/^<span>(.*)<\/$/, type)];
+    return [markInputRule(/^<span>(.*)<$/, type)];
   }
 }

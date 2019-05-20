@@ -74,23 +74,22 @@ export default {
     value(newVal) {
       if (newVal && !this.rawView) {
         this.editorText = newVal;
-      } else if (this.$props.options.output_format !== "json" && this.type === "string") {
-        this.$emit("input", this.editorText ? this.editorText : newVal);
-      } else if (this.type === "json" && !this.stagedJson) {
-        this.$emit("input", this.editorJson);
-      } else if (this.stagedJson && this.type === "json") {
-        this.$emit("input", this.stagedJson);
       }
 
       // Saving a string schema when json mode is active
-      if (this.type === "string" && this.$props.options.output_format === "json") {
+      if (
+        this.type === "string" &&
+        this.$props.options.output_format === "json" &&
+        this.editorJson
+      ) {
         this.editorText = JSON.stringify(this.editorJson);
         this.$emit("input", this.editorText);
       }
 
-      // Saving in json schema when html mode is active
-      if (this.type === "json" && this.$props.options.output_format !== "json") {
-        this.$emit("input", this.stagedJson);
+      if (this.rawView) {
+        if (this.$props.options.output_format !== "json" && this.type === "string") {
+          this.$emit("input", this.editorText ? this.editorText : newVal);
+        }
       }
     }
   },
@@ -116,10 +115,10 @@ export default {
           // Override Json output for raw view mode in HTML mode
           this.editorJson = value;
         }
-        //this.$emit("input", value);
       } else if (this.$props.options.output_format === "json") {
         if (!this.stagedJson) {
           try {
+            JSON.parse(value);
             this.editorJson = JSON.parse(value);
             this.$emit("input", this.editorJson);
           } catch (e) {
@@ -192,12 +191,32 @@ export default {
 
       this.editorText = this.value ? this.value : "";
 
-      if (this.type === "string" && this.options.output_format === "json") {
-        if (JSON.parse(this.editorText)) {
-          this.editorJson = JSON.parse(this.editorText);
+      // Handle raw json data in for string schema type
+      let stringifiedJson = null;
+      if (this.type === "string" && this.editorText !== "") {
+        if (this.options.output_format === "json") {
+          try {
+            JSON.parse(this.editorText);
+            this.editorJson = JSON.parse(this.editorText);
+          } catch (e) {
+            console.warn(
+              "Could not Parse JSON to HTML. Your field schema doesn`t match the editor mode. "
+            );
+          }
+        } else if (this.options.output_format === "html") {
+          try {
+            JSON.parse(this.editorText);
+            stringifiedJson = JSON.parse(this.editorText);
+            console.log(stringifiedJson);
+          } catch (e) {
+            console.warn(
+              "Could not read from stringified  JSON to HTML. Your field schema doesn`t match the editor mode. "
+            );
+          }
         }
       }
 
+      // Create Editor (2 Types)
       if (this.$props.options.output_format === "json") {
         this.editor = new Editor({
           extensions: extensions,
@@ -210,7 +229,7 @@ export default {
       } else {
         this.editor = new Editor({
           extensions: extensions,
-          content: this.editorText,
+          content: stringifiedJson ? stringifiedJson : this.editorText,
           onUpdate: ({ getHTML, getJSON }) => {
             this.stagedJson = getJSON();
             if (this.type === "json") {
@@ -224,7 +243,7 @@ export default {
     }
   },
 
-  created() {
+  mounted() {
     this.initEditor();
   },
 

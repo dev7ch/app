@@ -77,10 +77,7 @@
       "formatting": "Affchage du texte",
       "formatting_comment": "Affiche les valeurs selon un format donné",
       "display_text": "Texte affiché",
-      "value": "Valeur",
-      "option": "Option",
-      "single": "Single Column",
-      "single_comment": "Display checkboxes in single column"
+      "value": "Valeur"
     }
   }
 }

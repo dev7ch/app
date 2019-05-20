@@ -49,6 +49,7 @@ import {
 } from "tiptap-extensions";
 
 import { Image, Span } from "./extensions";
+import showdown from "showdown";
 
 export default {
   name: "interface-wysiwyg",
@@ -76,24 +77,45 @@ export default {
         this.editorText = newVal;
       }
 
-      // Saving a string schema when json mode is active
-      if (
-        this.type === "string" &&
-        this.$props.options.output_format === "json" &&
-        this.editorJson
-      ) {
-        this.editorText = JSON.stringify(this.editorJson);
-        this.$emit("input", this.editorText);
+      if (this.type === "string") {
+        // Saving a string schema when json mode is active
+        if (this.$props.options.output_format === "json" && this.editorJson) {
+          this.editorText = JSON.stringify(this.editorJson);
+          this.$emit("input", this.editorText);
+        }
       }
 
       if (this.rawView) {
         if (this.$props.options.output_format !== "json" && this.type === "string") {
-          this.$emit("input", this.editorText ? this.editorText : newVal);
+          if (this.$props.options.output_format === "md") {
+            this.$emit("input", this.stagedMarkdown);
+          } else {
+            this.$emit("input", this.editorText ? this.editorText : newVal);
+          }
         }
       }
     }
   },
   methods: {
+    convertMarkdown($val) {
+      if ($val) {
+        showdown.setFlavor("github");
+        let converter = new showdown.Converter({
+          tables: false,
+          strikethrough: true,
+          backslashEscapesHTMLTags: false,
+          emoji: true
+        });
+        this.stagedMarkdown = converter.makeMd($val);
+      }
+    },
+    convertHtml($val) {
+      if ($val) {
+        let converter = new showdown.Converter();
+        return converter.makeHtml($val);
+      }
+    },
+
     updateValue(value) {
       if (value !== this.editorText && this.$props.options.output_format !== "json") {
         this.editorText = value;
@@ -103,7 +125,7 @@ export default {
         this.editor.setContent(value);
       }
 
-      if (this.$props.options.output_format !== "json") {
+      if (this.options.output_format === "string") {
         // remove empty value on toggle to raw mode
         if (value === "<p><br></p>" || value === "<p></p>") {
           this.editorText = "";
@@ -115,7 +137,7 @@ export default {
           // Override Json output for raw view mode in HTML mode
           this.editorJson = value;
         }
-      } else if (this.$props.options.output_format === "json") {
+      } else if (this.options.output_format === "json") {
         if (!this.stagedJson) {
           try {
             JSON.parse(value);
@@ -205,14 +227,25 @@ export default {
           }
         } else if (this.options.output_format === "html") {
           try {
+            // try to convert JSON back to html, previously stored in md JSON mode
             JSON.parse(this.value);
             stringifiedJson = JSON.parse(this.value);
-          } catch (e) {}
+          } catch (e) {
+            // try to convert markdown back to html, previously stored in MD mode
+            try {
+              stringifiedJson = null;
+              this.editorText = this.convertHtml(this.value);
+            } catch (e) {
+              console.warn("Could not Parse JSON or Markdown.");
+            }
+          }
+        } else if (this.options.output_format === "md") {
+          stringifiedJson = null;
+          this.editorText = this.convertHtml(this.editorText);
         }
       }
-
-      // Create Editor
-      if (this.$props.options.output_format === "json") {
+      if (this.options.output_format === "json") {
+        // Create Editor for JSON mode
         this.editor = new Editor({
           extensions: extensions,
           content: this.editorJson,
@@ -222,6 +255,7 @@ export default {
           }
         });
       } else {
+        // Create Editor for other Modes
         this.editor = new Editor({
           extensions: extensions,
           content: stringifiedJson ? stringifiedJson : this.editorText,
@@ -230,7 +264,12 @@ export default {
             if (this.type === "json") {
               this.$emit("input", this.stagedJson);
             } else {
-              this.$emit("input", getHTML());
+              if (this.options.output_format === "md") {
+                this.convertMarkdown(getHTML());
+                this.$emit("input", this.stagedMarkdown);
+              } else {
+                this.$emit("input", getHTML());
+              }
             }
           }
         });

@@ -71,16 +71,25 @@ export default {
           label: options[k]
         }));
       }
-      if (selected) {
-        let __this = this;
+      if (selected.length > 0) {
+        let app = this;
         selected = _.map(selected, k => {
           return {
             val: k,
-            label: __this.findLabel(options, k)
+            label: app.findLabel(options, k)
           };
         });
       }
-      return [...selected, ...options];
+
+      let combined = [];
+
+      if (selected[0].val === null || selected[0].val === "") {
+        combined = [...options];
+      } else {
+        combined = [...selected, ...options];
+      }
+
+      return combined;
     }
   },
 
@@ -142,7 +151,7 @@ export default {
         } else {
           return choice.find(x => x.val === k);
         }
-      } else {
+      } else if (k !== null) {
         // return key if no label was found
         return k;
       }

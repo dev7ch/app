@@ -193,11 +193,11 @@ export default {
 
       // Handle raw json data in for string schema type
       let stringifiedJson = null;
-      if (this.type === "string" && this.editorText !== "") {
+      if (this.type === "string" && this.value) {
         if (this.options.output_format === "json") {
           try {
             JSON.parse(this.editorText);
-            this.editorJson = JSON.parse(this.editorText);
+            this.editorJson = JSON.parse(this.value);
           } catch (e) {
             console.warn(
               "Could not Parse JSON to HTML. Your field schema doesn`t match the editor mode. "
@@ -205,18 +205,13 @@ export default {
           }
         } else if (this.options.output_format === "html") {
           try {
-            JSON.parse(this.editorText);
-            stringifiedJson = JSON.parse(this.editorText);
-            console.log(stringifiedJson);
-          } catch (e) {
-            console.warn(
-              "Could not read from stringified  JSON to HTML. Your field schema doesn`t match the editor mode. "
-            );
-          }
+            JSON.parse(this.value);
+            stringifiedJson = JSON.parse(this.value);
+          } catch (e) {}
         }
       }
 
-      // Create Editor (2 Types)
+      // Create Editor
       if (this.$props.options.output_format === "json") {
         this.editor = new Editor({
           extensions: extensions,

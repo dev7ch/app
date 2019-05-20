@@ -209,19 +209,13 @@ export default {
     cursor: grab;
   }
 }
+</style>
 
-// These classes are added dynamically and aren't targetted by Vue
-// TODO make these styles inline or global
-.ghost.sortable-chosen {
+<style lang="scss">
+// The styles for the 'drop-preview' eg the ghost item that shifts around in the list to show
+// the user where the item is going to be dropped
+// NOTE: this class is added dynamically and can't be scoped in the style block above
+.ghost {
   opacity: 0.4;
-
-  & + .sortable-box.active {
-    opacity: 0.7;
-    color: var(--dark-gray);
-  }
-
-  &:after {
-    color: var(--dark-gray);
-  }
 }
 </style>

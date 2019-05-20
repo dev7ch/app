@@ -3,7 +3,7 @@
     element="div"
     class="interface-checkboxes"
     :class="{ draggable: sortable, single: options.single }"
-    :model="sortableList"
+    v-model="sortableList"
     v-bind="dragOptions"
     @end="saveSort()"
     :draggable="!sortable ? false : '.sortable-box.active'"
@@ -41,7 +41,7 @@ export default {
     },
 
     sortable() {
-      return this.$props.options.draggable;
+      return this.options.draggable;
     },
     selection() {
       if (this.value == null) return [];
@@ -63,7 +63,7 @@ export default {
       return selection;
     },
     choosable() {
-      let options = this.$props.options.choices ? this.$props.options.choices : {};
+      let options = this.options.choices ? this.options.choices : {};
       let selected = this.selection ? this.selection : [];
       if (typeof options === "object") {
         options = Object.keys(options).map(k => ({
@@ -71,16 +71,15 @@ export default {
           label: options[k]
         }));
       }
-      if (selected.length > 0) {
-        let _this = this;
+      if (selected) {
+        let __this = this;
         selected = _.map(selected, k => {
           return {
             val: k,
-            label: _this.findLabel(options, k)
+            label: __this.findLabel(options, k)
           };
         });
       }
-
       return [...selected, ...options];
     }
   },
@@ -101,9 +100,10 @@ export default {
       let selection = [...this.selection];
       if (selection.includes(val)) {
         selection.splice(selection.indexOf(val), 1);
-      } else if (val) {
+      } else {
         selection.push(val);
       }
+
       selection = selection.join(",");
 
       if (this.options.wrap && selection.length > 0) {

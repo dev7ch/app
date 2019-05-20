@@ -49,6 +49,7 @@
         "bullet_list", "ordered_list", "table", "history"
       ],
       "options": {
+        "draggable": true,
         "choices": {
           "paragraph": "Paragraph",
           "h1": "Heading 1",

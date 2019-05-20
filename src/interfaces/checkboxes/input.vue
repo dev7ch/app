@@ -178,47 +178,50 @@ export default {
   @media only screen and (min-width: 800px) {
     grid-template-columns: repeat(4, 1fr);
   }
+}
 
-  &.single {
-    grid-template-columns: repeat(1, 1fr);
+.single {
+  grid-template-columns: repeat(1, 1fr);
+}
+
+.sortable-box {
+  position: relative;
+  transition: opacity var(--medium) var(--transition),
+    background-color var(--slow) var(--transition);
+}
+
+.active {
+  margin-left: 12px; // To make space to show the drag handle
+
+  :after {
+    position: absolute;
+    font-family: "Material Icons", sans-serif;
+    display: inline-block;
+    line-height: 1;
+    letter-spacing: normal;
+    vertical-align: middle;
+    content: "drag_indicator";
+    height: 100%;
+    width: 24px;
+    font-size: 24px;
+    left: -20px;
+    color: var(--lighter-gray);
+    cursor: grab;
   }
-  &.draggable {
-    max-width: 100%;
-    .sortable-box {
-      position: relative;
-      transition: opacity var(--medium) var(--transition),
-        background-color var(--slow) var(--transition);
-      &.active {
-        &.ghost {
-          &.sortable-chosen {
-            opacity: 0.4;
-            + .sortable-box.active {
-              opacity: 0.7;
-              color: var(--dark-gray);
-            }
+}
 
-            &:after {
-              color: var(--dark-gray);
-            }
-          }
-        }
-        margin-left: 12px;
-        :after {
-          position: absolute;
-          font-family: "Material Icons", sans-serif;
-          display: inline-block;
-          line-height: 1;
-          letter-spacing: normal;
-          vertical-align: middle;
-          content: "drag_indicator";
-          height: 100%;
-          width: 24px;
-          font-size: 24px;
-          left: -20px;
-          color: var(--lighter-gray);
-        }
-      }
-    }
+// These classes are added dynamically and aren't targetted by Vue
+// TODO make these styles inline or global
+.ghost.sortable-chosen {
+  opacity: 0.4;
+
+  & + .sortable-box.active {
+    opacity: 0.7;
+    color: var(--dark-gray);
+  }
+
+  &:after {
+    color: var(--dark-gray);
   }
 }
 </style>

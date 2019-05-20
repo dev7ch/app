@@ -186,7 +186,8 @@ export default {
     max-width: 100%;
     .sortable-box {
       position: relative;
-      transition: opacity var(--transition) var(--medium), background-color var(--transition) var(--slow);
+      transition: opacity var(--medium) var(--transition),
+        background-color var(--slow) var(--transition);
       &.active {
         &.ghost {
           &.sortable-chosen {

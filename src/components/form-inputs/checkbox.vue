@@ -103,4 +103,13 @@ label {
 input:checked + label {
   color: var(--darker-gray);
 }
+
+.sortable-box {
+  label {
+    cursor: move;
+    i {
+      cursor: pointer;
+    }
+  }
+}
 </style>

@@ -6,14 +6,14 @@
     v-model="sortableList"
     v-bind="dragOptions"
     @end="saveSort()"
-    :draggable="!sortable ? false : '.sortable-box.active'"
+    :draggable="!sortable ? false : '.sortable-box.sortable'"
   >
     <v-checkbox
       name="list-sorting"
       v-for="(item, idx) in sortableList"
       :key="idx"
       class="sortable-box"
-      :class="{ active: sortable }"
+      :class="{ sortable: sortable }"
       :id="_uid + idx + '-' + (item.val ? item.val : item)"
       :value="item.val ? item.val : item"
       :disabled="readonly"
@@ -190,7 +190,7 @@ export default {
     background-color var(--slow) var(--transition);
 }
 
-.active {
+.sortable {
   margin-left: 12px; // To make space to show the drag handle
 
   :after {

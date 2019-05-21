@@ -21,7 +21,8 @@
       "options": {
         "choices": {
           "html": "$t:output_html",
-          "json": "$t:output_json"
+          "json": "$t:output_json",
+          "md": "$t:output_md"
         }
       }
     },
@@ -48,6 +49,7 @@
         "bullet_list", "ordered_list", "table", "history"
       ],
       "options": {
+        "draggable": true,
         "choices": {
           "paragraph": "Paragraph",
           "h1": "Heading 1",
@@ -103,9 +105,9 @@
       "raw_default": "Raw view as Default",
       "output_format": "View Mode and Saving Format",
       "output_format_comment": "Select Editor mode and the format to save in DB, keep in mind the schema type of the field as well on change. Be very carefully if your field is not empty!",
-      "output_html": "Save as HTML",
-      "output_json": "Save as JSON",
-      "output_md": "Save as Markdown"
+      "output_html": "HTML Mode (Default)",
+      "output_json": "JSON Mode",
+      "output_md": "Markdown Mode (Field Schema Type must be STRING)"
     },
 	"fr-FR": {
       "wysiwyg_full": "Editeur avancé de contenu avec présentation « tel écran, tel écrit »",

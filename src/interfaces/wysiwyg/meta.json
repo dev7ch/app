@@ -1,7 +1,7 @@
 {
   "name": "$t:wysiwyg",
   "version": "1.1.0",
-  "types": ["string"],
+  "types": ["string", "json"],
   "icon": "format_quote",
   "recommended": {
     "length": 65534
@@ -13,19 +13,31 @@
       "interface": "text-input",
       "length": 200
     },
-    "show_history": {
-      "name": "$t:show_history",
-      "comment": "$t:show_history_commet",
+    "output_format": {
+      "name": "$t:output_format",
+      "comment": "$t:output_format_comment",
+      "interface": "dropdown",
+      "default": "html",
+      "options": {
+        "choices": {
+          "html": "$t:output_html",
+          "json": "$t:output_json"
+        }
+      }
+    },
+    "table_header": {
+      "name": "$t:table_header",
+      "comment": "$t:table_header_comment",
       "interface": "toggle",
       "type": "BOOLEAN",
-      "default": true
+      "default": false
     },
-    "custom_url": {
-      "name": "$t:custom_url",
-      "comment": "$t:custom_url_comment",
-      "interface": "text-input",
-      "default": null,
-      "length": 250
+    "raw_default": {
+      "name": "$t:raw_default",
+      "comment": "$t:raw_default_comment",
+      "interface": "toggle",
+      "type": "BOOLEAN",
+      "default": false
     },
     "extensions": {
       "name": "Extensions",
@@ -37,14 +49,17 @@
       ],
       "options": {
         "choices": {
-          "bold": "Bold",
-          "strike": "Strike",
-          "underline": "Underline",
-          "italic": "Italic",
+          "paragraph": "Paragraph",
           "h1": "Heading 1",
           "h2": "Heading 2",
           "h3": "Heading 3",
           "h4": "Heading 4",
+          "h5": "Heading 5",
+          "h6": "Heading 6",
+          "bold": "Bold",
+          "strike": "Strike",
+          "underline": "Underline",
+          "italic": "Italic",
           "blockquote": "Blockquote",
           "bullet_list": "Bullet List",
           "ordered_list": "Ordered List",
@@ -52,9 +67,10 @@
           "horizontal_rule": "Horizontal Rule",
           "image": "Image",
           "link": "Link",
+          "iframe": "Iframe",
           "code": "Code",
           "table": "Table",
-          "span": "Spo",
+          "span": "Span Tag",
           "code_block": "Code Block",
           "history": "History (undo / redo)"
         }
@@ -87,6 +103,15 @@
       "custom_url_comment": "Optional custom URL base for images including last '/'",
       "distraction_free_mode": "Distraction Free Mode",
       "distraction_free_mode_exit": "Exit Fullscreen Mode",
+      "wysiwyg_full": "Advanced WYSIWYG",
+      "table_header": "Table Headers",
+      "table_header_comment": "Enable headers for tables by default",
+      "raw_default": "Raw view as Default",
+      "output_format": "View Mode and Saving Format",
+      "output_format_comment": "Select Editor mode and the format to save in DB, keep in mind the schema type of the field as well on change. Be very carefully if your field is not empty!",
+      "output_html": "Save as HTML",
+      "output_json": "Save as JSON",
+      "output_md": "Save as Markdown",
       "dark_mode": "Dark Mode"
     },
     "fr-FR": {

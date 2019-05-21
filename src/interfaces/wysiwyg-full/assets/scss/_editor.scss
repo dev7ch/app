@@ -83,50 +83,9 @@
         margin-bottom: 20px;
       }
     }
-
     .tableWrapper {
       max-width: 100%;
       overflow-x: auto;
-
-      table {
-        background-color: var(--white);
-        border: solid var(--lighter-gray) 1px;
-        width: 100%;
-
-        tbody {
-          tr,
-          td {
-            min-width: 70px;
-            border: 1px solid var(--lighter-gray);
-            transition: var(--slow) var(--transition);
-            transition-property: border-color;
-            &:focus, &:active, &:focus-within {
-              border-color: var(--black);
-            }
-          }
-
-          td {
-            position: relative;
-            &:after {
-              z-index: 0;
-              position: absolute;
-              content: '';
-              top: 0;
-              right: 0;
-              height: 100%;
-              width: 5px;
-              cursor: ew-resize;
-            }
-          }
-        }
-        border-spacing: 0;
-        -webkit-border-horizontal-spacing: 0;
-        -webkit-border-vertical-spacing: 0;
-      }
-
-      .selectedCell {
-        background-color: var(--lightest-gray);
-      }
     }
 
     img {

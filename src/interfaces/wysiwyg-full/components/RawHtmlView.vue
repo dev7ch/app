@@ -2,6 +2,7 @@
   <codemirror
     v-if="options"
     class="code-editor"
+    :class="{ json: options.output_format === 'json' }"
     :value="options.output_format === 'json' ? JSON.stringify(value, null, 2) : value"
     @input="$emit('input', $event)"
     :options="options.output_format === 'json' ? jsonOptions : cmOptions"
@@ -55,7 +56,7 @@ export default {
         indentUnit: 4,
         readOnly: this.readonly ? "nocursor" : false,
         line: false,
-        lineNumbers: false,
+        lineNumbers: true,
         mode: "application/json",
         showCursorWhenSelecting: true,
         theme: "default",
@@ -67,9 +68,15 @@ export default {
 </script>
 
 <style lang="scss">
-.code-editor .CodeMirror {
-  padding: calc(var(--page-padding) / 2);
-  margin-bottom: 0;
-  border: 0;
+.code-editor {
+  &:not(.json) {
+    .CodeMirror {
+      padding: calc(var(--page-padding) / 2);
+    }
+  }
+  .CodeMirror {
+    margin-bottom: 0;
+    border: 0;
+  }
 }
 </style>

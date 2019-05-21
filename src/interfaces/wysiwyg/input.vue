@@ -5,11 +5,11 @@
     :id="name"
     :name="name"
   >
-    <!-- Bubble with Editor menu bar -->
-
     <!-- WYSIWYG Editor -->
     <EditorContent
+      :options="options"
       :parent-value="editorText ? editorText : value"
+      :parent-json="editorJson"
       :update-value="updateValue"
       :show-source="rawView"
       :editor="editor"
@@ -22,8 +22,8 @@
       :editor="editor"
       :buttons="options.extensions"
       :show-source="rawView"
-      :toggle-source="showSource"
       :show-link="linkBubble"
+      :toggle-source="showSource"
       :toggle-link="toggleLinkBar"
     />
 
@@ -70,6 +70,7 @@
 import mixin from "@directus/extension-toolkit/mixins/interface";
 import { Editor } from "tiptap";
 import EditorContent from "./../wysiwyg-full/components/EditorContent";
+
 const Bubble = () => import("./../wysiwyg-full/components/Bubble");
 
 import {
@@ -105,23 +106,78 @@ export default {
     value(newVal) {
       if (newVal && !this.rawView) {
         this.editorText = newVal;
-      } else {
+      } else if (this.$props.options.output_format !== "json" && this.type === "string") {
         this.$emit("input", this.editorText);
+      } else if (this.type === "json" && !this.stagedJson) {
+        this.$emit("input", this.editorJson);
+      } else if (this.stagedJson && this.type === "json") {
+        this.$emit("input", this.stagedJson);
+      }
+
+      // Saving a string schema when json mode is active
+      if (this.type === "string" && this.$props.options.output_format === "json") {
+        this.editorText = JSON.stringify(this.editorJson);
+        this.$emit("input", this.editorText);
+      }
+
+      // Saving in json schema when html mode is active
+      if (this.type === "json" && this.$props.options.output_format !== "json") {
+        this.$emit("input", this.stagedJson);
       }
     }
   },
   methods: {
-    toggleLinkBar() {
-      return (this.linkBubble = !this.linkBubble);
+    updateValue(value) {
+      if (value !== this.editorText && this.options.output_format !== "json") {
+        this.editorText = value;
+        this.editor.view.dom.innerHTML = value;
+      } else if (value) {
+        //Fallback set, is dropping Tip tap History
+        this.editor.setContent(value);
+      }
+
+      if (this.$props.options.output_format !== "json") {
+        // remove empty value on toggle to raw mode
+        if (value === "<p><br></p>" || value === "<p></p>") {
+          this.editorText = "";
+          // stage empty value to save in DB
+          this.$emit("input", "");
+        } else {
+          if (this.type === "json" && this.$props.options.output_format !== "json") {
+            // Override Json output for raw view mode in HTML mode
+            this.editorJson = value;
+          }
+          this.$emit("input", value);
+        }
+      } else if (this.$props.options.output_format === "json") {
+        if (!this.stagedJson) {
+          try {
+            this.editorJson = JSON.parse(value);
+            this.$emit("input", this.editorJson);
+          } catch (e) {
+            this.$emit("input", value);
+          }
+        } else if (this.stagedJson) {
+          this.$emit("input", this.stagedJson);
+        }
+      }
     },
-    showSource() {
-      if (!this.rawView) {
+
+    toggleLinkBar() {
+      this.showLinkBar = !this.showLinkBar;
+    },
+
+    showSource: function() {
+      if (!this.rawView && this.$props.options.output_format !== "json") {
         this.updateValue(this.editor.view.dom.innerHTML);
-      } else {
+      } else if (!this.editorJson) {
         this.updateValue(this.editorText);
+      } else {
+        this.updateValue(this.editorJson);
       }
       return (this.rawView = !this.rawView);
     },
+
     init() {
       const extensions = this.options.extensions
         .map(ext => {
@@ -164,20 +220,33 @@ export default {
         })
         .filter(ext => ext)
         .flat();
+
       this.editorText = this.value ? this.value : "";
-      this.editor = new Editor({
-        extensions: extensions,
-        content: this.value ? this.value : "",
-        onUpdate: ({ getHTML }) => {
-          this.$emit("input", getHTML());
+      if (this.type === "string" && this.options.output_format === "json") {
+        if (JSON.parse(this.editorText)) {
+          this.editorJson = JSON.parse(this.editorText);
         }
-      });
-    },
-    updateValue(value) {
-      this.$emit("input", value);
-      this.editorText = value;
-      if (this.editorText !== this.editor.view.dom.innerHTML) {
-        this.editor.view.dom.innerHTML = value;
+      }
+
+      if (this.$props.options.output_format === "json") {
+        this.editor = new Editor({
+          extensions: extensions,
+          content: this.editorJson,
+          onUpdate: ({ getJSON }) => {
+            this.editorJson = getJSON();
+            this.$emit("input", getJSON());
+          }
+        });
+      } else {
+        this.editor = new Editor({
+          extensions: extensions,
+          content: this.editorText,
+          onUpdate: ({ getHTML, getJSON }) => {
+            this.stagedJson = getJSON();
+            //this.$emit("input", getJSON());
+            this.$emit("input", getHTML());
+          }
+        });
       }
     }
   },
@@ -189,20 +258,15 @@ export default {
     return {
       blackMode: false,
       distractionFree: false,
+      linkBubble: false,
       editorText: "",
+      editorJson:
+        this.$props.options.output_format === "json" ? (this.value ? this.value : {}) : null,
+      stagedJson: null,
+      stagedMarkdown: "",
       editor: null,
       rawView: false,
-      linkBubble: false,
-      selectionPosition: {
-        pos: null,
-        editorPos: null,
-        alt: {
-          value: null
-        },
-        title: null,
-        src: null,
-        target: null
-      }
+      showLinkBar: false
     };
   },
 

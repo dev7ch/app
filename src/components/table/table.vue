@@ -310,7 +310,7 @@ export default {
   },
   methods: {
     isNil(val) {
-      return _.isNil($val)
+      return _.isNil(val)
     },
     selectAll() {
       if (this.allSelected) {

@@ -116,26 +116,19 @@ export default {
       }
     },
 
-    updateValue(value) {
-      if (value !== this.editorText) {
-        if (this.$props.options.output_format !== "json") {
+    updateValue: function(value) {
+      if (this.options.output_format === "html") {
+        if (value !== this.editorText) {
           this.editorText = value;
           this.editor.view.dom.innerHTML = value;
         }
-      } else if (value) {
-        // Fallback set, is dropping Tip tap History
-        //this.editor.setContent(value);
-      }
-
-      if (this.options.output_format === "string") {
         // remove empty value on toggle to raw mode and emit empty value to save in DB
         if (value === "<p><br></p>" || value === "<p></p>") {
           this.editorText = "";
           this.$emit("input", "");
         }
-
+        // Override Json output for raw view mode in HTML mode
         if (this.type === "json") {
-          // Override Json output for raw view mode in HTML mode
           this.editorJson = value;
         }
       } else if (this.options.output_format === "json") {
@@ -156,7 +149,8 @@ export default {
         } else {
           let ghostHtml = this.convertHtml(this.editorText);
           this.editor.view.dom.innerHTML = ghostHtml;
-          this.$emit("input", this.value);
+          this.editorText = value;
+          this.$emit("input", value);
         }
       }
     },

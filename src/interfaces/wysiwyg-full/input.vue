@@ -49,7 +49,7 @@ import {
 } from "tiptap-extensions";
 
 import { Image, Span } from "./extensions";
-import showdown from "showdown";
+import showdown from "showdown/dist/showdown.min";
 
 export default {
   name: "interface-wysiwyg",
@@ -96,23 +96,38 @@ export default {
       }
     }
   },
+
+  computed: {
+    converter() {
+      let conv = new showdown.Converter({
+        tablesHeaderId: false,
+        tables: false,
+        strikethrough: true,
+        omitExtraWLInCodeBlocks: true,
+        backslashEscapesHTMLTags: false,
+        emoji: true,
+        simpleLineBreaks: true,
+        metadata: true,
+        underline: true,
+        parseImgDimensions: false
+      });
+      return conv;
+    }
+  },
   methods: {
     convertMarkdown($val) {
       if ($val) {
-        showdown.setFlavor("github");
-        let converter = new showdown.Converter({
-          tables: false,
-          strikethrough: true,
-          backslashEscapesHTMLTags: false,
-          emoji: true
-        });
-        this.stagedMarkdown = converter.makeMd($val);
+        // console.log(this.converter)
+        // console.log(this.converter.getMetadata())
+        // console.log(this.converter.getOptions())
+        // this.converter.setOption("tables", false);
+        // this.converter.setFlavor("github");
+        this.stagedMarkdown = this.converter.makeMd($val);
       }
     },
     convertHtml($val) {
       if ($val) {
-        let converter = new showdown.Converter();
-        return converter.makeHtml($val);
+        return this.converter.makeHtml($val);
       }
     },
 

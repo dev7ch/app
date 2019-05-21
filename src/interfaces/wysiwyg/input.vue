@@ -48,7 +48,7 @@
         @click="blackMode = !blackMode"
         v-tooltip="$t('interfaces-wysiwyg-dark_mode')"
       >
-        <v-icon :name="blackMode ? 'iso' : 'iso'" />
+        <v-icon name="iso" />
       </button>
       <button
         v-on:click="distractionFree = !distractionFree"

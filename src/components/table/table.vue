@@ -309,7 +309,7 @@ export default {
     }
   },
   methods: {
-    isNil($val) {
+    isNil(val) {
       return _.isNil($val)
     },
     selectAll() {

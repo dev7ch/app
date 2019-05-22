@@ -36,6 +36,7 @@
     "micromustache": "^5.4.0",
     "mousetrap": "^1.6.3",
     "portal-vue": "^2.0.1",
+    "showdown": "^1.9.0",
     "shortid": "^2.2.14",
     "slug": "^1.1.0",
     "snarkdown": "^1.2.2",
@@ -68,7 +69,6 @@
     "prettier": "^1.16.4",
     "sass": "^1.17.2",
     "sass-loader": "^7.1.0",
-    "showdown": "^1.9.0",
     "tiptap-commands": "^1.10.1",
     "vue-template-compiler": "^2.5.21"
   },

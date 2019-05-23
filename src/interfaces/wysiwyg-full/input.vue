@@ -122,6 +122,7 @@ export default {
   beforeDestroy() {
     this.editor.destroy();
   },
+
   methods: {
     convertMarkdown($val) {
       if ($val) {

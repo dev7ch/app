@@ -1,8 +1,8 @@
 <template>
   <div
+    :id="name"
     class="interface-wysiwyg-container editor"
     :class="{ fullscreen: distractionFree, night: blackMode }"
-    :id="name"
     :name="name"
   >
     <!-- WYSIWYG Editor -->
@@ -27,38 +27,38 @@
       :toggle-link="toggleLinkBar"
     />
 
-    <p class="fullscreen-info" v-if="$parent.$parent.field.name && distractionFree">
+    <p v-if="$parent.$parent.field.name && distractionFree" class="fullscreen-info">
       {{ $parent.$parent.field.name }}
     </p>
 
     <div class="options">
       <button
         v-if="rawView"
-        @click="showSource"
+        v-tooltip="$t('interfaces-wysiwyg-go_back')"
         type="button"
         class="back"
-        v-tooltip="$t('interfaces-wysiwyg-go_back')"
+        @click="showSource"
       >
         <v-icon name="code" />
       </button>
       <button
         v-if="distractionFree"
+        v-tooltip="$t('interfaces-wysiwyg-dark_mode')"
         type="button"
         class="black-mode"
         @click="blackMode = !blackMode"
-        v-tooltip="$t('interfaces-wysiwyg-dark_mode')"
       >
         <v-icon name="iso" />
       </button>
       <button
-        v-on:click="distractionFree = !distractionFree"
-        type="button"
-        class="fullscreen-toggle"
         v-tooltip="
           !distractionFree
             ? $t('interfaces-wysiwyg-distraction_free_mode')
             : $t('interfaces-wysiwyg-distraction_free_mode_exit')
         "
+        type="button"
+        class="fullscreen-toggle"
+        @click="distractionFree = !distractionFree"
       >
         <v-icon :name="!distractionFree ? 'fullscreen' : 'cancel'" />
       </button>
@@ -100,8 +100,27 @@ import {
 import { Image } from "./../wysiwyg-full/extensions";
 
 export default {
-  name: "interface-wysiwyg",
+  name: "InterfaceWysiwyg",
+  components: {
+    EditorContent,
+    Bubble
+  },
   mixins: [mixin],
+  data() {
+    return {
+      blackMode: false,
+      distractionFree: false,
+      linkBubble: false,
+      editorText: "",
+      editorJson:
+        this.$props.options.output_format === "json" ? (this.value ? this.value : {}) : null,
+      stagedJson: null,
+      stagedMarkdown: "",
+      editor: null,
+      rawView: false,
+      showLinkBar: false
+    };
+  },
   watch: {
     value(newVal) {
       if (newVal && !this.rawView) {
@@ -125,6 +144,13 @@ export default {
         this.$emit("input", this.stagedJson);
       }
     }
+  },
+
+  mounted() {
+    this.initEditor();
+  },
+  beforeDestroy() {
+    this.editor.destroy();
   },
   methods: {
     updateValue(value) {
@@ -178,7 +204,7 @@ export default {
       return (this.rawView = !this.rawView);
     },
 
-    init() {
+    initEditor() {
       const extensions = this.options.extensions
         .map(ext => {
           switch (ext) {
@@ -249,32 +275,6 @@ export default {
         });
       }
     }
-  },
-  components: {
-    EditorContent,
-    Bubble
-  },
-  data() {
-    return {
-      blackMode: false,
-      distractionFree: false,
-      linkBubble: false,
-      editorText: "",
-      editorJson:
-        this.$props.options.output_format === "json" ? (this.value ? this.value : {}) : null,
-      stagedJson: null,
-      stagedMarkdown: "",
-      editor: null,
-      rawView: false,
-      showLinkBar: false
-    };
-  },
-
-  mounted() {
-    this.init();
-  },
-  beforeDestroy() {
-    this.editor.destroy();
   }
 };
 </script>

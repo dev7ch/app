@@ -7,13 +7,13 @@
       </p>
     </div>
     <template v-else>
-      <div class="table" v-if="items.length">
+      <div v-if="items.length" class="table">
         <div class="header">
           <div class="row">
             <button
               v-for="column in columns"
-              type="button"
               :key="column.field"
+              type="button"
               @click="changeSort(column.field)"
             >
               {{ column.name }}
@@ -28,8 +28,8 @@
         <div class="body">
           <div
             v-for="item in items"
-            class="row"
             :key="item[relatedKey]"
+            class="row"
             @click="editExisting = item"
           >
             <div v-for="column in columns" :key="column.field">
@@ -43,9 +43,9 @@
               />
             </div>
             <button
+              v-tooltip="$t('remove_related')"
               type="button"
               class="remove-item"
-              v-tooltip="$t('remove_related')"
               @click.stop="removeRelated(item[relatedKey])"
             >
               <v-icon name="close" />
@@ -53,17 +53,17 @@
           </div>
         </div>
       </div>
-      <button type="button" class="style-btn select" @click="addNew = true">
+      <v-button type="button" :disabled="readonly" @click="addNew = true">
         <v-icon name="add" />
         {{ $t("add_new") }}
-      </button>
-      <button type="button" class="style-btn select" @click="selectExisting = true">
+      </v-button>
+      <v-button type="button" :disabled="readonly" @click="selectExisting = true">
         <v-icon name="playlist_add" />
         <span>{{ $t("select_existing") }}</span>
-      </button>
+      </v-button>
     </template>
 
-    <portal to="modal" v-if="selectExisting">
+    <portal v-if="selectExisting" to="modal">
       <v-modal
         :title="$t('select_existing')"
         :buttons="{
@@ -73,9 +73,9 @@
             loading: selectionSaving
           }
         }"
+        action-required
         @close="dismissSelection"
         @save="saveSelection"
-        action-required
       >
         <div class="search">
           <v-input
@@ -100,7 +100,7 @@
       </v-modal>
     </portal>
 
-    <portal to="modal" v-if="editExisting">
+    <portal v-if="editExisting" to="modal">
       <v-modal
         :title="$t('editing_item')"
         :buttons="{
@@ -123,7 +123,7 @@
       </v-modal>
     </portal>
 
-    <portal to="modal" v-if="addNew">
+    <portal v-if="addNew" to="modal">
       <v-modal
         :title="$t('creating_item')"
         :buttons="{
@@ -153,8 +153,8 @@
 import mixin from "@directus/extension-toolkit/mixins/interface";
 
 export default {
+  name: "InterfaceOneToMany",
   mixins: [mixin],
-  name: "interface-one-to-many",
   data() {
     return {
       sort: {
@@ -271,14 +271,6 @@ export default {
       };
     }
   },
-  created() {
-    if (this.relationSetup) {
-      this.sort.field = this.visibleFields && this.visibleFields[0];
-      this.setSelection();
-    }
-
-    this.onSearchInput = _.debounce(this.onSearchInput, 200);
-  },
   watch: {
     value() {
       this.setSelection();
@@ -289,6 +281,14 @@ export default {
         this.setSelection();
       }
     }
+  },
+  created() {
+    if (this.relationSetup) {
+      this.sort.field = this.visibleFields && this.visibleFields[0];
+      this.setSelection();
+    }
+
+    this.onSearchInput = _.debounce(this.onSearchInput, 200);
   },
   methods: {
     setViewOptions(updates) {
@@ -556,23 +556,11 @@ export default {
   }
 }
 
-button.select {
-  background-color: var(--darker-gray);
-  border-radius: var(--border-radius);
-  height: var(--input-height);
-  padding: 0 10px;
-  display: inline-flex;
-  align-items: center;
-  margin-right: 10px;
-  transition: background-color var(--fast) var(--transition);
-
-  i {
-    margin-right: 5px;
-  }
-
-  &:hover {
-    transition: none;
-    background-color: var(--darkest-gray);
+button {
+  display: inline-block;
+  margin-left: 20px;
+  &:first-of-type {
+    margin-left: 0;
   }
 }
 

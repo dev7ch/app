@@ -32,6 +32,11 @@
 const Menubar = () => import("./MenuBar");
 import { EditorMenuBubble } from "tiptap";
 export default {
+  components: {
+    EditorMenuBubble,
+    Menubar
+  },
+
   props: {
     options: {
       type: Object,
@@ -39,7 +44,7 @@ export default {
     },
     buttons: {
       type: Array,
-      defaultValue: null
+      defaultValue: []
     },
     editor: {
       type: Object,
@@ -65,8 +70,8 @@ export default {
 
   methods: {
     calcWidth() {
-      if (this.$props.options.toolbarOptions) {
-        return this.$props.options.toolbarOptions.length * 24 + 120;
+      if (this.options.toolbarOptions) {
+        return this.options.toolbarOptions.length * 24 + 120;
       }
     },
     setLinkUrl(command, url) {
@@ -74,11 +79,6 @@ export default {
       this.hideLinkMenu();
       this.editor.focus();
     }
-  },
-
-  components: {
-    EditorMenuBubble,
-    Menubar
   }
 };
 </script>

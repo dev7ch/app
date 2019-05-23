@@ -25,7 +25,7 @@
 </template>
 <script>
 export default {
-  name: "menu-bar-button",
+  name: "MenuBarButton",
   props: {
     icon: {
       type: String,
@@ -52,9 +52,11 @@ export default {
       default: null
     },
     command: {
-      type: Function
+      type: Function,
+      default: () => {}
     },
     activeCondition: {
+      type: Boolean,
       default: false
     },
     orderIndex: {

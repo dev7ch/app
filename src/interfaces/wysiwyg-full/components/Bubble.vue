@@ -70,8 +70,8 @@ export default {
 
   methods: {
     calcWidth() {
-      if (this.$props.options.toolbarOptions) {
-        return this.$props.options.toolbarOptions.length * 24 + 120;
+      if (this.options.toolbarOptions) {
+        return this.options.toolbarOptions.length * 24 + 120;
       }
     },
     setLinkUrl(command, url) {

@@ -1,7 +1,7 @@
 <template>
   <div
-    class="image-options"
     v-if="selectionPosition.target && isImageEdit"
+    class="image-options"
     :style="{
       top: '50%',
       width: 'var(--width-x-large)'
@@ -12,7 +12,7 @@
     <button type="button" class="top-close" :disabled="false" @click="quit()">
       <v-icon name="close" />
     </button>
-    <div class="image-options-preview image-options-item half" v-if="selectionPosition.src">
+    <div v-if="selectionPosition.src" class="image-options-preview image-options-item half">
       <v-icon
         v-if="!selectionPosition.src || imageUrlRawBroken"
         class="material-icons error icon"
@@ -29,20 +29,20 @@
     <div class="image-options-item half">
       <v-input
         v-if="!!selectionPosition.target"
-        class="image-options-item"
         ref="editedTitle"
-        :placeholder="$t('interfaces-wysiwyg-full-image_title')"
         v-model.lazy="selectionPosition.title"
+        class="image-options-item"
+        :placeholder="$t('interfaces-wysiwyg-full-image_title')"
         :value="selectionPosition.title"
         @keyup.13="setAll()"
       />
       <v-input
         v-if="!!selectionPosition.target"
         ref="editedAlt"
+        v-model.lazy="selectionPosition.alt"
         :placeholder="$t('interfaces-wysiwyg-full-image_alt')"
         class="image-options-item"
         :value="selectionPosition.alt"
-        v-model.lazy="selectionPosition.alt"
         @keyup.13="setAll()"
       />
       <div class="v-input image-options-item dimension">
@@ -53,9 +53,9 @@
           <v-input
             v-if="!!selectionPosition"
             ref="editedClasses"
+            v-model.lazy="selectionPosition.target.width"
             :placeholder="$t('interfaces-wysiwyg-full-image_width_px')"
             :value="trimDimension(selectionPosition.target.width.toString())"
-            v-model.lazy="selectionPosition.target.width"
             @keyup.13="setAll()"
           />
         </div>
@@ -76,21 +76,21 @@
     </div>
     <v-input
       v-if="!!selectionPosition.target"
-      class="image-options-item"
       ref="editedSource"
-      @input="imageUrlRawBroken = false"
-      :placeholder="$t('interfaces-wysiwyg-full-image_source')"
       v-model.lazy="selectionPosition.src"
+      class="image-options-item"
+      :placeholder="$t('interfaces-wysiwyg-full-image_source')"
       :value="selectionPosition.src"
+      @input="imageUrlRawBroken = false"
       @keyup.13="setAll()"
     />
     <v-input
       v-if="!!selectionPosition"
       ref="editedClasses"
+      v-model.lazy="selectionPosition.classes"
       :placeholder="$t('interfaces-wysiwyg-full-image_css_classes')"
       class="image-options-item"
       :value="selectionPosition.classes"
-      v-model.lazy="selectionPosition.classes"
       @keyup.13="setAll()"
     />
     <div class="image-options-footer">
@@ -118,7 +118,8 @@ export default {
       default: false
     },
     updateValue: {
-      type: Function
+      type: Function,
+      default: () => {}
     },
     toggleEdit: {
       type: Function,

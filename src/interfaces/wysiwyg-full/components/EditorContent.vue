@@ -4,11 +4,11 @@
     <span
       v-if="showImageEdit && !showSource"
       class="options-toggler"
-      @click="toggleImageEdit"
       :style="{
         top: getTopPosition(selectionPosition.target),
         left: getLeftPosition(selectionPosition.target)
       }"
+      @click="toggleImageEdit"
     >
       <v-icon name="settings"></v-icon>
     </span>
@@ -34,6 +34,11 @@ import ImageEdit from "./ImageEdit";
 import RawHtmlView from "./RawHtmlView";
 
 export default {
+  components: {
+    EditorContent,
+    ImageEdit,
+    RawHtmlView
+  },
   props: {
     editor: {
       required: true
@@ -69,14 +74,9 @@ export default {
       default: false
     }
   },
-  components: {
-    EditorContent,
-    ImageEdit,
-    RawHtmlView
-  },
   data() {
     return {
-      editorText: "",
+      editorHTML: "",
       editImage: false,
       showImageEdit: false,
       selectionPosition: {
@@ -90,6 +90,27 @@ export default {
         target: null
       }
     };
+  },
+  beforeUpdate() {
+    if (this.showImageEdit) {
+      this.editor.view.dom.onscroll = () => (this.showImageEdit = false);
+    }
+  },
+  mounted() {
+    this.$nextTick(function() {
+      // creating observer outside of proseMirror context to direct eventListener interaction
+      this.updateObserver();
+    });
+  },
+  beforeDestroy() {
+    if (this.observer) {
+      this.observer.disconnect();
+    }
+  },
+  destroyed() {
+    if (this.editor) {
+      this.editor.destroy();
+    }
   },
   methods: {
     toggleImageEdit() {
@@ -150,27 +171,6 @@ export default {
       if (this.showImageEdit) {
         this.editor.view.dom.onscroll = () => (this.showImageEdit = false);
       }
-    }
-  },
-  beforeUpdate() {
-    if (this.showImageEdit) {
-      this.editor.view.dom.onscroll = () => (this.showImageEdit = false);
-    }
-  },
-  mounted() {
-    this.$nextTick(function() {
-      // creating observer outside of proseMirror context to direct eventListener interaction
-      this.updateObserver();
-    });
-  },
-  beforeDestroy() {
-    if (this.observer) {
-      this.observer.disconnect();
-    }
-  },
-  destroyed() {
-    if (this.editor) {
-      this.editor.destroy();
     }
   }
 };

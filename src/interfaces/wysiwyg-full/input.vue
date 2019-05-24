@@ -10,6 +10,18 @@
         :toggle-source="showSource"
         :toggle-link="toggleLinkBar"
       />
+
+      <div class="options">
+        <button
+          v-if="rawView"
+          v-tooltip="$t('interfaces-wysiwyg-go_back')"
+          type="button"
+          class="back"
+          @click="showSource"
+        >
+          <v-icon name="code" />
+        </button>
+      </div>
     </template>
     <template v-else>
       <MenuBar
@@ -396,6 +408,20 @@ export default {
 
   .menubar__wrapper {
     border-bottom: var(--input-border-width) solid var(--lighter-gray);
+  }
+  .options {
+    position: absolute;
+    z-index: 9;
+    right: 0;
+    top: 7px;
+
+    .back {
+      float: left;
+      color: var(--accent);
+    }
+    > button {
+      min-width: 40px;
+    }
   }
 }
 </style>

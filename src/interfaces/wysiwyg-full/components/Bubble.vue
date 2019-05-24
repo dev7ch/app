@@ -6,8 +6,8 @@
       :visible="menu.isActive"
       :class="{ visible: menu.isActive && !showSource }"
       :style="
-        `left: ${menu.left > calcWidth() / 2 ? menu.left + 'px' : '0'};
-        transform:translateX(${menu.left > calcWidth() / 2 ? '-50%' : '0'});
+        `left:${menu.left - 210}px
+        transform:translateX(${menu.left > calcWidth() ? '-50%' : '0'});
         bottom: ${menu.bottom + 10}px;
         width: ${calcWidth()}px;
         max-width: 100%;

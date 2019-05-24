@@ -14,7 +14,7 @@
       <div class="options">
         <button
           v-if="rawView"
-          v-tooltip="$t('interfaces-wysiwyg-go_back')"
+          v-tooltip="$t('interfaces-wysiwyg-full-go_back')"
           type="button"
           class="back"
           @click="showSource"

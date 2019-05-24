@@ -61,8 +61,7 @@ export default {
   data() {
     return {
       editorHTML: "",
-      editorJSON:
-        this.$props.options.output_format === "json" ? (this.value ? this.value : {}) : null,
+      editorJSON: this.jsonMode ? (this.value ? this.value : {}) : null,
       stagedJSON: null,
       stagedMD: "",
       editor: null,
@@ -183,8 +182,7 @@ export default {
         if (!this.rawView) {
           this.$emit("input", this.value);
         } else {
-          let ghostHtml = this.convertHtml(this.editorHTML);
-          this.editor.view.dom.innerHTML = ghostHtml;
+          this.editor.view.dom.innerHTML = this.convertHtml(this.editorHTML);
           this.editorHTML = value;
           this.$emit("input", value);
         }
@@ -306,7 +304,7 @@ export default {
       if (this.jsonMode) {
         this.editor = new Editor({
           extensions: extensions,
-          content: this.editorJSON,
+          content: this.editorJSON ? this.editorJSON : this.value,
           onUpdate: ({ getJSON }) => {
             this.editorJSON = getJSON();
             this.$emit("input", getJSON());

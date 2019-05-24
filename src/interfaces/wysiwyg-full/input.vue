@@ -25,8 +25,9 @@
     </template>
 
     <EditorContent
+      v-if="editor !== null"
       :options="options"
-      :parent-value="options.output_format === 'md' ? stagedMD : editorHTML"
+      :parent-value="mdMode ? stagedMD : editorHTML"
       :parent-json="editorJSON"
       :update-value="updateValue"
       :show-source="rawView"
@@ -60,7 +61,8 @@ import {
   TableCell,
   TableHeader,
   TableRow,
-  Underline
+  Underline,
+  Placeholder
 } from "tiptap-extensions";
 
 import { Image, Span } from "./extensions";
@@ -124,14 +126,14 @@ export default {
 
       if (this.type === "string") {
         // Saving a string schema when json mode is active
-        if (this.$props.options.output_format === "json" && this.editorJSON) {
+        if (this.jsonMode && this.editorJSON) {
           this.editorHTML = JSON.stringify(this.editorJSON);
           this.$emit("input", this.editorHTML);
         }
       }
 
       if (this.rawView) {
-        if (this.$props.options.output_format !== "json" && this.type === "string") {
+        if (!this.jsonMode && this.type === "string") {
           if (this.$props.options.output_format === "md") {
             this.$emit("input", newVal);
           } else {
@@ -275,7 +277,14 @@ export default {
             case "span":
               return new Span();
             default:
-              return new Heading();
+              return [
+                new Heading(),
+                new Placeholder({
+                  emptyClass: "is-empty",
+                  emptyNodeText: this.options.placeholder,
+                  showOnlyWhenEditable: true
+                })
+              ];
           }
         })
         .filter(ext => ext)
@@ -316,39 +325,40 @@ export default {
         }
       }
 
-      // Create Editor for JSON mode and  other Modes separated
+      // Create Editor options block
+
+      const options = {
+        extensions: extensions
+      };
+
       if (this.jsonMode) {
-        this.editor = new Editor({
-          extensions: extensions,
-          content: this.editorJSON ? this.editorJSON : this.value,
-          onUpdate: ({ getJSON }) => {
-            this.editorJSON = getJSON();
-            this.$emit("input", getJSON());
-          }
-        });
+        options.content = this.editorJSON ? this.editorJSON : this.value;
+        options.onUpdate = ({ getJSON }) => {
+          this.editorJSON = getJSON();
+          this.$emit("input", getJSON());
+        };
       } else {
-        this.editor = new Editor({
-          extensions: extensions,
-          content: stringifiedJson ? stringifiedJson : this.editorHTML,
-          onUpdate: ({ getHTML, getJSON }) => {
-            this.stagedJSON = getJSON();
-            if (this.type === "json") {
-              this.$emit("input", this.stagedJSON);
-            } else {
-              if (this.mdMode) {
-                if (this.rawView) {
-                  this.$emit("input", this.editorHTML);
-                } else {
-                  this.convertMarkdown(getHTML());
-                  this.$emit("input", this.stagedMD);
-                }
+        options.content = stringifiedJson ? stringifiedJson : this.editorHTML;
+        options.onUpdate = ({ getHTML, getJSON }) => {
+          this.stagedJSON = getJSON();
+          if (this.type === "json") {
+            this.$emit("input", this.stagedJSON);
+          } else {
+            if (this.mdMode) {
+              if (this.rawView) {
+                this.$emit("input", this.editorHTML);
               } else {
-                this.$emit("input", getHTML());
+                this.convertMarkdown(getHTML());
+                this.$emit("input", this.stagedMD);
               }
+            } else {
+              this.$emit("input", getHTML());
             }
           }
-        });
+        };
       }
+
+      this.editor = new Editor(options);
     }
   }
 };
@@ -356,6 +366,15 @@ export default {
 
 <style lang="scss">
 @import "assets/scss/editor";
+
+.editor p.is-empty:first-child::before {
+  content: attr(data-empty-text);
+  float: left;
+  color: #aaa;
+  pointer-events: none;
+  height: 0;
+  font-style: italic;
+}
 </style>
 
 <style lang="scss" scoped>

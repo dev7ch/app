@@ -28,7 +28,7 @@
     },
     "medium_editor_style": {
       "name": "$t:medium_editor_style",
-      "comment": "$t:medium_editor__style_comment",
+      "comment": "$t:medium_editor_style_comment",
       "interface": "toggle",
       "type": "BOOLEAN",
       "default": false

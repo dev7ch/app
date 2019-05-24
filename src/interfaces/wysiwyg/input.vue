@@ -348,39 +348,39 @@ export default {
         }
       }
 
-      // Create Editor for JSON mode and  other Modes separated
+      // Init editor options block
+      const options = {
+        extensions: extensions
+      };
+
       if (this.jsonMode) {
-        this.editor = new Editor({
-          extensions: extensions,
-          content: this.editorJSON ? this.editorJSON : this.value,
-          onUpdate: ({ getJSON }) => {
-            this.editorJSON = getJSON();
-            this.$emit("input", getJSON());
-          }
-        });
+        options.content = this.editorJSON ? this.editorJSON : this.value;
+        options.onUpdate = ({ getJSON }) => {
+          this.editorJSON = getJSON();
+          this.$emit("input", getJSON());
+        };
       } else {
-        this.editor = new Editor({
-          extensions: extensions,
-          content: stringifiedJson ? stringifiedJson : this.editorHTML,
-          onUpdate: ({ getHTML, getJSON }) => {
-            this.stagedJSON = getJSON();
-            if (this.type === "json") {
-              this.$emit("input", this.stagedJSON);
-            } else {
-              if (this.mdMode) {
-                if (this.rawView) {
-                  this.$emit("input", this.editorHTML);
-                } else {
-                  this.convertMarkdown(getHTML());
-                  this.$emit("input", this.stagedMD);
-                }
+        options.content = stringifiedJson ? stringifiedJson : this.editorHTML;
+        options.onUpdate = ({ getHTML, getJSON }) => {
+          this.stagedJSON = getJSON();
+          if (this.type === "json") {
+            this.$emit("input", this.stagedJSON);
+          } else {
+            if (this.mdMode) {
+              if (this.rawView) {
+                this.$emit("input", this.editorHTML);
               } else {
-                this.$emit("input", getHTML());
+                this.convertMarkdown(getHTML());
+                this.$emit("input", this.stagedMD);
               }
+            } else {
+              this.$emit("input", getHTML());
             }
           }
-        });
+        };
       }
+
+      this.editor = new Editor(options);
     }
   }
 };

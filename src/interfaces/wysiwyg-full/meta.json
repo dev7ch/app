@@ -26,6 +26,13 @@
         }
       }
     },
+    "medium_editor_style": {
+      "name": "$t:medium_editor_style",
+      "comment": "$t:medium_editor__style_comment",
+      "interface": "toggle",
+      "type": "BOOLEAN",
+      "default": false
+    },
     "table_header": {
       "name": "$t:table_header",
       "comment": "$t:table_header_comment",
@@ -107,7 +114,9 @@
       "output_format_comment": "Select Editor mode and the format to save in DB, keep in mind the schema type of the field as well on change. Be very carefully if your field is not empty!",
       "output_html": "HTML Mode (Default)",
       "output_json": "JSON Mode",
-      "output_md": "Markdown Mode (Field Schema Type must be STRING)"
+      "output_md": "Markdown Mode (Field Schema Type must be STRING)",
+      "medium_editor_style": "Medium Style Editor",
+      "medium_editor_style_comment": "Display menubar in a bubble which pops up at the selected position in the text"
     },
 	"fr-FR": {
       "wysiwyg_full": "Editeur avancé de contenu avec présentation « tel écran, tel écrit »",

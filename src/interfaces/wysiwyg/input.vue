@@ -5,8 +5,6 @@
     :class="{ fullscreen: distractionFree, night: blackMode }"
     :name="name"
   >
-    <!-- WYSIWYG Editor -->
-
     <EditorContent
       :options="options"
       :parent-value="mdMode ? stagedMD : editorHTML"
@@ -28,9 +26,10 @@
       :toggle-link="toggleLinkBar"
     />
 
-    <p v-if="$parent.$parent.field.name && distractionFree" class="fullscreen-info">
+    <!--@todo how to get the field name of the field without $parent?-->
+    <!--<p v-if="distractionFree" class="fullscreen-info">
       {{ $parent.$parent.field.name }}
-    </p>
+    </p>-->
 
     <div class="options">
       <button

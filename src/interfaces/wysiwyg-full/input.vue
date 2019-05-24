@@ -1,15 +1,29 @@
 <template>
   <div :id="name" class="interface-wysiwyg-full" :name="name">
-    <MenuBar
-      v-if="editor"
-      :buttons="options.extensions"
-      :options="options"
-      :editor="editor"
-      :show-source="rawView"
-      :show-link="showLinkBar"
-      :toggle-link="toggleLinkBar"
-      :toggle-source="showSource"
-    />
+    <template v-if="options.medium_editor_style">
+      <Bubble
+        :options="options"
+        :editor="editor"
+        :buttons="options.extensions"
+        :show-source="rawView"
+        :show-link="showLinkBar"
+        :toggle-source="showSource"
+        :toggle-link="toggleLinkBar"
+      />
+    </template>
+    <template v-else>
+      <MenuBar
+        v-if="editor"
+        :buttons="options.extensions"
+        :options="options"
+        :editor="editor"
+        :show-source="rawView"
+        :show-link="showLinkBar"
+        :toggle-link="toggleLinkBar"
+        :toggle-source="showSource"
+      />
+    </template>
+
     <EditorContent
       :options="options"
       :parent-value="options.output_format === 'md' ? stagedMD : editorHTML"
@@ -23,6 +37,7 @@
 <script>
 import mixin from "@directus/extension-toolkit/mixins/interface";
 import { Editor } from "tiptap";
+import Bubble from "./components/Bubble";
 import EditorContent from "./components/EditorContent";
 import MenuBar from "./components/MenuBar";
 
@@ -55,7 +70,8 @@ export default {
   name: "InterfaceWysiwyg",
   components: {
     EditorContent,
-    MenuBar
+    MenuBar,
+    Bubble
   },
   mixins: [mixin],
   data() {

@@ -1,15 +1,17 @@
 <template>
   <div class="interface-one-to-many">
-    <div v-if="relationSetup === false" class="notice">
-      <p>
-        <v-icon name="warning" />
-        {{ $t("interfaces-one-to-many-relation_not_setup") }}
-      </p>
-    </div>
+    <v-notice v-if="relationSetup === false" color="warning" icon="warning">
+      {{ $t("interfaces-one-to-many-relation_not_setup") }}
+    </v-notice>
+
     <template v-else>
       <div v-if="items.length" class="table">
         <div class="header">
           <div class="row">
+            <button v-if="sortable" class="sort-column" @click="toggleManualSort">
+              <v-icon name="sort" size="18" :color="manualSortActive ? 'action' : 'light-gray'" />
+            </button>
+
             <button
               v-for="column in columns"
               :key="column.field"
@@ -25,13 +27,26 @@
             </button>
           </div>
         </div>
-        <div class="body">
+
+        <draggable
+          v-model="items"
+          class="body"
+          handle=".drag-handle"
+          ghost-class="o2m-drag-ghost"
+          :disabled="!sortable || !manualSortActive"
+          :class="{ dragging }"
+          @start="dragging = true"
+          @end="dragging = false"
+        >
           <div
-            v-for="item in items"
+            v-for="item in itemsWithoutDeleted"
             :key="item[relatedKey]"
             class="row"
             @click="editExisting = item"
           >
+            <div v-if="sortable" class="sort-column" :class="{ disabled: !manualSortActive }">
+              <v-icon name="drag_handle" class="drag-handle" />
+            </div>
             <div v-for="column in columns" :key="column.field">
               <v-ext-display
                 :interface-type="(column.fieldInfo || {}).interface || null"
@@ -51,16 +66,23 @@
               <v-icon name="close" />
             </button>
           </div>
-        </div>
+        </draggable>
       </div>
-      <v-button type="button" :disabled="readonly" @click="addNew = true">
-        <v-icon name="add" />
-        {{ $t("add_new") }}
-      </v-button>
-      <v-button type="button" :disabled="readonly" @click="selectExisting = true">
-        <v-icon name="playlist_add" />
-        <span>{{ $t("select_existing") }}</span>
-      </v-button>
+
+      <div class="buttons">
+        <v-button type="button" :disabled="readonly" icon="add" @click="addNew = true">
+          {{ $t("add_new") }}
+        </v-button>
+
+        <v-button
+          type="button"
+          :disabled="readonly"
+          icon="playlist_add"
+          @click="selectExisting = true"
+        >
+          {{ $t("select_existing") }}
+        </v-button>
+      </div>
     </template>
 
     <portal v-if="selectExisting" to="modal">
@@ -173,10 +195,21 @@ export default {
       viewOptionsOverride: {},
       viewTypeOverride: null,
       viewQueryOverride: {},
-      filtersOverride: []
+      filtersOverride: [],
+
+      dragging: false
     };
   },
   computed: {
+    relatedSortField() {
+      return _.find(this.relatedCollectionFields, { type: "sort" });
+    },
+    sortable() {
+      return !!this.relatedSortField;
+    },
+    manualSortActive() {
+      return this.sort.field === this.relatedSortField.field;
+    },
     relationSetup() {
       if (!this.relation) return false;
       return true;
@@ -208,15 +241,6 @@ export default {
       }
 
       return this.options.fields.split(",").map(val => val.trim());
-    },
-    items() {
-      if (this.relationSetup === false) return [];
-
-      return _.orderBy(
-        (this.value || []).filter(val => !val.$delete),
-        item => item[this.sort.field],
-        this.sort.asc ? "asc" : "desc"
-      );
     },
     columns() {
       if (this.relationSetup === false) return null;
@@ -269,6 +293,40 @@ export default {
         ...viewQuery,
         ...this.viewQueryOverride
       };
+    },
+
+    items: {
+      get() {
+        if (this.relationSetup === false) return [];
+
+        return _.orderBy(
+          this.value || [],
+          item => item[this.sort.field],
+          this.sort.asc ? "asc" : "desc"
+        );
+      },
+      // The setter is used when <draggable> updates the sort order during manual sorting
+      set(newValue) {
+        let value = _.clone(newValue);
+
+        value = value.map((item, index) => {
+          const clone = _.clone(item);
+
+          if (typeof clone === "object" && clone.hasOwnProperty(this.relatedField)) {
+            delete clone[this.relatedField];
+          }
+
+          clone[this.relatedSortField.field] = index + 1;
+
+          return clone;
+        });
+
+        this.$emit("input", value);
+      }
+    },
+
+    itemsWithoutDeleted() {
+      return this.items.filter(item => item.$delete !== true);
     }
   },
   watch: {
@@ -284,7 +342,11 @@ export default {
   },
   created() {
     if (this.relationSetup) {
-      this.sort.field = this.visibleFields && this.visibleFields[0];
+      if (this.sortable) {
+        this.sort.field = this.relatedSortField.field;
+      } else {
+        this.sort.field = this.visibleFields && this.visibleFields[0];
+      }
       this.setSelection();
     }
 
@@ -464,6 +526,10 @@ export default {
       this.setViewQuery({
         q: value
       });
+    },
+    toggleManualSort() {
+      this.sort.field = this.relatedSortField.field;
+      this.sort.asc = true;
     }
   }
 };
@@ -476,7 +542,7 @@ export default {
   border-radius: var(--border-radius);
   border-spacing: 0;
   width: 100%;
-  margin: 10px 0 20px;
+  margin: 16px 0 24px;
 
   .header {
     height: var(--input-height);
@@ -556,12 +622,12 @@ export default {
   }
 }
 
-button {
+.buttons > * {
   display: inline-block;
-  margin-left: 20px;
-  &:first-of-type {
-    margin-left: 0;
-  }
+}
+
+.buttons > *:first-child {
+  margin-right: 24px;
 }
 
 .edit-modal-body {
@@ -593,4 +659,24 @@ button {
 .items {
   height: calc(100% - var(--header-height) - 1px);
 }
+
+.table .sort-column {
+  flex-basis: 36px !important;
+}
+
+.sort-column.disabled i {
+  color: var(--lightest-gray);
+  cursor: not-allowed;
+}
+
+.drag-handle {
+  cursor: grab;
+}
+
+.dragging {
+  cursor: grabbing !important;
+}
+
+// The alignment of the header sort toggle button is slightly off compared to the drag handles due
+// to the smaller overal icon size
 </style>

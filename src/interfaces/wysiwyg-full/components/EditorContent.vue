@@ -44,10 +44,12 @@ export default {
       required: true
     },
     options: {
-      type: [String, Object]
+      type: [String, Object],
+      default: () => {}
     },
     type: {
-      type: String
+      type: String,
+      default: "html"
     },
     showSource: {
       type: Boolean,
@@ -63,7 +65,8 @@ export default {
       default: () => null
     },
     updateValue: {
-      type: Function
+      type: Function,
+      default: () => {}
     },
     isFullscreen: {
       type: Boolean,
@@ -404,6 +407,15 @@ export default {
         background-color: var(--lightest-gray);
       }
     }
+  }
+
+  p.is-empty:first-child::before {
+    content: attr(data-empty-text);
+    float: left;
+    color: #aaa;
+    pointer-events: none;
+    height: 0;
+    font-style: italic;
   }
 }
 </style>

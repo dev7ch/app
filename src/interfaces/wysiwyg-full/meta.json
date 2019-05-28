@@ -26,6 +26,13 @@
         }
       }
     },
+    "medium_editor_style": {
+      "name": "$t:medium_editor_style",
+      "comment": "$t:medium_editor_style_comment",
+      "interface": "toggle",
+      "type": "BOOLEAN",
+      "default": false
+    },
     "table_header": {
       "name": "$t:table_header",
       "comment": "$t:table_header_comment",
@@ -107,7 +114,10 @@
       "output_format_comment": "Select Editor mode and the format to save in DB, keep in mind the schema type of the field as well on change. Be very carefully if your field is not empty!",
       "output_html": "HTML Mode (Default)",
       "output_json": "JSON Mode",
-      "output_md": "Markdown Mode (Field Schema Type must be STRING)"
+      "output_md": "Markdown Mode (Field Schema Type must be STRING)",
+      "medium_editor_style": "Medium Style Editor",
+      "medium_editor_style_comment": "Display menubar in a bubble which pops up at the selected position in the text",
+      "go_back": "Go back to WYSIWYG editor"
     },
 	"fr-FR": {
       "wysiwyg_full": "Editeur avancé de contenu avec présentation « tel écran, tel écrit »",
@@ -122,8 +132,19 @@
       "toolbar_options_comment": "***ADD LINK TO README IN EXTENSION***",
       "show_history": "Show History",
       "show_history_comment": "Show History in Editor menu toolbar",
-      "custom_url": "Adresse Web (URL) des images",
-      "custom_url_comment": "URL personnalisée optionnelle des images, incluant la barre verticale oblique (/) finale"
+      "table_header": "Table Headers",
+      "table_header_comment": "Enable headers for tables by default",
+      "distraction_free_mode": "Distraction Free Mode",
+      "distraction_free_mode_exit": "Exit Fullscreen Mode",
+      "raw_default": "Raw view as Default",
+      "output_format": "View Mode and Saving Format",
+      "output_format_comment": "Select Editor mode and the format to save in DB, keep in mind the schema type of the field as well on change. Be very carefully if your field is not empty!",
+      "output_html": "HTML Mode (Default)",
+      "output_json": "JSON Mode",
+      "output_md": "Markdown Mode (Field Schema Type must be STRING)",
+      "medium_editor_style": "Medium Style Editor",
+      "medium_editor_style_comment": "Display menubar in a bubble which pops up at the selected position in the text",
+      "go_back": "Go back to WYSIWYG editor"
     }
   },
   "author": "Silvan Hahn <silvan@dev7.ch>"

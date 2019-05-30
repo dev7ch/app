@@ -2,8 +2,8 @@
   <div class="menubar__wrapper">
     <editor-menu-bar :editor="editor">
       <div
-        class="menubar"
         slot-scope="{ commands, isActive, getMarkAttrs }"
+        class="menubar"
         :class="{
           'options-is-open': optionsInclude('table') ? isActive.table() : false
         }"
@@ -12,50 +12,51 @@
         <MenuButton
           v-for="(button, i) in preparedButtons(buttons)"
           :key="i + button"
+          v-tooltip="$tc('editor.' + button)"
           :name="button"
           :label="getLabelConditions(button)"
           :order-index="optionsIndex(button)"
           :command="commands[button] ? commands[button] : () => commands[button]"
           :active-condition="isActive[button] ? isActive[button]() : false"
           :disabled="showSource"
-          v-tooltip="$tc('editor.' + button)"
         ></MenuButton>
         <!-- unique buttons (excluded in loop before) -->
         <MenuButton
           v-if="optionsInclude('link')"
+          v-tooltip.bottom="$t('editor.link')"
           :order-index="optionsIndex('link')"
           :command="setLink"
           name="link"
           :active-condition="showLink || isActive.link()"
           :disabled="showSource"
-          v-tooltip.bottom="$t('editor.link')"
         />
         <MenuButton
           v-if="optionsInclude('image')"
+          v-tooltip.bottom="$t('editor.image')"
           :order-index="optionsIndex('image')"
           name="image"
           :command="() => (chooseImage = !chooseImage)"
           :active-condition="chooseImage"
           :disabled="showSource"
-          v-tooltip.bottom="$t('editor.image')"
         />
         <!-- headings -->
         <template v-for="n in 6">
           <template v-if="optionsInclude('h' + n)">
             <MenuButton
               :key="n"
+              v-tooltip.bottom="$tc('editor.heading', { level: n }) + ' ' + n"
               :order-index="optionsIndex('h' + n)"
               :label="'H' + n"
               :command="() => commands.heading({ level: n })"
               :active-condition="isActive.heading({ level: n })"
               :disabled="showSource"
-              v-tooltip.bottom="$tc('editor.heading', { level: n }) + ' ' + n"
             />
           </template>
         </template>
         <!-- table button -->
         <MenuButton
           v-if="optionsInclude('table')"
+          v-tooltip.bottom="$t('editor.table')"
           :order-index="optionsIndex('table')"
           name="table"
           :command="
@@ -68,12 +69,11 @@
           "
           :active-condition="isActive.table()"
           :disabled="showSource"
-          v-tooltip.bottom="$t('editor.table')"
         />
         <!-- table toolbar -->
         <div
-          class="options-fixed"
           v-if="optionsInclude('table') && !showSource ? isActive.table() : false"
+          class="options-fixed"
           :class="{ 'is-open': isActive.table() }"
         >
           <MenuButton icon="border_left" :command="commands.deleteTable" sup-type="remove" />
@@ -87,8 +87,8 @@
         </div>
         <!-- right aligned option buttons -->
         <div
-          class="history__actions toggler"
           v-if="optionsInclude('history')"
+          class="history__actions toggler"
           :style="{
             order: 95
           }"
@@ -102,12 +102,12 @@
           />
         </div>
         <button
-          class="menubar__button source-toggle toggler"
-          @click="toggleSource"
           v-tooltip.bottom="$t('editor.view_source')"
+          class="menubar__button source-toggle toggler"
           :style="{
             order: '99'
           }"
+          @click="toggleSource"
         >
           <v-icon name="code" :color="showSource ? 'accent' : 'light-gray'" />
         </button>
@@ -125,7 +125,7 @@
       </div>
     </editor-menu-bar>
     <!-- image selection modal interface  -->
-    <portal to="modal" v-if="chooseImage">
+    <portal v-if="chooseImage" to="modal">
       <v-modal
         ref="imageModal"
         :title="$t('choose_one')"
@@ -144,7 +144,7 @@
             placeholder="Paste url to image or select an existing"
             @input="imageUrlRawBroken = false"
           ></v-input>
-          <div class="interface-wysiwyg-modal-url-preview" v-if="imageUrlRaw">
+          <div v-if="imageUrlRaw" class="interface-wysiwyg-modal-url-preview">
             <v-icon
               v-if="imageUrlRawBroken"
               class="material-icons error icon"
@@ -178,6 +178,11 @@ import MenuButton from "./MenuBarButton";
 import { EditorMenuBar } from "tiptap";
 import LinkBar from "./LinkBar";
 export default {
+  components: {
+    EditorMenuBar,
+    LinkBar,
+    MenuButton
+  },
   props: {
     options: {
       type: Object,
@@ -251,19 +256,7 @@ export default {
     preparedButtons($val) {
       let btn = $val;
       // list to exclude exceptional buttons
-      let exclude = [
-        "image",
-        "link",
-        "history",
-        "table",
-        "h1",
-        "h2",
-        "h3",
-        "h4",
-        "h5",
-        "h6",
-        "iframe"
-      ];
+      let exclude = ["image", "link", "history", "table", "h1", "h2", "h3", "h4", "h5", "h6"];
 
       for (let i = 0; i < exclude.length; i++) {
         btn = btn.filter(e => e !== exclude[i]);
@@ -305,11 +298,6 @@ export default {
         this.addImageCommand(image);
       }
     }
-  },
-  components: {
-    EditorMenuBar,
-    LinkBar,
-    MenuButton
   }
 };
 </script>

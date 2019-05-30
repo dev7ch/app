@@ -114,18 +114,19 @@ export default {
     },
 
     converter() {
-      let conv = new showdown.Converter({
-        tablesHeaderId: false,
-        tables: false,
-        strikethrough: true,
-        omitExtraWLInCodeBlocks: true,
-        backslashEscapesHTMLTags: false,
-        emoji: true,
-        simpleLineBreaks: true,
-        metadata: true,
-        underline: true,
-        parseImgDimensions: false
-      });
+      const conv = () =>
+        new showdown.Converter({
+          tablesHeaderId: false,
+          tables: false,
+          strikethrough: true,
+          omitExtraWLInCodeBlocks: true,
+          backslashEscapesHTMLTags: false,
+          emoji: true,
+          simpleLineBreaks: true,
+          metadata: true,
+          underline: true,
+          parseImgDimensions: false
+        });
       return conv;
     }
   },

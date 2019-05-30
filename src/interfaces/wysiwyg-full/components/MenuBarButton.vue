@@ -81,7 +81,8 @@ export default {
         horizontal_rule: "maximize",
         hard_break: "wrap_text",
         table: "table_chart",
-        span: "format_shapes"
+        span: "format_shapes",
+        iframe: "filter_frames"
       };
     }
   }

@@ -77,7 +77,7 @@ import {
   Placeholder
 } from "tiptap-extensions";
 
-import { Image, Span } from "./extensions";
+import { Image, Span, Iframe } from "./extensions";
 import showdown from "showdown/dist/showdown.min";
 
 export default {
@@ -288,6 +288,8 @@ export default {
               return new Underline();
             case "span":
               return new Span();
+            case "iframe":
+              return new Iframe();
             default:
               return [
                 new Heading(),

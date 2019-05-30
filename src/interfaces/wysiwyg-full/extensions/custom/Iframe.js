@@ -13,6 +13,9 @@ export default class IframeNode extends Node {
       attrs: {
         src: {
           default: null
+        },
+        style: {
+          default: null
         }
       },
       group: "block",
@@ -22,7 +25,8 @@ export default class IframeNode extends Node {
         {
           tag: "iframe",
           getAttrs: dom => ({
-            src: dom.getAttribute("src")
+            src: dom.getAttribute("src"),
+            style: dom.getAttribute("style")
           })
         }
       ],
@@ -31,42 +35,43 @@ export default class IframeNode extends Node {
         {
           src: node.attrs.src,
           frameborder: 0,
-          allowfullscreen: "true"
+          allowfullscreen: "true",
+          style: node.attrs.style
         }
       ]
     };
   }
 
-  // return a vue component
-  // this can be an object or an imported component
-  get view() {
-    return {
-      // there are some props available
-      // `node` is a Prosemirror Node Object
-      // `updateAttrs` is a function to update attributes defined in `schema`
-      // `editable` is the global editor prop whether the content can be edited
-      // `options` is an array of your extension options
-      // `selected`
-      props: ["node", "updateAttrs", "editable"],
-      computed: {
-        src: {
-          get() {
-            return this.node.attrs.src;
-          },
-          set(src) {
-            // we cannot update `src` itself because `this.node.attrs` is immutable
-            this.updateAttrs({
-              src
-            });
-          }
-        }
-      },
-      template: `
-        <div class="iframe">
-          <iframe class="iframe__embed" :src="src"></iframe>
-          <input class="iframe__input" type="text" v-model="src" v-if="editable" />
-        </div>
-      `
-    };
-  }
+  // // return a vue component
+  // // this can be an object or an imported component
+  // get view() {
+  //   return {
+  //     // there are some props available
+  //     // `node` is a Prosemirror Node Object
+  //     // `updateAttrs` is a function to update attributes defined in `schema`
+  //     // `editable` is the global editor prop whether the content can be edited
+  //     // `options` is an array of your extension options
+  //     // `selected`
+  //     props: ["node", "updateAttrs", "editable"],
+  //     computed: {
+  //       src: {
+  //         get() {
+  //           return this.node.attrs.src;
+  //         },
+  //         set(src) {
+  //           // we cannot update `src` itself because `this.node.attrs` is immutable
+  //           this.updateAttrs({
+  //             src
+  //           });
+  //         }
+  //       }
+  //     },
+  //     template: `
+  //       <div class="iframe">
+  //         <iframe class="iframe__embed" :src="src"></iframe>
+  //         <input class="iframe__input" type="text" v-model="src" v-if="editable" />
+  //       </div>
+  //     `
+  //   };
+  // }
 }

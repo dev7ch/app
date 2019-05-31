@@ -114,19 +114,18 @@ export default {
     },
 
     converter() {
-      const conv = () =>
-        new showdown.Converter({
-          tablesHeaderId: false,
-          tables: false,
-          strikethrough: true,
-          omitExtraWLInCodeBlocks: true,
-          backslashEscapesHTMLTags: false,
-          emoji: true,
-          simpleLineBreaks: true,
-          metadata: true,
-          underline: true,
-          parseImgDimensions: false
-        });
+      let conv = new showdown.Converter({
+        tablesHeaderId: false,
+        tables: false,
+        strikethrough: true,
+        omitExtraWLInCodeBlocks: true,
+        // backslashEscapesHTMLTags: true,
+        emoji: true,
+        simpleLineBreaks: true,
+        metadata: true,
+        underline: true,
+        parseImgDimensions: false
+      });
       return conv;
     }
   },
@@ -144,7 +143,6 @@ export default {
           this.$emit("input", this.editorHTML);
         }
       }
-
       if (this.rawView) {
         if (!this.jsonMode && this.type === "string") {
           if (this.$props.options.output_format === "md") {
@@ -171,13 +169,15 @@ export default {
         // console.log(this.converter)
         // console.log(this.converter.getMetadata())
         // console.log(this.converter.getOptions())
-        // this.converter.setOption("tables", false);
-        // this.converter.setFlavor("github");
+        this.converter.setOption("tables", false);
+        this.converter.setFlavor("github");
         this.stagedMD = this.converter.makeMd($val);
       }
     },
     convertHtml($val) {
       if ($val) {
+        this.converter.setOption("tables", false);
+        this.converter.setFlavor("github");
         return this.converter.makeHtml($val);
       }
     },
@@ -189,10 +189,15 @@ export default {
           this.editor.view.dom.innerHTML = value;
         }
         // remove empty value on toggle to raw mode and emit empty value to save in DB
-        if (value === "<p><br></p>" || value === "<p></p>") {
+        if (
+          value === "<p><br></p>" ||
+          value === "<p></p>" ||
+          value === '<p class="is-empty"><br></p>'
+        ) {
           this.editorHTML = "";
           this.$emit("input", "");
         }
+
         // Override Json output for raw view mode in HTML mode
         if (this.type === "json") {
           this.editorJSON = value;
@@ -249,7 +254,6 @@ export default {
           this.editor.view.dom.innerHTML = this.convertHtml(this.editorHTML);
         }
       }
-
       return (this.rawView = !this.rawView);
     },
 
@@ -330,7 +334,7 @@ export default {
               stringifiedJson = null;
               this.editorHTML = this.convertHtml(this.value);
             } catch (e) {
-              console.warn("Could not Parse JSON or Markdown.");
+              console.info("Tip Tap editor is running in default HTML Mode");
             }
           }
         } else if (this.mdMode) {

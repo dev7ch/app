@@ -156,8 +156,8 @@ export default {
       // Emit all changes manually due @input is not triggered in the edit modal
       this.updateValue(this.editor.view.dom.innerHTML);
       // Hide image edit modal by property function
-      if (this.$props.toggleEdit) {
-        return this.$props.toggleEdit();
+      if (this.toggleEdit) {
+        return this.toggleEdit();
       }
     }
   }

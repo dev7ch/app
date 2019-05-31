@@ -1,18 +1,18 @@
 <template>
   <div class="menu-sub-bar" :class="{ 'is-active': isActive }">
     <button @click="setLinkUrl(commands.link, null)">
-      <v-icon name="delete" v-tooltip="$t('interfaces-wysiwyg-full-link_delete')" />
+      <v-icon v-tooltip="$t('interfaces-wysiwyg-full-link_delete')" name="delete" />
     </button>
-    <button @click="quit" class="close">
-      <v-icon name="close" v-tooltip="$t('interfaces-wysiwyg-full-link_cancel')" />
+    <button class="close" @click="quit">
+      <v-icon v-tooltip="$t('interfaces-wysiwyg-full-link_cancel')" name="close" />
     </button>
 
     <form @submit.prevent="setLinkUrl(commands.link, linkUrl)">
       <input
         ref="input"
-        @input="linkUrl = $event.target.value"
         :value="getMarkAttrs('link').href"
         :placeholder="$t('editor.link_placeholder')"
+        @input="linkUrl = $event.target.value"
       />
     </form>
   </div>
@@ -22,7 +22,8 @@ export default {
   props: {
     editor: {
       type: Object,
-      defaultValue: {}
+      defaultValue: {},
+      required: true
     },
     commands: {
       type: Object || Function,
@@ -47,6 +48,10 @@ export default {
       submitted: false
     };
   },
+  mounted() {
+    this.submitted = this.$props.isActive;
+    this.$refs.input.focus();
+  },
   methods: {
     quit() {
       return this.$props.toggleLink();
@@ -60,10 +65,6 @@ export default {
         console.log(e.message);
       }
     }
-  },
-  mounted() {
-    this.submitted = this.$props.isActive;
-    this.$refs.input.focus();
   }
 };
 </script>

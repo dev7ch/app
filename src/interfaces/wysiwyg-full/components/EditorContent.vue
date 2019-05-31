@@ -41,6 +41,7 @@ export default {
   },
   props: {
     editor: {
+      type: Object,
       required: true
     },
     options: {
@@ -170,7 +171,6 @@ export default {
           });
         }
       });
-
       if (this.showImageEdit) {
         this.editor.view.dom.onscroll = () => (this.showImageEdit = false);
       }

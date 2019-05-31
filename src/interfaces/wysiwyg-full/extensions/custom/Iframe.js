@@ -1,6 +1,10 @@
 import { Node } from "tiptap";
+import { nodeInputRule, toggleBlockType } from "tiptap-commands";
+
+import Iframe from "./views/Iframe";
 
 // example from https://github.com/scrumpy/tiptap#create-a-node-as-a-vue-component
+// a bit extend to support classes and styles
 
 export default class IframeNode extends Node {
   get name() {
@@ -16,62 +20,73 @@ export default class IframeNode extends Node {
         },
         style: {
           default: null
+        },
+        class: {
+          default: null
         }
       },
+      atom: false,
+      content: "text*",
+      // editable: true,
+      // selectable: true,
+      draggable: true,
       group: "block",
-      selectable: false,
       // parseDOM and toDOM is still required to make copy and paste work
       parseDOM: [
         {
           tag: "iframe",
           getAttrs: dom => ({
             src: dom.getAttribute("src"),
-            style: dom.getAttribute("style")
+            style: dom.getAttribute("style"),
+            class: dom.getAttribute("class")
           })
         }
       ],
       toDOM: node => [
         "iframe",
         {
-          src: node.attrs.src,
           frameborder: 0,
           allowfullscreen: "true",
-          style: node.attrs.style
-        }
+          src: node.attrs.src,
+          style: node.attrs.style,
+          class: node.attrs.class
+        },
+        0
       ]
     };
   }
 
-  // // return a vue component
-  // // this can be an object or an imported component
-  // get view() {
-  //   return {
-  //     // there are some props available
-  //     // `node` is a Prosemirror Node Object
-  //     // `updateAttrs` is a function to update attributes defined in `schema`
-  //     // `editable` is the global editor prop whether the content can be edited
-  //     // `options` is an array of your extension options
-  //     // `selected`
-  //     props: ["node", "updateAttrs", "editable"],
-  //     computed: {
-  //       src: {
-  //         get() {
-  //           return this.node.attrs.src;
-  //         },
-  //         set(src) {
-  //           // we cannot update `src` itself because `this.node.attrs` is immutable
-  //           this.updateAttrs({
-  //             src
-  //           });
-  //         }
-  //       }
-  //     },
-  //     template: `
-  //       <div class="iframe">
-  //         <iframe class="iframe__embed" :src="src"></iframe>
-  //         <input class="iframe__input" type="text" v-model="src" v-if="editable" />
-  //       </div>
-  //     `
+  inputRules({ type }) {
+    return [nodeInputRule(/^<iframe(.*)<$/, type)];
+  }
+
+  commands({ type, schema }) {
+    return () => toggleBlockType(type, schema);
+  }
+  // }
+  // commands({ type, schema }) {
+  //   return attrs => (state, dispatch, view) => {
+  //     const { selection } = state;
+  //     const position = selection.$cursor
+  //       ? selection.$cursor.pos
+  //       : selection.$to.pos;
+  //     let $pos = state.doc.resolve(position);
+  //     let $parent = $pos.parent;
+  //     let updateAttrs = $parent ? _.clone($parent.attrs) : {};
+  //
+  //     Object.assign(updateAttrs, attrs);
+  //
+  //     const isActive = nodeIsActive(state, type, attrs);
+  //
+  //     if (isActive) {
+  //       return setBlockType(toggletype)(state, dispatch, view);
+  //     }
+  //
+  //     return setBlockType(type, updateAttrs)(state, dispatch, view);
   //   };
   // }
+
+  get view() {
+    return Iframe;
+  }
 }

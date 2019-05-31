@@ -39,16 +39,19 @@ export default {
 
   props: {
     options: {
-      type: Object,
-      defaultValue: () => {}
+      type: [String, Object],
+      defaultValue: () => {},
+      required: true
     },
     buttons: {
       type: Array,
-      defaultValue: []
+      defaultValue: [],
+      required: true
     },
     editor: {
       type: Object,
-      defaultValue: () => {}
+      defaultValue: () => {},
+      required: true
     },
     showSource: {
       type: Boolean,

@@ -5,6 +5,7 @@
     :primary-key-field="primaryKeyField"
     :fields="fields"
     :items="items"
+    :collection="collection"
     :view-options="viewOptions"
     :view-query="viewQuery"
     :loading="loading"
@@ -29,7 +30,7 @@ import VExtLayoutFallback from "./layout-fallback.vue";
 import VExtLayoutLoading from "./layout-loading.vue";
 
 export default {
-  name: "v-layout",
+  name: "VLayout",
   props: {
     fields: {
       type: Object,
@@ -64,6 +65,10 @@ export default {
       default: false
     },
     link: {
+      type: String,
+      default: null
+    },
+    collection: {
       type: String,
       default: null
     },

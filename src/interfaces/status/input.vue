@@ -52,18 +52,16 @@ export default {
     },
     permissions() {
       if (this.newItem) {
-        return this.$store.state.permissions[this.collections].$create;
+        return this.$store.state.permissions[this.collection].$create;
       }
-      return this.$store.state.permissions[this.collections].statuses[this.startStatus];
-    },
-    collections() {
-      return Object.values(this.fields)[0].collection;
+
+      return this.$store.state.permissions[this.collection].statuses[this.startStatus];
     }
   },
   created() {
     if (!this.value || this.value === "") {
       // Set  "Draft" to default if the option exists
-      if (this.$store.state.permissions[this.collections].statuses.draft !== undefined) {
+      if (this.$store.state.permissions[this.collection].statuses.draft !== undefined) {
         this.$emit("input", "draft");
       }
     }

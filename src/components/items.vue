@@ -46,6 +46,7 @@
     :view-options="viewOptions"
     :selection="selectionKeys"
     :loading="items.loading"
+    :collection="collection"
     :lazy-loading="items.lazyLoading"
     :link="links ? '__link__' : null"
     :sort-field="sortField"
@@ -61,7 +62,7 @@
 import formatFilters from "../helpers/format-filters";
 
 export default {
-  name: "v-items",
+  name: "VItems",
   props: {
     collection: {
       type: String,
@@ -154,9 +155,6 @@ export default {
       return _.uniq(this.selection.map(item => item[this.primaryKeyField]));
     }
   },
-  created() {
-    this.hydrate();
-  },
   watch: {
     collection(newVal, oldVal) {
       if (_.isEqual(newVal, oldVal)) return;
@@ -180,6 +178,9 @@ export default {
       if (_.isEqual(newVal, oldVal)) return;
       this.getItems();
     }
+  },
+  created() {
+    this.hydrate();
   },
   mounted() {
     this.$helpers.mousetrap.bind("mod+a", () => {

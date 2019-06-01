@@ -3,13 +3,13 @@
     <v-radio
       v-for="(options, key) in optionValues"
       :id="`${name}-${key}`"
+      :key="key"
       :name="name"
       :value="key"
-      :key="key"
       :disabled="readonly"
       :model-value="String(value)"
       :label="options.label"
-      :checked="key == value"
+      :checked="key === value"
       @change="$emit('input', $event)"
     ></v-radio>
   </div>
@@ -19,7 +19,7 @@
 import mixin from "@directus/extension-toolkit/mixins/interface";
 
 export default {
-  name: "interface-status",
+  name: "InterfaceStatus",
   mixins: [mixin],
   data() {
     return {
@@ -52,16 +52,21 @@ export default {
     },
     permissions() {
       if (this.newItem) {
-        return this.$store.state.permissions[this.collection].$create;
+        return this.$store.state.permissions[this.collections].$create;
       }
-
-      return this.$store.state.permissions[this.collection].statuses[this.startStatus];
+      return this.$store.state.permissions[this.collections].statuses[this.startStatus];
     },
-    collection() {
+    collections() {
       return Object.values(this.fields)[0].collection;
     }
   },
   created() {
+    if (!this.value || this.value === "") {
+      // Set  "Draft" to default if the option exists
+      if (this.$store.state.permissions[this.collections].statuses.draft !== undefined) {
+        this.$emit("input", "draft");
+      }
+    }
     this.startStatus = this.value;
   }
 };

@@ -6,6 +6,7 @@
     :name="name"
   >
     <EditorContent
+      v-if="editor"
       :options="options"
       :parent-value="mdMode ? stagedMD : editorHTML"
       :parent-json="editorJSON"
@@ -17,6 +18,7 @@
     />
 
     <Bubble
+      v-if="editor"
       :options="options"
       :editor="editor"
       :buttons="options.extensions"

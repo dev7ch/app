@@ -142,8 +142,8 @@ export default {
       }
     },
     quit() {
-      if (this.$props.toggleEdit) {
-        return this.$props.toggleEdit();
+      if (this.toggleEdit) {
+        return this.toggleEdit();
       }
     },
     setAll() {

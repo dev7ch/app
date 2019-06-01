@@ -26,17 +26,27 @@
       :options="options"
       @input="updateValue"
     />
+    <EmbedEdit
+      v-if="showEmbedEdit && !showSource"
+      :node="selectionPosition"
+      :editor="editor"
+      :style="{
+        top: getTopPosition(selectionPosition.target)
+      }"
+    />
   </div>
 </template>
 <script>
 import { EditorContent } from "tiptap";
 import ImageEdit from "./ImageEdit";
+import EmbedEdit from "./EmbedEdit";
 import RawHtmlView from "./RawHtmlView";
 
 export default {
   components: {
     EditorContent,
     ImageEdit,
+    EmbedEdit,
     RawHtmlView
   },
   props: {
@@ -83,12 +93,15 @@ export default {
       editorHTML: "",
       editImage: false,
       showImageEdit: false,
+      showEmbedEdit: false,
       selectionPosition: {
         pos: null,
         editorPos: null,
         alt: {
           value: null
         },
+        classes: null,
+        style: null,
         title: null,
         src: null,
         target: null
@@ -98,6 +111,9 @@ export default {
   beforeUpdate() {
     if (this.showImageEdit) {
       this.editor.view.dom.onscroll = () => (this.showImageEdit = false);
+    }
+    if (this.showEmbedEdit) {
+      this.editor.view.dom.onscroll = () => (this.showEmbedEdit = false);
     }
   },
   mounted() {
@@ -126,7 +142,7 @@ export default {
         return $elem.getBoundingClientRect().top
           ? $elem.getBoundingClientRect().top -
               editorTop +
-              ($elem.getBoundingClientRect().height / 2 + 34) +
+              ($elem.getBoundingClientRect().height / 2 + 70) +
               "px"
           : "19px";
       }
@@ -154,8 +170,25 @@ export default {
                 width: m.target.width
               };
               this.showImageEdit = true;
+            } else if (
+              m.type === "attributes" &&
+              m.target.firstChild &&
+              m.target.firstChild.localName === "iframe"
+            ) {
+              this.selectionPosition = {
+                target: m.target.firstChild,
+                style: m.target.firstChild.attributes.style
+                  ? m.target.firstChild.attributes.style.value
+                  : "",
+                src: m.target.firstChild.src,
+                className: m.target.firstChild.attributes.class
+                  ? m.target.firstChild.attributes.class.value
+                  : null
+              };
+              this.showEmbedEdit = true;
             } else if (m.type !== "attributes") {
               this.showImageEdit = false;
+              this.showEmbedEdit = false;
             }
           }
         });
@@ -171,9 +204,6 @@ export default {
           });
         }
       });
-      if (this.showImageEdit) {
-        this.editor.view.dom.onscroll = () => (this.showImageEdit = false);
-      }
     }
   }
 };
@@ -230,6 +260,7 @@ export default {
     &.night {
       background-color: var(--black);
     }
+
     .editor-content {
       //overflow-y: auto;
       margin-left: auto;
@@ -239,8 +270,10 @@ export default {
     }
   }
 }
+
 .editor-content {
   min-height: inherit;
+
   .ProseMirror {
     min-height: inherit;
     padding: var(--wysiwyg-padding);
@@ -259,6 +292,7 @@ export default {
           border: 1px solid var(--lighter-gray);
           transition: var(--slow) var(--transition);
           transition-property: border-color;
+
           &:focus,
           &:active,
           &:focus-within {
@@ -268,6 +302,7 @@ export default {
 
         td {
           position: relative;
+
           &:after {
             z-index: 0;
             position: absolute;
@@ -280,6 +315,7 @@ export default {
           }
         }
       }
+
       border-spacing: 0;
       -webkit-border-horizontal-spacing: 0;
       -webkit-border-vertical-spacing: 0;
@@ -342,6 +378,7 @@ export default {
 
     p + p {
       margin-bottom: 0;
+
       &:last-of-type {
         margin-bottom: 15px;
       }
@@ -377,6 +414,7 @@ export default {
             border: 1px solid var(--lighter-gray);
             transition: var(--slow) var(--transition);
             transition-property: border-color;
+
             &:focus,
             &:active,
             &:focus-within {
@@ -386,6 +424,7 @@ export default {
 
           td {
             position: relative;
+
             &:after {
               z-index: 0;
               position: absolute;
@@ -398,6 +437,7 @@ export default {
             }
           }
         }
+
         border-spacing: 0;
         -webkit-border-horizontal-spacing: 0;
         -webkit-border-vertical-spacing: 0;

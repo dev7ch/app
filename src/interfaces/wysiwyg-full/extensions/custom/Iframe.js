@@ -1,5 +1,5 @@
 import { Node } from "tiptap";
-import { nodeInputRule, toggleBlockType } from "tiptap-commands";
+import { nodeInputRule } from "tiptap-commands";
 
 import Iframe from "./views/Iframe";
 
@@ -25,10 +25,7 @@ export default class IframeNode extends Node {
           default: null
         }
       },
-      atom: false,
-      content: "text*",
-      // editable: true,
-      // selectable: true,
+      selectable: false,
       draggable: true,
       group: "block",
       // parseDOM and toDOM is still required to make copy and paste work
@@ -43,15 +40,20 @@ export default class IframeNode extends Node {
         }
       ],
       toDOM: node => [
-        "iframe",
+        "div",
         {
-          frameborder: 0,
-          allowfullscreen: "true",
-          src: node.attrs.src,
-          style: node.attrs.style,
-          class: node.attrs.class
+          class: "iframe__wrapper"
         },
-        0
+        [
+          "iframe",
+          {
+            frameborder: 0,
+            allowfullscreen: "true",
+            src: node.attrs.src,
+            style: node.attrs.style,
+            class: node.attrs.class
+          }
+        ]
       ]
     };
   }
@@ -60,31 +62,19 @@ export default class IframeNode extends Node {
     return [nodeInputRule(/^<iframe(.*)<$/, type)];
   }
 
-  commands({ type, schema }) {
-    return () => toggleBlockType(type, schema);
+  // commands({type}) {
+  //   return () => toggleBlockType(type);
+  // }
+
+  commands({ type }) {
+    return attrs => (state, dispatch) => {
+      const { selection } = state;
+      const position = selection.$cursor ? selection.$cursor.pos : selection.$to.pos;
+      const node = type.create(attrs);
+      const transaction = state.tr.insert(position, node);
+      dispatch(transaction);
+    };
   }
-  // }
-  // commands({ type, schema }) {
-  //   return attrs => (state, dispatch, view) => {
-  //     const { selection } = state;
-  //     const position = selection.$cursor
-  //       ? selection.$cursor.pos
-  //       : selection.$to.pos;
-  //     let $pos = state.doc.resolve(position);
-  //     let $parent = $pos.parent;
-  //     let updateAttrs = $parent ? _.clone($parent.attrs) : {};
-  //
-  //     Object.assign(updateAttrs, attrs);
-  //
-  //     const isActive = nodeIsActive(state, type, attrs);
-  //
-  //     if (isActive) {
-  //       return setBlockType(toggletype)(state, dispatch, view);
-  //     }
-  //
-  //     return setBlockType(type, updateAttrs)(state, dispatch, view);
-  //   };
-  // }
 
   get view() {
     return Iframe;

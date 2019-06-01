@@ -94,11 +94,11 @@
       @keyup.13="setAll()"
     />
     <div class="image-options-footer">
-      <v-button type="button" :disabled="false" @click="quit()">
+      <v-button type="button withe" :disabled="false" @click="quit()">
         <v-icon name="close" />
         {{ $t("cancel") }}
       </v-button>
-      <v-button type="button" :disabled="$parent.readonly || imageUrlRawBroken" @click="setAll()">
+      <v-button type="button" :disabled="imageUrlRawBroken" @click="setAll()">
         <v-icon name="check" />
         {{ $t("confirm") }}
       </v-button>
@@ -149,10 +149,10 @@ export default {
     setAll() {
       // Apply changes to real target in editor, collected by observer
       // $parent is here supposed to reflect the original dom object due the observer is located in the $parent
-      this.$parent.selectionPosition.target.className = this.selectionPosition.classes;
-      this.$parent.selectionPosition.target.alt = this.selectionPosition.alt;
-      this.$parent.selectionPosition.target.src = this.selectionPosition.src;
-      this.$parent.selectionPosition.target.title = this.selectionPosition.title;
+      this.selectionPosition.target.className = this.selectionPosition.classes;
+      this.selectionPosition.target.alt = this.selectionPosition.alt;
+      this.selectionPosition.target.src = this.selectionPosition.src;
+      this.selectionPosition.target.title = this.selectionPosition.title;
       // Emit all changes manually due @input is not triggered in the edit modal
       this.updateValue(this.editor.view.dom.innerHTML);
       // Hide image edit modal by property function

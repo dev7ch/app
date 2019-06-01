@@ -2,13 +2,13 @@
   <div
     v-if="view.editable"
     class="iframe__wrapper"
-    :class="{ selected: toggleEdit }"
+    :class="{ selected: toggleEdit, empty: !src, active: selected }"
     @click="toggleEdit = !toggleEdit"
   >
     <iframe
-      :class="{ selected: selected, className }"
+      :class="className ? className : false"
       :style="style"
-      frameborder="0"
+      :frameborder="0"
       :src="src"
     ></iframe>
   </div>
@@ -46,7 +46,7 @@ export default {
     },
     className: {
       get() {
-        return this.node.attrs.class;
+        return this.node.attrs.class ? this.node.attrs.class : "";
       },
       set(className) {
         this.updateAttrs({
@@ -64,9 +64,19 @@ export default {
   cursor: pointer;
   border: 10px solid transparent;
   box-shadow: 0 0 1px var(--dark-gray);
+  background-color: transparent;
+  transition: background-color var(--slow) var(--transition-in);
 
-  /*iframe:not([src]) {*/
-  /*  visibility: hidden;*/
-  /*}*/
+  &:hover,
+  &:focus,
+  &:focus-within {
+    background-color: var(--lightest-gray);
+  }
+
+  &.empty {
+    iframe {
+      visibility: hidden;
+    }
+  }
 }
 </style>

@@ -1,25 +1,34 @@
 <template>
-  <form v-if="node" key="input" class="iframe__input" @paste.stop @click.stop @keydown.delete.stop>
+  <form
+    v-if="node"
+    class="iframe__input"
+    @paste.stop
+    @click.stop
+    @keydown.delete.stop
+    @keyup.13="submitAll()"
+  >
     <v-input
       v-model="node.src"
       type="text"
       icon-left="link"
       placeholder="https:// ..."
       icon-left-tooltip="Paste source url here"
-      @input="updateTarget"
+      @input="updateTarget(true)"
     />
     <v-input
       v-if="checkUrl(node.src)"
-      v-model.lazy="node.style"
+      v-model="node.style"
       type="text"
+      placeholder="width: 100%; height: 480px;"
       icon-left="format_paint"
       icon-left-tooltip="Add inline CSS styles here"
       @input="updateTarget"
     />
     <v-input
       v-if="checkUrl(node.src)"
-      v-model.lazy="node.className"
+      v-model="node.className"
       type="text"
+      placeholder="custom-css-class-1 custom-css-class-2"
       icon-left="class"
       icon-left-tooltip="You can edit classes in the Raw View Mode"
       @input="updateTarget"
@@ -28,27 +37,28 @@
 </template>
 <script>
 export default {
-  props: ["node", "view", "updateAttrs"],
-
-  mounted() {
-    console.log(this.node);
+  props: ["node", "view", "updateAttrs", "updateValue"],
+  computed: {
+    update() {
+      return this.$props.updateValue();
+    }
   },
-
   methods: {
     checkUrl(val) {
       if (val.startsWith("http") || val.startsWith("www") || val.startsWith("//")) {
         return true;
       }
     },
-    updateTarget() {
-      this.$parent.selectionPosition.target.src = this.node.src;
-      this.$parent.selectionPosition.target.style = this.node.style;
-      this.$parent.selectionPosition.target.className = this.node.className;
+    updateTarget(isSrc = false) {
+      if (isSrc) {
+        this.$parent.selectionPosition.target.src = this.node.src;
+      }
+      this.node.target.style = this.node.style;
+      this.node.target.className = this.node.className;
+    },
+    submitAll() {
+      return this.update;
     }
-  },
-
-  submitAll() {
-    return this.$parent.updateValue(this.$parent.editor.view.dom.innerHTML);
   }
 };
 </script>

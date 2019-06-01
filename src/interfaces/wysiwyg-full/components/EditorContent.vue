@@ -30,6 +30,11 @@
       v-if="showEmbedEdit && !showSource"
       :node="selectionPosition"
       :editor="editor"
+      :update-value="
+        () => {
+          updateValue(editor.view.dom.innerHTML);
+        }
+      "
       :style="{
         top: getTopPosition(selectionPosition.target)
       }"
@@ -180,10 +185,8 @@ export default {
                 style: m.target.firstChild.attributes.style
                   ? m.target.firstChild.attributes.style.value
                   : "",
-                src: m.target.firstChild.src,
-                className: m.target.firstChild.attributes.class
-                  ? m.target.firstChild.attributes.class.value
-                  : null
+                src: m.target.firstChild.src ? m.target.firstChild.src : "",
+                className: m.target.firstChild.className ? m.target.firstChild.className : ""
               };
               this.showEmbedEdit = true;
             } else if (m.type !== "attributes") {

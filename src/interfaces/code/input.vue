@@ -15,7 +15,7 @@
       <v-icon name="playlist_add" />
     </button>
 
-    <small class="line-count" v-if="language">
+    <small v-if="language" class="line-count">
       {{
         $tc("interfaces-code-loc", lineCount, {
           count: lineCount,
@@ -60,11 +60,11 @@ import "codemirror/keymap/sublime.js";
 import mixin from "@directus/extension-toolkit/mixins/interface";
 
 export default {
-  name: "interface-code",
-  mixins: [mixin],
+  name: "InterfaceCode",
   components: {
     codemirror
   },
+  mixins: [mixin],
   props: {
     altOptions: {
       type: Object
@@ -94,21 +94,6 @@ export default {
       }
     };
   },
-  mounted() {
-    const { codemirror } = this.$refs.codemirrorEl;
-    this.lineCount = codemirror.lineCount();
-  },
-  watch: {
-    options(newVal, oldVal) {
-      if (newVal.language !== oldVal.language) {
-        this.$set(this.cmOptions, "mode", newVal.language);
-      }
-
-      if (newVal.lineNumber !== oldVal.lineNumber) {
-        this.$set(this.cmOptions, "lineNumbers", newVal.lineNumber);
-      }
-    }
-  },
   computed: {
     availableTypes() {
       return {
@@ -135,6 +120,21 @@ export default {
         ? "text/javascript"
         : this.options.language;
     }
+  },
+  watch: {
+    options(newVal, oldVal) {
+      if (newVal.language !== oldVal.language) {
+        this.$set(this.cmOptions, "mode", newVal.language);
+      }
+
+      if (newVal.lineNumber !== oldVal.lineNumber) {
+        this.$set(this.cmOptions, "lineNumbers", newVal.lineNumber);
+      }
+    }
+  },
+  mounted() {
+    const { codemirror } = this.$refs.codemirrorEl;
+    this.lineCount = codemirror.lineCount();
   },
   methods: {
     onInput(value) {

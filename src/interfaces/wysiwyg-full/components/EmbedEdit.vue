@@ -1,14 +1,19 @@
 <template>
   <form
     v-if="node"
+    v-tooltip="
+      !!node.src
+        ? 'Edit iframe attributes and confirm by hitting return'
+        : 'Enter a valid Source url and hit return to confirm'
+    "
     class="iframe__input"
-    @paste.stop
     @click.stop
+    @paste.stop
     @keydown.delete.stop
     @keyup.13="submitAll()"
   >
     <v-input
-      v-model="node.src"
+      v-model.lazy="node.src"
       type="text"
       icon-left="link"
       placeholder="https:// ..."
@@ -51,13 +56,17 @@ export default {
     },
     updateTarget(isSrc = false) {
       if (isSrc) {
-        this.$parent.selectionPosition.target.src = this.node.src;
+        if (this.checkUrl(this.node.src)) {
+          this.node.target.src = this.node.src;
+        }
       }
       this.node.target.style = this.node.style;
       this.node.target.className = this.node.className;
     },
     submitAll() {
-      return this.update;
+      if (this.checkUrl(this.node.src)) {
+        return this.update;
+      }
     }
   }
 };

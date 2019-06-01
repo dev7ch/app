@@ -27,3 +27,8 @@ yarn.lock
 *.njsproj
 *.sln
 *.sw*
+
+# Deployment and Security
+vendor/
+*.secret
+deploy.*

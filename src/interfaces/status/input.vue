@@ -9,7 +9,7 @@
       :disabled="readonly"
       :model-value="String(value)"
       :label="options.label"
-      :checked="key === value"
+      :checked="key == value"
       @change="$emit('input', $event)"
     ></v-radio>
   </div>

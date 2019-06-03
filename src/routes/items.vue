@@ -479,10 +479,7 @@ export default {
     }
   },
   methods: {
-    keyBy(items, selector) {
-      return _.keyBy(items, selector);
-    },
-
+    keyBy: _.keyBy,
     closeBookmark() {
       this.bookmarkModal = false;
     },

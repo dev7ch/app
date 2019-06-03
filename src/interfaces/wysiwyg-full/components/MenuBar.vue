@@ -73,8 +73,8 @@
         <!-- table toolbar -->
         <div
           v-if="optionsInclude('table') && !showSource ? isActive.table() : false"
-          class="options-fixed"
-          :class="{ 'is-open': isActive.table() }"
+          class="table-options"
+          :class="{ 'is-open': isActive.table(), visible: !hideTableOptions }"
         >
           <MenuButton icon="border_left" :command="commands.deleteTable" sup-type="remove" />
           <MenuButton icon="border_left" :command="commands.addColumnBefore" sup-type="add" />
@@ -84,6 +84,9 @@
           <MenuButton icon="border_bottom" sup-type="add" :command="commands.addRowAfter" />
           <MenuButton icon="border_horizontal" sup-type="remove" :command="commands.deleteRow" />
           <MenuButton icon="merge_type" :command="commands.toggleCellMerge" />
+          <span @click="hideTableOptions = !hideTableOptions">
+            <MenuButton icon="table_chart"></MenuButton>
+          </span>
         </div>
         <!-- right aligned option buttons -->
         <div
@@ -177,6 +180,7 @@
 import MenuButton from "./MenuBarButton";
 import { EditorMenuBar } from "tiptap";
 import LinkBar from "./LinkBar";
+
 export default {
   components: {
     EditorMenuBar,
@@ -221,6 +225,7 @@ export default {
       imageUrlRaw: "",
       imageUrlRawBroken: false,
       buttonsSimple: [],
+      hideTableOptions: false,
       viewOptions: {
         title: "title",
         subtitle: "type",
@@ -240,6 +245,11 @@ export default {
   methods: {
     setLink() {
       this.toggleLink();
+    },
+
+    checkMove(evt) {
+      console.log(evt);
+      return console.log(evt);
     },
     optionsInclude($val) {
       return this.$props.buttons.includes($val);
@@ -320,23 +330,37 @@ export default {
   }
 }
 
-.options-fixed {
+.table-options {
   position: absolute;
+  right: 1px;
   opacity: 0;
   z-index: 1;
   background-color: var(--off-white);
-  width: 100%;
-  border-top: calc(var(--input-border-width) / 2) solid var(--lighter-gray);
-  border-bottom: var(--input-border-width) solid var(--lighter-gray);
+  border: 0;
+  box-shadow: 0 0 2px var(--dark-gray);
   border-radius: 0;
-  color: var(--gray);
-  left: 0;
+  color: var(--lightest-gray);
+  left: auto;
   transition: var(--fast) var(--transition);
   transition-property: color, border-color;
-  top: 100%;
+  top: 0;
+  height: 34px;
 
   &.is-open {
     opacity: 1;
+  }
+  width: auto;
+
+  > button {
+    display: none;
+    position: absolute;
+    right: 0;
+  }
+
+  &.visible {
+    > button {
+      display: inline-block;
+    }
   }
 }
 
@@ -369,6 +393,7 @@ export default {
   .cards {
     padding-top: 0;
   }
+
   max-height: calc(100% - 128px);
 }
 
@@ -385,6 +410,7 @@ export default {
     height: inherit;
     padding-top: 20px;
     max-height: 100%;
+
     img {
       max-width: 100%;
     }

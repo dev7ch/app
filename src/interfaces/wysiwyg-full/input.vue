@@ -35,7 +35,6 @@
         :toggle-source="showSource"
       />
     </template>
-
     <EditorContent
       v-if="editor !== null"
       :options="options"
@@ -90,6 +89,7 @@ export default {
   mixins: [mixin],
   data() {
     return {
+      dragging: false,
       editorHTML: "",
       editorJSON: this.jsonMode ? (this.value ? this.value : {}) : null,
       stagedJSON: null,
@@ -118,8 +118,8 @@ export default {
         tablesHeaderId: false,
         tables: false,
         strikethrough: true,
-        omitExtraWLInCodeBlocks: true,
-        // backslashEscapesHTMLTags: true,
+        omitExtraWLInCodeBlocks: false,
+        backslashEscapesHTMLTags: true,
         emoji: true,
         simpleLineBreaks: true,
         metadata: true,

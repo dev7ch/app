@@ -60,9 +60,12 @@ export default {
   },
   created() {
     if (!this.value || this.value === "") {
-      // Set  "Draft" to default if the option exists
-      if (this.$store.state.permissions[this.collection].statuses.draft !== undefined) {
-        this.$emit("input", "draft");
+      // Set first value selected if no default exists
+      if (this.$store.state.permissions[this.collection].statuses !== null) {
+        let obj = Object.keys(this.$store.state.permissions[this.collection].statuses);
+        if (obj.length > 1) {
+          this.$emit("input", obj[0]);
+        }
       }
     }
     this.startStatus = this.value;

@@ -16,7 +16,7 @@
 
     // Allow the user to connect to any API by entering a URL in a text field
     //   instead of selecting from a dropdown
-    allowOtherAPI: false,
+    allowOtherAPI: true,
 
     // Controls the way the application routes. By default, routing is done using
     //   hashes (#) to ensure the app works without any server url rewrites.

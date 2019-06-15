@@ -6,7 +6,7 @@
     // Object values are used as project name in the app
     // Don't forget to add the API environment!
     api: {
-      "https://demo-api.directus.app/vivus/": "Vivus Records Admin"
+      "https://api.dev7.ch/vivus/": "Vivus Records Admin"
     },
 
     // Allow the user to connect to any API by entering a URL in a text field

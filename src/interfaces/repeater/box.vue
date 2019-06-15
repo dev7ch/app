@@ -85,7 +85,6 @@ export default {
     justify-content: space-between;
     align-items: center;
     padding: 0 16px;
-    cursor: pointer;
 
     :after {
       content: "";
@@ -102,6 +101,7 @@ export default {
       display: flex;
       align-items: center;
       .handle {
+        cursor: pointer;
         color: var(--lighter-gray);
         margin-right: 10px;
         &:hover {

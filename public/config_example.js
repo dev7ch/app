@@ -7,6 +7,7 @@
     // Don't forget to add the API environment!
     api: {
       "https://d7api.campusderkuenste.ch/llad/" : "LLAD",
+      "https://d7api.campusderkuenste.ch/lom/" : "LLAD - LOM",
       "https://d7api.campusderkuenste.ch/iid/" : "IID",
       "https://hgk.dev7.ch/act/" : "ACT Test",
       "https://d7api.campusderkuenste.ch/cdk/" : "CDK",

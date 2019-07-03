@@ -81,20 +81,16 @@ export default {
     hydratingError() {
       return this.$store.state.hydratingError;
     },
-    extensionError() {
+    extensionError: function() {
       if (!this.hydrated) return null;
 
       const extensions = this.$store.state.extensions;
 
-      if (
+      return (
         Object.values(extensions.interfaces).length === 0 &&
         Object.values(extensions.layouts).length === 0 &&
         Object.values(extensions.pages).length === 0
-      ) {
-        return true;
-      }
-
-      return false;
+      );
     }
   },
   watch: {
@@ -171,6 +167,9 @@ body.info-wide-active {
 </style>
 
 <style lang="scss" scoped>
+.page-root {
+  background-color: var(--off-white);
+}
 .error {
   position: fixed;
   top: 0;

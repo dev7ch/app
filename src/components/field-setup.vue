@@ -109,7 +109,7 @@
         </div>
         <label>
           {{ $t("note") }}
-          <v-input v-model="note" type="text" :placeholder="$t('add_note')" />
+          <v-textarea v-model="note" type="textarea" :placeholder="$t('add_note')" />
         </label>
 
         <div class="toggles">

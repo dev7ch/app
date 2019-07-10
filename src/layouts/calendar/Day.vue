@@ -5,11 +5,7 @@
       <div class="header-day">{{ date }}</div>
     </div>
     <div class="events">
-      <a
-        v-for="event in eventList"
-        :key="event.id"
-        @click.stop="goToItem(event.id)"
-      >
+      <a v-for="event in eventList" :key="event.id" @click.stop="goToItem(event.id)">
         <div
           class="event"
           :class="event.id == -1 ? 'event-more' : ''"
@@ -30,11 +26,6 @@ export default {
   data() {
     return {};
   },
-  methods: {
-     goToItem(id) {
-      if(id!== -1) this.$router.push(`/collections/${this.$parent.$parent.collection}/${id}`)
-    },
-  },
   computed: {
     hidden() {
       return this.display == "hidden";
@@ -49,7 +40,6 @@ export default {
       if (!this.events) return;
 
       var events = this.events;
-
       var height = (this.$parent.innerHeight - 120) / 6;
       height -= 32;
       if (this.isWeek) {
@@ -72,6 +62,11 @@ export default {
         });
       }
       return events;
+    }
+  },
+  methods: {
+    goToItem(id) {
+      if (id !== -1) this.$router.push(`/collections/${this.$parent.$parent.collection}/${id}`);
     }
   }
 };
@@ -151,6 +146,4 @@ export default {
   background-color: transparent;
   justify-content: center;
 }
-
-
 </style>

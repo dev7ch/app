@@ -156,7 +156,9 @@ export default {
   },
 
   mounted() {
-    this.initEditor();
+    if (this.options.extensions) {
+      this.initEditor();
+    }
   },
 
   beforeDestroy() {
@@ -188,7 +190,7 @@ export default {
           this.editorHTML = value;
           this.editor.view.dom.innerHTML = value;
         }
-        // remove empty value on toggle to raw mode and emit empty value to save in DB
+        // remove empty value on toggle to raw mode and emit empty value to save in DB (@todo optimize)
         if (
           value === "<p><br></p>" ||
           value === "<p></p>" ||

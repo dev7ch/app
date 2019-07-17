@@ -15,10 +15,17 @@
       <v-notice v-if="interfaceName" color="gray" class="currently-selected">
         {{ $t("currently_selected", { thing: interfaces[interfaceName].name }) }}
       </v-notice>
-      <p v-else class="subtext">{{ $t("select_interface_below") }}</p>
-      <div>
+      <v-input
+        v-else
+        v-model="interfaceFilter"
+        type="text"
+        placeholder="Find an interface..."
+        class="interface-filter"
+        icon-left="search"
+      />
+      <div v-if="!interfaceFilter">
         <v-details
-          v-for="group in interfacesGrouped"
+          v-for="group in interfacesPopular"
           :key="group.title"
           :title="group.title"
           :open="true"
@@ -36,11 +43,30 @@
               </div>
               <div class="body">
                 <h2>{{ ext.name }}</h2>
-                <p>Core Interface</p>
+                <p>{{ interfaceSubtitles(ext) }}</p>
               </div>
             </article>
           </div>
         </v-details>
+      </div>
+      <div>
+        <div class="interfaces">
+          <article
+            v-for="ext in interfacesFiltered"
+            :key="'all-' + ext.id"
+            :class="{ active: interfaceName === ext.id }"
+            class="interface"
+            @click="setInterface(ext.id)"
+          >
+            <div class="header">
+              <v-icon :name="ext.icon || 'category'" size="48" color="white" />
+            </div>
+            <div class="body">
+              <h2>{{ ext.name }}</h2>
+              <p>{{ interfaceSubtitles(ext) }}</p>
+            </div>
+          </article>
+        </div>
       </div>
     </template>
 
@@ -467,10 +493,13 @@
 
       <label for="__width">{{ $t("field_width") }}</label>
       <v-simple-select v-model="width" name="__width">
-        <option value="half">Half</option>
-        <option value="full">Full</option>
-        <option value="fill">Fill the page</option>
+        <option value="half">{{ $t("field_width_half") }}</option>
+        <option value="half-left">{{ $t("field_width_left") }}</option>
+        <option value="half-right">{{ $t("field_width_right") }}</option>
+        <option value="full">{{ $t("field_width_full") }}</option>
+        <option value="fill">{{ $t("field_width_fill") }}</option>
       </v-simple-select>
+      <p class="note">{{ $t("field_width_note") }}</p>
 
       <hr />
 
@@ -529,6 +558,7 @@
 </template>
 
 <script>
+import formatTitle from "@directus/format-title";
 import mapping, { datatypes } from "../type-map";
 import { defaultFull } from "../store/modules/permissions/defaults";
 
@@ -559,6 +589,7 @@ export default {
       datatype: null,
       type: null,
       interfaceName: null,
+      interfaceFilter: null,
       options: {},
       translation: {},
       readonly: false,
@@ -626,7 +657,7 @@ export default {
       };
     },
     collections() {
-      return Object.assign({}, this.$store.state.collections);
+      return _.cloneDeep(this.$store.state.collections);
     },
     collectionsGrouped() {
       const collectionNames = Object.keys(this.collections);
@@ -635,9 +666,9 @@ export default {
       return { system, user };
     },
     interfaces() {
-      return Object.assign({}, this.$store.state.extensions.interfaces);
+      return _.cloneDeep(this.$store.state.extensions.interfaces);
     },
-    interfacesGrouped() {
+    interfacesPopular() {
       const groups = [
         {
           title: this.$t("popular"),
@@ -645,83 +676,32 @@ export default {
             "text-input",
             "textarea",
             "wysiwyg",
-            "datetime",
-            "calendar",
             "toggle",
-            "file",
-            "many-to-one",
-            "one-to-many",
-            "primary-key",
-            "status",
-            "sort"
-          ]
-        },
-        {
-          title: this.$t("text"),
-          interfaces: [
-            "code",
-            "hashed",
-            "json",
-            "markdown",
-            "password",
-            "primary-key",
-            "slug",
-            "tags",
-            "text-input",
-            "textarea",
-            "wysiwyg",
-            "wysiwyg-full"
-          ]
-        },
-        {
-          title: this.$t("numeric"),
-          interfaces: ["numeric", "primary-key", "rating", "slider", "sort"]
-        },
-        {
-          title: this.$t("date_and_time"),
-          interfaces: [
-            "calendar",
-            "date",
-            "time",
             "datetime",
-            "datetime-created",
-            "datetime-updated"
-          ]
-        },
-        {
-          title: this.$t("relational"),
-          interfaces: [
-            "one-to-many",
-            "many-to-one",
-            "many-to-many",
-            "translation",
+            "calendar",
             "file",
-            "files",
-            "checkboxes-relational"
+            "many-to-one"
           ]
         }
       ];
-
-      groups.push({
-        title: this.$t("other"),
-        interfaces: Object.keys(this.interfaces).filter(name => {
-          let inUse = false;
-
-          groups.forEach(group => {
-            if (group.interfaces.includes(name)) inUse = true;
-          });
-
-          return inUse === false;
-        })
-      });
 
       return groups.map(group => ({
         ...group,
         interfaces: group.interfaces.map(name => this.interfaces[name])
       }));
     },
+    interfacesFiltered() {
+      if (!this.interfaceFilter) return this.interfaces;
+      return Object.keys(this.interfaces)
+        .filter(interfaceName => {
+          return formatTitle(interfaceName)
+            .toLowerCase()
+            .includes(this.interfaceFilter.toLowerCase());
+        })
+        .map(interfaceName => ({ ...this.interfaces[interfaceName] }));
+    },
     databaseVendor() {
-      return this.$store.state.serverInfo.databaseVendor;
+      return _.cloneDeep(this.$store.state.serverInfo.databaseVendor);
     },
     primaryKeyDisabled() {
       if (!this.primaryKeyField) return false;
@@ -1063,6 +1043,13 @@ export default {
     this.activeTab = this.existing ? "schema" : "interface";
   },
   methods: {
+    interfaceSubtitles(ext) {
+      if (ext.types) {
+        return this.$helpers.formatTitle(ext.types[0]);
+      } else {
+        return "String";
+      }
+    },
     nextTab() {
       if (this.existing && this.activeTab === "interface") {
         this.initRelation();
@@ -1173,7 +1160,7 @@ export default {
       // that way). +1 for future optimizations!
       const fieldName = this.fieldInfo.field;
       const collectionName = this.collectionInfo.collection;
-      const storeFieldCopy = _.clone(
+      const storeFieldCopy = _.cloneDeep(
         this.$store.state.collections[collectionName].fields[fieldName]
       );
 
@@ -1195,7 +1182,7 @@ export default {
       const field = this.field;
 
       if (this.relation === "m2o") {
-        const existingRelation = this.$store.getters.m2o(collection, field);
+        const existingRelation = _.cloneDeep(this.$store.getters.m2o(collection, field));
 
         if (existingRelation) {
           _.forEach(existingRelation, (val, key) => {
@@ -1215,15 +1202,15 @@ export default {
           this.relationInfo.collection_many = this.collectionInfo.collection;
           this.relationInfo.field_many = this.field;
           this.relationInfo.collection_one = Object.values(
-            this.$store.state.collections
+            _.cloneDeep(this.$store.state.collections)
           )[0].collection;
           this.relationInfo.field_one = _.find(
-            Object.values(this.$store.state.collections)[0].fields,
+            Object.values(_.cloneDeep(this.$store.state.collections))[0].fields,
             { primary_key: true }
           ).field;
         }
       } else if (this.relation === "o2m") {
-        const existingRelation = this.$store.getters.o2m(collection, field);
+        const existingRelation = _.cloneDeep(this.$store.getters.o2m(collection, field));
 
         if (existingRelation) {
           _.forEach(existingRelation, (val, key) => {
@@ -1244,18 +1231,18 @@ export default {
           this.relationInfo.field_one = this.field;
 
           this.relationInfo.collection_many = Object.values(
-            this.$store.state.collections
+            _.cloneDeep(this.$store.state.collections)
           )[0].collection;
 
           this.relationInfo.field_many = _.find(
-            Object.values(this.$store.state.collections)[0].fields,
+            Object.values(_.cloneDeep(this.$store.state.collections))[0].fields,
             { primary_key: true }
           ).field;
 
           this.getM2OID();
         }
       } else if (this.relation === "m2m") {
-        const existingRelation = this.$store.getters.o2m(collection, field);
+        const existingRelation = _.cloneDeep(this.$store.getters.o2m(collection, field));
 
         if (field && existingRelation) {
           this.relationInfoM2M[0].id = existingRelation.id;
@@ -1326,7 +1313,7 @@ export default {
       const collection = this.relationInfo.collection_many;
       const field = this.relationInfo.field_many;
 
-      const m2o = this.$store.getters.m2o(collection, field);
+      const m2o = _.cloneDeep(this.$store.getters.m2o(collection, field));
 
       if (m2o) {
         this.relationInfo.id = m2o.id;
@@ -1518,6 +1505,10 @@ p {
 }
 
 .currently-selected {
+  margin-bottom: 40px;
+}
+
+.interface-filter {
   margin-bottom: 40px;
 }
 

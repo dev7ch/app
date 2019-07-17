@@ -4,12 +4,12 @@
       <div id="background" @click="close()"></div>
       <div id="popup">
         <div id="sidebar-header">
-          {{ $t("layouts-calendar-months." + $parent.monthNames[date.getMonth()]) }}
+          {{ $t("months." + $parent.monthNames[date.getMonth()]) }}
           {{ date.getFullYear() }}
         </div>
         <div id="sidebar" @wheel="scroll">
           <transition :name="moveSidebar">
-            <div id="dates-container" :key="days">
+            <div id="dates-container">
               <div
                 v-for="day in days"
                 :key="day.date.getDate()"
@@ -37,7 +37,7 @@
             :key="event.title"
             class="event"
             :style="event.color"
-            @click="$router.push(event.to)"
+            @click="goToItem(event.id)"
           >
             <span>{{ event.title }}</span>
             <span>{{ event.time.substr(0, 5) }}</span>
@@ -58,11 +58,12 @@
 <script>
 export default {
   components: {},
-  props: ["open", "date"],
+  props: ["open", "parentdate", "parentevents"],
   data() {
     return {
       // The differend animations for the sidebar.
-      moveSidebar: "move-0"
+      moveSidebar: "move-0",
+      date: ""
     };
   },
   computed: {
@@ -94,6 +95,7 @@ export default {
     }
   },
   created() {
+    this.date = this.parentdate;
     this.scroll = _.throttle(this.scroll, 150);
   },
   methods: {
@@ -101,9 +103,11 @@ export default {
      *   Gets the name of the week for a specific position in the sidebar.
      */
     weekname(day) {
-      return this.$t(
-        "layouts-calendar-weeks." + this.$parent.weekNames[day == 0 ? 6 : day - 1]
-      ).substr(0, 3);
+      return this.$t("weeks." + this.$parent.weekNames[day == 0 ? 6 : day - 1]).substr(0, 3);
+    },
+
+    goToItem(id) {
+      this.$router.push(`/collections/${this.$parent.collection}/${id}`);
     },
 
     changeDay(distance) {
@@ -125,12 +129,20 @@ export default {
     getEventCount(date) {
       var events = 0;
       var dateId = this.$parent.viewOptions.date;
+      var datetimeId = this.$parent.viewOptions.datetime;
 
-      if (!dateId) return;
+      if (!dateId && !datetimeId) return;
 
-      for (var i = 0; i < this.$parent.items.length; i++) {
-        var item = this.$parent.items[i];
-        var eventDate = new Date(item[dateId] + "T00:00:00");
+      for (var i = 0; i < this.parentevents.length; i++) {
+        var item = this.parentevents[i];
+        var eventDate = "";
+
+        // datetime first
+        if (datetimeId !== "__none__") {
+          eventDate = new Date(item[datetimeId]);
+        } else {
+          eventDate = new Date(item[dateId] + "T00:00:00");
+        }
 
         if (this.$parent.isSameDay(date, eventDate)) {
           events++;

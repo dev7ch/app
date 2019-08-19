@@ -392,8 +392,17 @@ export default {
 
       Object.assign(params, this.viewQuery);
 
-      // The above viewquery can override the fields. We want to force load all the fields so we don't end up with missing crucial data
-      params.fields = "*.*";
+      if (this.viewQuery && this.viewQuery.fields) {
+        params.fields = params.fields.split(",").map(field => `${field}.*`);
+
+        if (!params.fields.includes(this.primaryKeyField)) {
+          params.fields.push(this.primaryKeyField);
+        }
+
+        params.fields = params.fields.join(",");
+      } else {
+        params.fields = "*.*";
+      }
 
       if (this.searchQuery) {
         params.q = this.searchQuery;

@@ -6,13 +6,16 @@
     // Object values are used as project name in the app
     // Don't forget to add the API environment!
     api: {
+      "https://hgk.dev7.ch/llad/" : "DEV llad.ch",
+      "https://hgk.dev7.ch/lom/" : "DEV lom Collage",
       "https://d7api.campusderkuenste.ch/llad/" : "LLAD",
       "https://d7api.campusderkuenste.ch/lom/" : "LLAD - LOM",
       "https://d7api.campusderkuenste.ch/iid/" : "IID",
-      "https://hgk.dev7.ch/act/" : "ACT Test",
       "https://d7api.campusderkuenste.ch/cdk/" : "CDK",
+      "https://d7api.campusderkuenste.ch/media1/": "Mediathek 1",
+      "https://d7api.campusderkuenste.ch/media2/": "KunstGestaltungsBibliothek",
       "https://d7api.campusderkuenste.ch/_/" : "Testumgebung",
-      "https://demo-api.directus.app/_/": "Directus Demo API"
+      "https://hgk.dev7.ch/act/" : "ACT Test",
     },
 
     // Allow the user to connect to any API by entering a URL in a text field

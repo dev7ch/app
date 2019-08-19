@@ -6,8 +6,8 @@
     // Object values are used as project name in the app
     // Don't forget to add the API environment!
     api: {
-      "https://hgk.dev7.ch/llad/" : "DEV llad.ch",
-      "https://hgk.dev7.ch/lom/" : "DEV lom Collage",
+      "https://api.dev7.ch/llad/" : "DEV llad.ch",
+      "https://api.dev7.ch/lom/" : "DEV lom Collage",
       "https://d7api.campusderkuenste.ch/llad/" : "LLAD",
       "https://d7api.campusderkuenste.ch/lom/" : "LLAD - LOM",
       "https://d7api.campusderkuenste.ch/iid/" : "IID",

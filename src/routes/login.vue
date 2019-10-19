@@ -6,17 +6,17 @@
       <form v-else @submit.prevent="processForm">
         <img class="logo" alt="" src="../assets/logo-dark.svg" />
 
-        <h1 v-if="loading">
-          {{ loggedIn ? $t("fetching_data") : $t("signing_in") }}
-        </h1>
+        <h1 v-if="loading">{{ loggedIn ? $t("fetching_data") : $t("signing_in") }}</h1>
         <h1 v-else-if="notInstalled">{{ $t("welcome") }}</h1>
         <h1 v-else>{{ resetMode ? $t("reset_password") : $t("sign_in") }}</h1>
 
         <label class="project-switcher">
           <select
             v-if="Object.keys(urls).length > 1 || allowOther"
+            id="selectedUrl"
             v-model="selectedUrl"
             :disabled="loading"
+            name="selectedUrl"
           >
             <option
               v-for="(name, u) in urls"
@@ -60,7 +60,7 @@
         </template>
 
         <template v-else>
-          <div class="material-input">
+          <div v-if="!missingOTP" class="material-input">
             <input
               id="email"
               v-model="email"
@@ -73,7 +73,7 @@
             <label for="email">{{ $t("email") }}</label>
           </div>
 
-          <div v-if="!resetMode" class="material-input">
+          <div v-if="!resetMode && !missingOTP" class="material-input">
             <input
               id="password"
               v-model="password"
@@ -85,8 +85,26 @@
             />
             <label for="password">{{ $t("password") }}</label>
           </div>
+
+          <div v-if="missingOTP" class="material-input">
+            <input
+              id="otp"
+              v-model="otp"
+              :disabled="loading || exists === false"
+              :class="{ 'has-value': otp && otp.length > 0 }"
+              type="text"
+              name="otp"
+            />
+            <label for="otp">{{ $t("otp") }}</label>
+          </div>
+
           <div class="buttons">
-            <button type="button" class="forgot" @click.prevent="resetMode = !resetMode">
+            <button
+              v-if="!missingOTP"
+              type="button"
+              class="forgot"
+              @click.prevent="resetMode = !resetMode"
+            >
               {{ resetMode ? $t("sign_in") : $t("forgot_password") }}
             </button>
 
@@ -111,7 +129,7 @@
               key="error"
               class="notice"
               :class="errorType"
-              @click="error = null"
+              @click="error = SSOerror = null"
             >
               <v-icon :name="errorType" />
               {{ errorMessage }}
@@ -163,6 +181,7 @@ export default {
       url: null,
       email: null,
       password: null,
+      otp: null,
 
       loading: false,
       loggedIn: false,
@@ -178,7 +197,9 @@ export default {
 
       installing: false,
       notInstalled: false,
-      saving: false
+      saving: false,
+
+      missingOTP: false
     };
   },
   computed: {
@@ -233,6 +254,11 @@ export default {
       }
 
       if (this.email === null || this.password === null) return true;
+
+      if (this.missingOTP) {
+        if (this.otp === null) return true;
+        else if (this.otp.length === 0) return true;
+      }
 
       return this.email.length === 0 || this.password.length === 0;
     },
@@ -321,7 +347,8 @@ export default {
         const credentials = {
           url: this.url,
           email: this.email,
-          password: this.password
+          password: this.password,
+          otp: this.otp
         };
 
         this.loading = true;
@@ -332,7 +359,17 @@ export default {
             this.loggedIn = true;
             this.enterApp();
           })
-          .catch(() => {
+          .catch(error => {
+            if (error.code === 111) {
+              this.missingOTP = true;
+              this.error = null;
+            } else if (error.code === 113) {
+              this.$api.logout();
+              return this.$router.push({
+                path: "/2fa-activation",
+                query: { temp_token: error.token }
+              });
+            }
             this.loading = false;
           });
       }
@@ -346,7 +383,10 @@ export default {
         .getMe({ fields: "last_page" })
         .then(res => res.data.last_page)
         .then(lastPage => {
-          this.$router.push(lastPage || "/");
+          if (lastPage == null || lastPage == "/logout" || lastPage == "/login") {
+            lastPage = "/";
+          }
+          this.$router.push(lastPage);
         })
         .catch(error => {
           this.loading = false;
@@ -414,14 +454,8 @@ export default {
     },
     trySSOLogin() {
       const queryParams = new URLSearchParams(window.location.search);
-
-      /**
-       * NOTE: The only reason this was implemented this way is due to the fact that the API doesn't return
-       *   error codes yet for SSO errors. As soon as issue directus/api#126 has been fixed, we can
-       *   use the "pretty" error notice instead
-       */
       if (queryParams.get("error")) {
-        this.SSOerror = +this.$route.query.code;
+        this.SSOerror = queryParams.get("code");
 
         const uri = window.location.toString();
         if (uri.indexOf("?") > 0) {
@@ -830,7 +864,7 @@ small {
 
 .notice {
   text-align: center;
-
+  cursor: pointer;
   &.error {
     color: var(--danger);
   }

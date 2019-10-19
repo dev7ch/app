@@ -126,6 +126,9 @@ export default {
   watch: {
     date(newValue) {
       this.getData(newValue);
+    },
+    viewOptions() {
+      this.getData(this.date);
     }
   },
   created() {
@@ -146,11 +149,12 @@ export default {
       var dateId = this.viewOptions.date;
       var datetimeId = this.viewOptions.datetime;
       var columnName = "";
-      if (datetimeId !== "__none__") {
+      if (datetimeId && datetimeId !== "__none__") {
         columnName = datetimeId;
       } else {
         columnName = dateId;
       }
+      if (!columnName || columnName === "__none__") return;
 
       var endOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
       var from =
@@ -242,7 +246,7 @@ export default {
       var timeId = this.viewOptions.time;
       var colorId = this.viewOptions.color;
 
-      if (!(!dateId || !datetimeId) || !titleId) return;
+      if (!(dateId || datetimeId) || !titleId) return;
 
       for (var i = 0; i < this.events.length; i++) {
         var item = this.events[i];
@@ -250,7 +254,7 @@ export default {
           time = "";
 
         // datetime first
-        if (datetimeId !== "__none__") {
+        if (datetimeId && datetimeId !== "__none__") {
           eventDate = new Date(item[datetimeId]);
           // allow to overridetime of datetime if time field is set
           if (timeId === "__none__") time = item[datetimeId].slice(-8);

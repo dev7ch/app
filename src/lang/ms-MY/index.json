@@ -120,6 +120,7 @@
   "delete_role_are_you_sure": "Adakah anda pasti ingin memadam peranan \"{name}\"? Tindakan ini tidak dapat dibatalkan.",
   "desc": "desc",
   "description": "Penerangan",
+  "deselect": "Deselect",
   "dialog_beginning": "Permulaan bagi tetingkap dialog",
   "discard_changes": "Buang Perubahan",
   "display_name": "Paparkan Nama",
@@ -156,6 +157,7 @@
     "103": "Pengguna tidak aktif",
     "106": "Nama pengguna dan/atau kata laluan salah",
     "107": "Pengguna tidak dijumpai",
+    "112": "Wrong OTP",
     "-1": "Tidak dapat mencapai API"
   },
   "esc_cancel": "Keluar akan membatalkan dan menutup tetingkap.",
@@ -200,7 +202,7 @@
     "status": "Medan sistem yang digunakan untuk menerbitkan aliran kerja",
     "string": "Apa-apa teks, nombor, ruang, atau simbol; ditakrifkan dan dihadkan oleh panjangnya (bilangan aksara)",
     "time": "Masa, contoh: 14:09:22",
-    "translation": "Khusus untuk antaramuka penterjemahan, o2m ini menyimpan kandungan pelbagai bahasa",
+    "translation": "Specific to translation interfaces, this o2m stores multi-lingual content",
     "user_created": "Medan sistem untuk menjejaki siapa yang mencipta setiap benda, digunakan untuk semakan",
     "user_updated": "Medan sistem untuk menjejaki siapa yang mengemaskini setiap benda, digunakan untuk semakan",
     "uuid": "Pengenal pasti unik universal"
@@ -318,6 +320,7 @@
   "optional": "Optional",
   "options": "Pilihan-pilihan",
   "other": "Lain-lain",
+  "otp": "One-Time Password",
   "page_not_found": "Halaman Tidak Dijumpai",
   "page_not_found_body": "Halaman yang anda cari tidak wujud",
   "password": "Katalaluan",

@@ -30,17 +30,18 @@ export default {
 <style lang="scss" scoped>
 .badge {
   border-radius: var(--border-radius);
-  padding: 5px 10px;
+  padding: 5px 8px 4px;
+  font-weight: var(--weight-bold);
   display: block;
   cursor: default;
-  width: max-content;
-  max-width: 120px;
+  max-width: max-content;
+  text-overflow: ellipsis;
 }
 
 .simple {
   border-radius: 50%;
-  width: 10px;
-  height: 10px;
-  padding: 0;
+  width: 12px;
+  height: 12px;
+  padding: 6px;
 }
 </style>

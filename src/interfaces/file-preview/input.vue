@@ -1,10 +1,24 @@
 <template>
-  <div>
+  <v-notice v-if="hasAllRequiredFields === false">
+    File preview can only be used on directus_fields.
+  </v-notice>
+  <div v-else>
     <div v-if="isImage" class="image">
-      <img v-if="!imgError" id="image" :src="vUrl" @error="imgError = true" />
+      <img v-if="!imgError" id="image" :key="image.hash" :src="url" @error="imgError = true" />
       <div v-if="imgError" class="broken-image">
         <v-icon name="broken_image" />
       </div>
+      <button
+        v-if="
+          canBeEdited && !imgError && !editMode && isImage && options.edit.includes('image_editor')
+        "
+        type="button"
+        title="Edit image"
+        class="image-edit-start"
+        @click="initImageEdit()"
+      >
+        <v-icon name="crop_rotate" />
+      </button>
     </div>
 
     <div v-else-if="isVideo" class="video">
@@ -47,24 +61,15 @@
     <div v-else class="file">{{ fileType }}</div>
     <div class="toolbar">
       <!-- Default Toolbar -->
-      <div v-if="!editMode" class="original">
+      <div v-if="canBeEdited === false || !editMode" class="original">
         <a class="file-link" :href="url" target="_blank">
           <v-icon name="link" />
           {{ url }}
         </a>
-        <button
-          v-if="isImage && options.edit.includes('image_editor')"
-          type="button"
-          title="Edit image"
-          class="image-edit-start"
-          @click="initImageEdit()"
-        >
-          <v-icon name="crop_rotate" />
-        </button>
       </div>
 
       <!-- Image Edit Toolbar -->
-      <ul v-if="editMode" class="image-edit">
+      <ul v-if="canBeEdited && editMode" class="image-edit">
         <li>
           <div class="image-aspect-ratio">
             <v-icon name="image_aspect_ratio" />
@@ -102,6 +107,7 @@
 import mixin from "@directus/extension-toolkit/mixins/interface";
 import Cropper from "cropperjs";
 import "cropperjs/dist/cropper.min.css";
+import shortid from "shortid";
 
 export default {
   mixins: [mixin],
@@ -110,7 +116,7 @@ export default {
       editMode: null,
       imgError: false,
       image: {
-        version: 0, //To prevent the cacheing issue of image
+        hash: shortid.generate(), //To prevent the cacheing issue of image
         cropper: null, //cropper instance
         cropRatio: "free", // Aspect ratio set by cropper
         cropRatioOptions: {
@@ -131,8 +137,21 @@ export default {
     };
   },
   computed: {
+    hasAllRequiredFields() {
+      const requiredFields = ["type", "filesize", "data", "id"];
+      let valid = true;
+      requiredFields.forEach(field => {
+        if (_.has(this.values, field) === false) {
+          valid = false;
+        }
+      });
+      return valid;
+    },
+    canBeEdited() {
+      return this.values?.filesize <= 1000000 && this.isImage;
+    },
     isImage() {
-      switch (this.values.type) {
+      switch (this.values?.type) {
         case "image/jpeg":
         case "image/gif":
         case "image/png":
@@ -144,7 +163,7 @@ export default {
       return false;
     },
     isVideo() {
-      switch (this.values.type) {
+      switch (this.values?.type) {
         case "video/mp4":
         case "video/webm":
         case "video/ogg":
@@ -153,7 +172,7 @@ export default {
       return false;
     },
     isAudio() {
-      switch (this.values.type) {
+      switch (this.values?.type) {
         case "audio/mpeg":
         case "audio/ogg":
         case "audio/wav":
@@ -162,25 +181,16 @@ export default {
       return false;
     },
     isYouTube() {
-      return this.values.type === "embed/youtube";
+      return this.values?.type === "embed/youtube";
     },
     isVimeo() {
-      return this.values.type === "embed/vimeo";
+      return this.values?.type === "embed/vimeo";
     },
     fileType() {
-      return this.values.type.split("/")[1];
+      return this.values?.type.split("/")[1];
     },
     url() {
-      return this.values.data.full_url;
-    },
-    vUrl() {
-      /**
-       * Timestamp fetches the latest image from server
-       * Version helps to refresh the image after crop
-       */
-      return `${this.values.data.full_url}?v=${
-        this.image.version
-      }&timestamp=${new Date().getTime()}`;
+      return this.values?.data.full_url;
     }
   },
   watch: {
@@ -239,14 +249,9 @@ export default {
 
     rotateImage() {
       this.image.cropper.rotate(-90);
-      //TODO: Fix the image rotation issue
-      /**
-       * White rotating the image, the sides are getting cut of
-       * due to limitations of the cropper.js plugin
-       */
     },
 
-    saveImage() {
+    async saveImage() {
       //Running the rabbit
       const isSaving = this.$helpers.shortid.generate();
       this.$store.dispatch("loadingStart", {
@@ -258,38 +263,29 @@ export default {
         .getCroppedCanvas({
           imageSmoothingQuality: "high"
         })
-        .toDataURL(this.values.type);
+        .toDataURL(this.values?.type);
 
-      //Saving the image via API
-      this.$api
-        .patch(`/files/${this.values.id}`, {
+      try {
+        await this.$api.api.patch(`/files/${this.values?.id}`, {
           data: imageBase64
-        })
-        .then(() => {
-          this.$events.emit("success", {
-            notify: "Image updated."
-          });
-        })
-        .catch(err => {
-          this.$events.emit("error", {
-            notify: "There was an error while saving the image",
-            error: err
-          });
-        })
-        .then(() => {
-          this.image.version++;
-          /**
-           * This will wait for new cropped image to load from server
-           * & then destroy the cropper instance
-           * This prevents flickering between old and new image
-           */
-          const img = new Image();
-          img.src = this.vUrl;
-          img.onload = () => {
-            this.$store.dispatch("loadingFinished", isSaving);
-            this.cancelImageEdit();
-          };
         });
+
+        this.$events.emit("success", {
+          notify: "Image updated."
+        });
+
+        this.image.hash = shortid.generate();
+        this.editMode = null;
+        this.image.cropRatio = "free";
+        this.image.cropper.destroy();
+      } catch (err) {
+        this.$events.emit("error", {
+          notify: "There was an error while saving the image",
+          error: err
+        });
+      } finally {
+        this.$store.dispatch("loadingFinished", isSaving);
+      }
     }
   }
 };
@@ -300,8 +296,9 @@ export default {
 .audio,
 .video,
 .image {
+  position: relative;
   width: 100%;
-  background-color: var(--darker-gray);
+  background-color: var(--black);
   text-align: center;
   border-radius: var(--border-radius);
   overflow: hidden;
@@ -324,13 +321,20 @@ export default {
     display: block;
   }
 }
+.image {
+  &:hover {
+    .image-edit-start {
+      opacity: 1;
+    }
+  }
+}
 .audio,
 .file {
   padding: 80px 40px;
   font-size: 3em;
   text-transform: uppercase;
   font-weight: 300;
-  color: var(--lighter-gray);
+  color: var(--blue-grey-200);
 }
 .toolbar {
   margin-top: 10px;
@@ -343,13 +347,19 @@ export default {
 .file-link {
   transition: var(--fast) var(--transition);
   text-decoration: none;
-  color: var(--gray);
+  color: var(--input-placeholder-color);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   &:hover {
-    color: var(--darker-gray);
+    color: var(--input-text-color);
+    i {
+      color: var(--input-text-color);
+    }
   }
   i {
-    margin-right: 6px;
-    color: var(--gray);
+    margin-right: 4px;
+    color: var(--input-placeholder-color);
   }
   span {
     margin-right: 10px;
@@ -357,9 +367,24 @@ export default {
   }
 }
 .image-edit-start {
-  margin-left: 10px;
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  z-index: 1;
+  width: 40px;
+  height: 40px;
+  background-color: var(--page-background-color);
+  border-radius: var(--border-radius);
+  padding: 8px;
+  opacity: 0;
+  transition: all var(--fast) var(--transition);
+  &:hover {
+    i {
+      color: var(--warning);
+    }
+  }
   i {
-    color: var(--gray);
+    color: var(--input-text-color);
   }
 }
 
@@ -372,12 +397,12 @@ export default {
     flex: 0 0 33.33%;
     text-align: center;
     button {
-      color: var(--dark-gray);
+      color: var(--blue-grey-600);
       + button {
         margin-left: 10px;
       }
       &:hover {
-        color: var(--darkest-gray);
+        color: var(--blue-grey-900);
       }
     }
     &:first-child {
@@ -468,7 +493,7 @@ export default {
   align-items: center;
 
   i {
-    color: var(--light-gray);
+    color: var(--blue-grey-300);
     font-size: 48px;
   }
 }

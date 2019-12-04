@@ -5,66 +5,57 @@
       <aside :class="{ active }">
         <button class="a11y-close" @click="disableNav">Close nav</button>
 
-        <v-logo class="logo" />
+        <module-bar />
 
-        <section class="content">
+        <section class="main-bar">
           <project-switcher />
 
-          <template v-for="section in navStructure">
-            <nav-bookmarks
-              v-if="section.include && section.include === 'bookmarks' && bookmarks.length > 0"
-              :key="section.id"
-              class="menu-section"
-              :bookmarks="bookmarks"
-            />
+          <nav-menu
+            v-if="customCollections === null"
+            class="menu-section"
+            :links="defaultCollections"
+          />
+
+          <template v-else>
             <nav-menu
-              v-else-if="section.include && section.include === 'collections'"
-              :key="section.id"
+              v-for="(group, index) in customCollections"
+              :key="index"
+              :title="group.title"
+              :links="group.links"
               class="menu-section"
-              :title="$t('collections')"
-              :links="linksCollections"
-            />
-            <nav-menu
-              v-else-if="section.include && section.include === 'extensions'"
-              :key="section.id"
-              class="menu-section"
-              :title="$t('extensions')"
-              :links="linksExtensions"
-            />
-            <nav-menu
-              v-else
-              :key="section.id"
-              class="menu-section"
-              :title="section.title"
-              :links="section.links ? section.links : []"
             />
           </template>
+
+          <nav-bookmarks
+            v-if="bookmarks && bookmarks.length > 0"
+            class="menu-section"
+            :bookmarks="bookmarks"
+          />
         </section>
-        <user-menu />
       </aside>
     </transition>
   </div>
 </template>
 <script>
-import VLogo from "./logo.vue";
 import ProjectSwitcher from "./project-switcher.vue";
 import NavMenu from "./nav-menu.vue";
-import UserMenu from "./user-menu.vue";
 import NavBookmarks from "./nav-bookmarks.vue";
 import VBlocker from "../../blocker.vue";
-import { TOGGLE_NAV } from "../../../store/mutation-types";
+import { TOGGLE_NAV } from "@/store/mutation-types";
+import { mapState } from "vuex";
+import ModuleBar from "./module-bar";
 
 export default {
   name: "NavSidebar",
   components: {
-    VLogo,
     ProjectSwitcher,
     NavMenu,
-    UserMenu,
     NavBookmarks,
-    VBlocker
+    VBlocker,
+    ModuleBar
   },
   computed: {
+    ...mapState(["currentProjectKey", "currentUser"]),
     permissions() {
       return this.$store.state.permissions;
     },
@@ -92,7 +83,7 @@ export default {
         });
     },
     projectName() {
-      return this.$store.state.auth.projectName;
+      return this.$store.getters.currentProject.project_name;
     },
     active() {
       return this.$store.state.sidebars.nav;
@@ -100,59 +91,35 @@ export default {
     bookmarks() {
       return this.$store.state.bookmarks;
     },
+    customCollections() {
+      const collectionListing = this.currentUser.role.collection_listing;
+      const hasCustom = Array.isArray(collectionListing) && collectionListing.length > 0;
 
-    // This is the default structure of the navigation pane
-    // By default it will list collections, bookmarks, and extensions
-    // This is the thing that will be overridden by the nav_override field
-    // in directus_roles
-    defaultNavStructure() {
-      return [
-        {
-          title: "$t:collections",
-          include: "collections"
-        },
-        {
-          title: "$t:bookmarks",
-          include: "bookmarks"
-        },
-        {
-          title: "$t:extensions",
-          include: "extensions"
-        }
-      ];
-    },
+      if (hasCustom === false) return null;
 
-    // The structure of the navigation. Will return the stored value for the role
-    // nav override or the default structure above if it isn't set
-    // It will also replace the `includes` with links for the actual sections
-    navStructure() {
-      const userRole = this.$store.state.currentUser.roles[0];
-      const navOverride = userRole.nav_override;
+      return collectionListing.map(group => {
+        return {
+          title: group.group_name,
+          links: group.collections.map(({ collection }) => {
+            const collectionInfo = this.collections.find(c => c.collection === collection);
 
-      return navOverride || this.defaultNavStructure;
-    },
-
-    linksCollections() {
-      return this.collections.map(({ collection, icon }) => ({
-        path: `/collections/${collection}`,
-        name: this.$t(`collections-${collection}`),
-        icon
-      }));
-    },
-
-    linksExtensions() {
-      const links = [];
-      const pages = this.$store.state.extensions.pages;
-
-      _.forEach(pages, (info, key) => {
-        links.push({
-          path: `/ext/${key}`,
-          name: info.name,
-          icon: info.icon
-        });
+            return {
+              link: `/${this.currentProjectKey}/collections/${collection}`,
+              name: this.$helpers.formatCollection(collection),
+              icon: collectionInfo.icon
+            };
+          })
+        };
       });
-
-      return links;
+    },
+    defaultCollections() {
+      return this.collections
+        .map(({ collection, icon }) => ({
+          link: `/${this.currentProjectKey}/collections/${collection}`,
+          name: this.$helpers.formatCollection(collection),
+          icon
+        }))
+        .sort((a, b) => (a.name > b.name ? 1 : -1));
     }
   },
   methods: {
@@ -178,7 +145,7 @@ export default {
           }
         })
         .then(() => {
-          this.$router.push(`/collections/${collection}`);
+          this.$router.push(`/${this.currentProjectKey}/collections/${collection}`);
         });
     },
     disableNav() {
@@ -195,10 +162,10 @@ aside {
   left: 0;
   height: 100%;
   z-index: 30;
-  width: 100%;
-  max-width: 80%;
-  background-color: var(--lightest-gray);
-  color: var(--darker-gray);
+  width: var(--nav-sidebar-width);
+  background-color: var(--sidebar-background-color);
+  color: var(--sidebar-text-color);
+  display: flex;
 
   transform: translateX(-100%);
   visibility: hidden;
@@ -215,7 +182,7 @@ aside {
     transform: translateX(0);
     transition: none;
     visibility: visible;
-    max-width: var(--nav-sidebar-width);
+    width: var(--nav-sidebar-width);
   }
 
   > div {
@@ -240,18 +207,20 @@ aside {
   }
 }
 
-.content {
+.main-bar {
   position: relative;
-  padding: 20px;
+  padding: 12px;
   padding-top: 0;
-  height: calc(100% - var(--header-height) - var(--header-height));
+  height: 100%;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
+  flex-basis: 220px;
+  flex-shrink: 0;
 }
 
 .menu-section + .menu-section {
-  border-top: 2px solid var(--lighter-gray);
-  padding-top: 20px;
+  border-top: 2px solid var(--sidebar-background-color-alt);
+  padding-top: 16px;
 }
 </style>
 

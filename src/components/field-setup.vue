@@ -9,9 +9,9 @@
     @close="$emit('close')"
   >
     <template slot="interface">
-      <template v-if="!existing">
-        <h1 class="style-0">{{ $t("choose_interface") }}</h1>
-      </template>
+      <h1 v-if="!existing" class="type-heading-medium">
+        {{ $t("field_setup_interface") }}
+      </h1>
       <v-notice v-if="interfaceName" color="gray" class="currently-selected">
         {{ $t("currently_selected", { thing: interfaces[interfaceName].name }) }}
       </v-notice>
@@ -22,6 +22,7 @@
         placeholder="Find an interface..."
         class="interface-filter"
         icon-left="search"
+        autofocus
       />
       <div v-if="!interfaceFilter">
         <v-details
@@ -71,18 +72,17 @@
     </template>
 
     <template v-if="interfaceName" slot="schema">
-      <template v-if="!existing">
-        <h1 class="style-0">
-          {{ $t("name_field", { field: $helpers.formatTitle(interfaces[interfaceName].name) }) }}
-        </h1>
-        <p class="subtext">{{ $t("intelligent_defaults") }}</p>
-      </template>
+      <h1 v-if="!existing" class="type-heading-medium">
+        {{ $t("field_setup_schema") }}
+      </h1>
       <form class="schema" @submit.prevent>
         <div class="name">
           <label>
-            {{ $t("name") }}*
+            <span class="type-label">{{ $t("name") }}</span>
+            <v-icon class="required" name="star" color="input-required-color" sup />
             <v-input
               v-model="field"
+              autofocus
               type="text"
               :placeholder="$t('db_column_name')"
               class="name-input"
@@ -91,13 +91,13 @@
               :icon-right-color="iconToShow.color"
               :icon-right-tooltip="iconToShow.tooltip"
             />
-            <p class="small-text">
+            <p class="type-note">
               {{ $t("display_name") }}:
               <b>{{ $helpers.formatTitle(field || "...") }}</b>
             </p>
           </label>
           <label>
-            {{ $t("default_value") }}
+            <span class="type-label">{{ $t("default_value") }}</span>
             <v-input
               v-model="default_value"
               type="text"
@@ -107,8 +107,8 @@
           </label>
         </div>
         <label>
-          {{ $t("note") }}
-          <v-textarea v-model="note" type="textarea" :placeholder="$t('add_note')" />
+          <span class="type-label">{{ $t("note") }}</span>
+          <v-input v-model="note" type="text" :placeholder="$t('add_note')" />
         </label>
 
         <div class="toggles">
@@ -126,7 +126,7 @@
           <summary>{{ $t("advanced_options") }}</summary>
           <div class="advanced-form">
             <label>
-              {{ $t("field_type") }}
+              <span class="type-label">{{ $t("field_type") }}</span>
               <v-simple-select v-model="type">
                 <option
                   v-for="typeOption in availableFieldTypes"
@@ -137,14 +137,16 @@
                   {{ $helpers.formatTitle(typeOption) }}
                 </option>
               </v-simple-select>
-              <small class="description">{{ fieldTypeDescription }}</small>
+              <small class="type-note">{{ fieldTypeDescription }}</small>
             </label>
             <label>
-              {{
-                $t("db_datatype", {
-                  db: $helpers.formatTitle(databaseVendor)
-                })
-              }}
+              <span class="type-label">
+                {{
+                  $t("db_datatype", {
+                    db: $helpers.formatTitle(databaseVendor)
+                  })
+                }}
+              </span>
               <v-simple-select v-model="datatype">
                 <option
                   v-for="typeOption in availableDatatypes"
@@ -155,12 +157,12 @@
                   {{ typeOption }}
                 </option>
               </v-simple-select>
-              <small class="description">
+              <small class="type-note">
                 {{ selectedDatatypeInfo && $t(selectedDatatypeInfo.description) }}
               </small>
             </label>
             <label>
-              {{ $t("length") }}
+              <span class="type-label">{{ $t("length") }}</span>
               <v-input
                 :type="selectedDatatypeInfo && selectedDatatypeInfo.decimal ? 'string' : 'number'"
                 :value="lengthDisabled ? null : length"
@@ -170,7 +172,7 @@
               />
             </label>
             <label>
-              {{ $t("validation") }}
+              <span class="type-label">{{ $t("validation") }}</span>
               <v-input v-model="validation" type="text" :placeholder="$t('regex')" />
             </label>
             <label
@@ -197,21 +199,50 @@
               <v-toggle v-model="signed" />
               {{ $t("signed") }}
             </label>
+            <label class="translation">
+              <span class="type-label">{{ $t("translation") }}</span>
+              <v-ext-input
+                id="repeater"
+                v-model="translation"
+                name="translation"
+                type="json"
+                width="full"
+                :options="{
+                  fields: [
+                    {
+                      field: 'locale',
+                      type: 'string',
+                      interface: 'language',
+                      options: {
+                        limit: true
+                      },
+                      width: 'half'
+                    },
+                    {
+                      field: 'translation',
+                      type: 'string',
+                      interface: 'text-input',
+                      options: {
+                        placeholder: $t('translated_field_name')
+                      },
+                      width: 'half'
+                    }
+                  ]
+                }"
+              />
+            </label>
           </div>
         </details>
       </form>
     </template>
 
     <template v-if="selectedInterfaceInfo && relation" slot="relation">
-      <template v-if="!existing">
-        <h1 class="style-0">{{ $t("relation_setup") }}</h1>
-        <p class="subtext">
-          {{ $t("relation_setup_copy", { relation: $t(relation) }) }}
-        </p>
-      </template>
+      <h1 v-if="!existing" class="type-heading-medium">
+        {{ $t("field_setup_relation") }}
+      </h1>
 
       <form v-if="relation === 'm2o'" class="single">
-        <p>{{ $t("this_collection") }}</p>
+        <span class="type-label">{{ $t("this_collection") }}</span>
 
         <v-simple-select class="select" :value="relationInfo.collection_many" disabled>
           <option selected :value="collectionInfo.collection">
@@ -225,7 +256,7 @@
 
         <v-icon name="arrow_backward" />
 
-        <p>{{ $t("related_collection") }}</p>
+        <span class="type-label">{{ $t("related_collection") }}</span>
 
         <v-simple-select v-model="relationInfo.collection_one" class="select">
           <optgroup :label="$t('collections')">
@@ -260,7 +291,7 @@
       </form>
 
       <form v-if="relation === 'o2m'" class="single">
-        <p>{{ $t("this_collection") }}</p>
+        <span class="type-label">{{ $t("this_collection") }}</span>
 
         <v-simple-select class="select" :value="collectionInfo.collection" disabled>
           <option selected :value="collectionInfo.collection">
@@ -274,9 +305,9 @@
           </option>
         </v-simple-select>
 
-        <v-icon name="arrow_forward" />
+        <v-icon name="arrow_forward" size="24" />
 
-        <p>{{ $t("related_collection") }}</p>
+        <span class="type-label">{{ $t("related_collection") }}</span>
 
         <v-simple-select v-model="relationInfo.collection_many" class="select">
           <optgroup :label="$t('collections')">
@@ -311,7 +342,7 @@
       </form>
 
       <form v-if="relation === 'm2m'" class="full">
-        <p>{{ $t("this_collection") }}</p>
+        <p class="type-label">{{ $t("this_collection") }}</p>
 
         <v-simple-select class="select" :value="collectionInfo.collection" disabled>
           <option selected :value="collectionInfo.collection">
@@ -325,9 +356,9 @@
           </option>
         </v-simple-select>
 
-        <v-icon name="arrow_forward" />
+        <v-icon name="arrow_forward" size="24" />
 
-        <p>{{ $t("junction_collection") }}</p>
+        <p class="type-label">{{ $t("junction_collection") }}</p>
 
         <v-simple-select
           v-if="!createM2Mjunction"
@@ -420,6 +451,7 @@
         />
 
         <v-checkbox
+          v-if="!existing"
           id="createM2Mjunction"
           value="m2mjunction"
           :label="$t('auto_generate')"
@@ -427,9 +459,9 @@
           @change="createM2Mjunction = !createM2Mjunction"
         />
 
-        <v-icon name="arrow_backward" />
+        <v-icon name="arrow_backward" size="24" />
 
-        <p>{{ $t("related_collection") }}</p>
+        <p class="type-label">{{ $t("related_collection") }}</p>
 
         <v-simple-select
           v-model="relationInfoM2M[currentM2MIndex == 0 ? 1 : 0].collection_one"
@@ -483,12 +515,11 @@
     </template>
 
     <template slot="options">
-      <template v-if="!existing">
-        <h1 class="style-0">{{ $t("almost_done_options") }}</h1>
-        <p class="subtext">{{ $t("almost_done_copy") }}</p>
-      </template>
+      <h1 v-if="!existing" class="type-heading-medium">
+        {{ $t("field_setup_options") }}
+      </h1>
 
-      <label for="__width">{{ $t("field_width") }}</label>
+      <label for="__width" class="type-label">{{ $t("field_width") }}</label>
       <v-simple-select v-model="width" name="__width">
         <option value="half">{{ $t("field_width_half") }}</option>
         <option value="half-left">{{ $t("field_width_left") }}</option>
@@ -496,13 +527,11 @@
         <option value="full">{{ $t("field_width_full") }}</option>
         <option value="fill">{{ $t("field_width_fill") }}</option>
       </v-simple-select>
-      <p class="note">{{ $t("field_width_note") }}</p>
-
-      <hr />
+      <p class="note type-note">{{ $t("field_width_note") }}</p>
 
       <form v-if="selectedInterfaceInfo" class="options" @submit.prevent>
         <div v-for="(option, optionID) in interfaceOptions.regular" :key="optionID" class="options">
-          <label :for="optionID">{{ option.name }}</label>
+          <label :for="optionID" class="type-label">{{ option.name }}</label>
           <v-ext-input
             :id="option.interface"
             :name="optionID"
@@ -517,7 +546,7 @@
             :values="options"
             @input="$set(options, optionID, $event)"
           />
-          <p class="note" v-html="$helpers.snarkdown(option.comment || '')" />
+          <p class="note type-note" v-html="$helpers.snarkdown(option.comment || '')" />
         </div>
 
         <details
@@ -531,7 +560,7 @@
             :key="optionID"
             class="options"
           >
-            <label :for="optionID">{{ option.name }}</label>
+            <label :for="optionID" class="type-label">{{ option.name }}</label>
             <v-ext-input
               :id="option.interface"
               :name="optionID"
@@ -546,7 +575,7 @@
               :values="options"
               @input="$set(options, optionID, $event)"
             />
-            <p class="note" v-html="$helpers.snarkdown(option.comment || '')" />
+            <p class="note type-note" v-html="$helpers.snarkdown(option.comment || '')" />
           </div>
         </details>
       </form>
@@ -782,11 +811,21 @@ export default {
       if (!this.selectedInterfaceInfo) return null;
       if (!this.selectedInterfaceInfo.relation) return null;
 
+      const relationsThatDontNeedSetup = ["file", "user"];
+
+      let relation;
+
       if (typeof this.selectedInterfaceInfo.relation === "string") {
-        return this.selectedInterfaceInfo.relation;
+        relation = this.selectedInterfaceInfo.relation;
+      } else {
+        relation = this.selectedInterfaceInfo.relation.type;
       }
 
-      return this.selectedInterfaceInfo.relation.type;
+      if (relationsThatDontNeedSetup.includes(relation)) {
+        relation = null;
+      }
+
+      return relation;
     },
     buttons() {
       let disabled = false;
@@ -796,7 +835,7 @@ export default {
       if (this.activeTab === "schema" && !this.field) {
         disabled = true;
       }
-      if (!this.isFieldValid && !this.existing) {
+      if (this.fieldValid && !this.existing) {
         disabled = true;
       }
 
@@ -973,8 +1012,6 @@ export default {
       }
     },
     field(val) {
-      this.field = this.validateFieldName(val);
-
       this.isFieldValid = !Object.keys(this.collectionInfo.fields).includes(val);
 
       if (this.relation) {
@@ -1045,7 +1082,7 @@ export default {
     this.useFieldInfo();
     this.initRelation();
 
-    this.activeTab = this.existing ? "schema" : "interface";
+    this.activeTab = this.existing ? "options" : "interface";
   },
   methods: {
     interfaceSubtitles(ext) {
@@ -1056,11 +1093,6 @@ export default {
       }
     },
     nextTab() {
-      if (this.existing && this.activeTab === "interface") {
-        this.initRelation();
-        return;
-      }
-
       if (this.existing) {
         return this.saveField();
       }
@@ -1096,7 +1128,10 @@ export default {
     },
     setInterface(id) {
       this.interfaceName = id;
-      this.nextTab();
+
+      if (!this.existing) {
+        this.nextTab();
+      }
     },
     saveField() {
       const fieldInfo = {
@@ -1116,8 +1151,8 @@ export default {
         hidden_browse: this.hidden_browse,
         primary_key: this.primary_key,
         validation: this.validation,
-        width: this.width
-        // translation: this.translation, < Haven't implemented that yet
+        width: this.width,
+        translation: this.translation
       };
 
       if (this.lengthDisabled === false) {
@@ -1503,22 +1538,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.style-0 {
-  max-width: 80%;
+.type-heading-medium {
+  // max-width: 80%;
   margin-bottom: 30px;
-}
-
-p {
-  line-height: 1.3;
-  max-width: 70%;
-  &.subtext {
-    max-width: 460px;
-    font-size: 16px;
-    color: var(--light-gray);
-    line-height: 26px;
-    font-weight: 400;
-    margin-bottom: 40px;
-  }
 }
 
 .currently-selected {
@@ -1529,26 +1551,16 @@ p {
   margin-bottom: 40px;
 }
 
-.small-text {
-  margin-top: 4px;
-  font-style: italic;
-  font-size: 12px;
-  line-height: 1.5em;
-  color: var(--light-gray);
+.type-note {
+  margin-top: var(--input-note-margin);
   & b {
-    font-weight: 600;
+    font-weight: var(--weight-bold);
   }
 }
 
 .note {
   display: block;
-  margin-top: 4px;
-  margin-bottom: 10px;
-  font-style: italic;
-  font-size: var(--size-3);
-  line-height: 1.5em;
-  color: var(--light-gray);
-  font-weight: var(--weight-bold);
+  margin-top: var(--input-note-margin);
 }
 
 .interfaces {
@@ -1558,8 +1570,6 @@ p {
 
   article {
     display: block;
-    background-color: var(--white);
-    box-shadow: var(--box-shadow);
     flex-basis: 160px;
     flex-shrink: 0;
     overflow: hidden;
@@ -1567,25 +1577,35 @@ p {
     cursor: pointer;
 
     .header {
-      background-color: var(--lighter-gray);
+      background-color: var(--card-background-color);
       border-radius: var(--border-radius);
       display: flex;
       justify-content: center;
       align-items: center;
       padding: 20px 0;
       transition: background-color var(--fast) var(--transition-out);
+      i {
+        color: var(--card-text-color-disabled) !important;
+      }
     }
 
     &.active {
       .header {
-        background-color: var(--darkest-gray);
+        background-color: var(--card-background-color-hover);
+        color: var(--card-text-color);
         transition: background-color var(--fast) var(--transition-in);
+        i {
+          color: var(--card-text-color) !important;
+        }
       }
     }
 
     &:hover {
       .header {
-        background-color: var(--gray);
+        background-color: var(--card-background-color-hover);
+        i {
+          color: var(--card-text-color) !important;
+        }
       }
     }
 
@@ -1601,18 +1621,19 @@ p {
     }
 
     p {
-      color: var(--lighter-gray);
-      font-size: 13px;
+      color: var(--note-text-color);
+      font-size: 14px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   }
 }
 
 form.schema {
-  label:not(.toggle) {
-    > .v-simple-select,
-    > .v-input {
-      margin-top: 10px;
-    }
+  .type-label {
+    margin-bottom: var(--input-label-margin);
+    display: inline-block;
   }
 
   .name {
@@ -1630,14 +1651,9 @@ form.schema {
     grid-gap: 32px 32px;
     grid-template-columns: 1fr 1fr;
 
-    .description {
+    .type-note {
       display: inline-block;
-      margin-top: 4px;
-      font-style: italic;
-      font-size: 12px;
-      line-height: 1.5em;
-      font-weight: 500;
-      color: var(--light-gray);
+      margin-top: var(--input-note-margin);
     }
 
     .toggle {
@@ -1648,24 +1664,21 @@ form.schema {
       cursor: pointer;
       width: max-content;
 
-      &:not(.disabled):hover {
-        color: var(--darkest-gray);
-      }
-
       > *:first-child {
         margin-right: 10px;
       }
+    }
 
-      &.disabled {
-        color: var(--light-gray);
-      }
+    .translation {
+      grid-column: 1 / span 2;
     }
   }
 }
 
 form.options {
+  margin-top: 30px;
   label {
-    margin-bottom: 8px;
+    margin-bottom: var(--input-label-margin);
   }
   div.options {
     margin-bottom: 30px;
@@ -1678,27 +1691,22 @@ form.options {
 details {
   position: relative;
   margin-top: 60px;
-  border-top: 2px solid var(--lightest-gray);
+  border-top: 2px solid var(--input-border-color);
   padding-top: 40px;
-  padding-bottom: 32px;
   summary {
-    position: absolute;
-    left: 50%;
-    top: -22px;
-    transform: translateX(-50%);
-    background-color: var(--body-background);
-    color: var(--light-gray);
-    font-size: 1.2rem;
-    line-height: 1.1;
+    font-size: 18px;
+    color: var(--note-text-color);
     font-weight: 400;
-    padding: 10px 20px;
-    text-align: center;
+    transition: var(--fast) var(--transition);
+    margin-top: -16px;
+    background-color: var(--page-background-color);
+    display: inline-block;
+    position: absolute;
+    top: 4px;
     cursor: pointer;
-    text-align: center;
-    text-transform: capitalize;
 
     &:hover {
-      color: var(--darker-gray);
+      color: var(--page-text-color);
     }
 
     &::-webkit-details-marker {
@@ -1707,19 +1715,26 @@ details {
 
     &::after {
       content: "unfold_more";
+      direction: ltr;
+      display: inline-block;
       font-family: "Material Icons";
       font-size: 18px;
-      margin-left: 2px;
-      vertical-align: -19%;
-      font-weight: normal;
+      color: var(--input-icon-color);
       font-style: normal;
-      display: inline-block;
+      font-weight: normal;
+      letter-spacing: normal;
       line-height: 1;
       text-transform: none;
-      letter-spacing: normal;
-      word-wrap: normal;
       white-space: nowrap;
-      font-feature-settings: "liga";
+      word-wrap: normal;
+      -webkit-font-feature-settings: "liga";
+      -webkit-font-smoothing: antialiased;
+      transition: var(--fast) var(--transition);
+      width: 28px;
+      height: 24px;
+      margin-left: 6px;
+      margin-top: 2px;
+      float: right;
     }
   }
 
@@ -1734,9 +1749,8 @@ details {
 }
 
 .required {
-  color: var(--darkest-gray);
+  color: var(--input-required-color);
   vertical-align: super;
-  font-size: 7px !important;
 }
 
 .single {
@@ -1750,11 +1764,11 @@ details {
   justify-content: center;
   align-items: center;
 
-  p:first-of-type {
+  span:first-of-type {
     grid-area: a;
   }
 
-  p:last-of-type {
+  span:last-of-type {
     grid-area: b;
   }
 
@@ -1778,8 +1792,8 @@ details {
 
   i {
     grid-area: f;
-    font-size: 20px;
-    color: var(--light-gray);
+    color: var(--input-border-color);
+    transform: translateX(-2px);
   }
 }
 
@@ -1841,8 +1855,8 @@ details {
 
   i {
     grid-area: l;
-    font-size: 20px;
-    color: var(--light-gray);
+    color: var(--input-border-color);
+    transform: translateX(-2px);
 
     &:last-of-type {
       grid-area: s;
@@ -1861,13 +1875,12 @@ details {
 }
 
 label {
-  font-size: var(--size-2);
-  margin-bottom: 12px;
+  margin-bottom: var(--input-label-margin);
 }
 
 hr {
   margin: 32px 0;
   border: 0;
-  border-top: 2px solid var(--lightest-gray);
+  border-top: 2px solid var(--blue-grey-50);
 }
 </style>

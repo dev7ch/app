@@ -2,10 +2,9 @@
   <div ref="searchFilter" :class="{ open }" class="search-filter">
     <v-header-button
       class="toggle"
-      icon-color="lighter-gray"
       :alert="hasFilters"
       icon="filter_list"
-      no-background
+      outline
       @click="open = !open"
     >
       Filter
@@ -54,18 +53,21 @@
             {{ fields[filter.field] }} {{ operators[filter.operator] }}
           </invisible-label>
           <div class="name">
-            <p>{{ fields[filter.field] }}</p>
-            <span>
+            <p class="field-name">{{ fields[filter.field] }}</p>
+            <span class="operator-name">
               {{ $t(operators[filter.operator]) }}
-              <v-icon name="arrow_drop_down" />
-              <select @change="updateFilter(i, 'operator', $event.target.value)">
+              <v-icon name="expand_more" size="18" />
+              <select
+                :value="filter.operator"
+                @change="updateFilter(i, 'operator', $event.target.value)"
+              >
                 <option v-for="(name, operator) in operators" :key="operator" :value="operator">
                   {{ $t(name) }}
                 </option>
               </select>
             </span>
             <button class="remove" @click="deleteFilter(i)">
-              {{ $t("remove") }}
+              <v-icon name="delete_outline" />
             </button>
           </div>
           <v-input
@@ -109,6 +111,10 @@ export default {
     fieldNames: {
       type: Array,
       default: () => []
+    },
+    collectionName: {
+      type: String,
+      default: null
     },
     filters: {
       type: Array,
@@ -155,7 +161,11 @@ export default {
     fields() {
       const fields = {};
       this.fieldNames.forEach(name => {
-        fields[name] = this.$helpers.formatTitle(name);
+        if (this.collectionName) {
+          fields[name] = this.$helpers.formatField(name, this.collectionName);
+        } else {
+          fields[name] = this.$helpers.formatTitle(name);
+        }
       });
       return fields;
     }
@@ -219,11 +229,11 @@ export default {
   left: 0;
   z-index: 19;
   padding: 20px;
-  color: var(--darkest-gray);
+  color: var(--blue-grey-900);
   transform-origin: top;
-  box-shadow: var(--box-shadow);
-  border-bottom: 2px solid var(--lighter-gray);
+  border-bottom: 2px solid var(--input-border-color);
   border-radius: 0 0 var(--border-radius) var(--border-radius);
+  background-color: var(--input-background-color-alt);
 
   @media (min-width: 800px) {
     left: var(--nav-sidebar-width);
@@ -231,8 +241,8 @@ export default {
   }
 
   @media (min-width: 1000px) {
-    border-left: 2px solid var(--lighter-gray);
-    border-right: 2px solid var(--lighter-gray);
+    border-left: 2px solid var(--input-border-color);
+    border-right: 2px solid var(--input-border-color);
     left: 0;
     width: 100%;
   }
@@ -252,20 +262,27 @@ export default {
   .name {
     display: flex;
     align-items: center;
-    font-size: 11px;
-    text-transform: uppercase;
-    margin-bottom: 5px;
-    color: var(--dark-gray);
-    font-weight: 700;
+    margin-bottom: 4px;
+    color: var(--input-placeholder-color);
+    font-weight: var(--weight-bold);
 
-    span {
+    .field-name {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: var(--input-text-color);
+    }
+
+    .operator-name {
       position: relative;
-      color: var(--darkest-gray);
-      margin-left: 5px;
+      margin-left: 8px;
       padding-right: 2em;
       flex-grow: 1;
       display: flex;
       align-items: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
 
       select {
         position: absolute;
@@ -284,15 +301,21 @@ export default {
     }
 
     .remove {
-      text-transform: uppercase;
       opacity: 0;
       transition: var(--fast) var(--transition);
       transition-property: color, opacity;
-      color: var(--gray);
+      color: var(--input-text-color);
+
+      i {
+        color: var(--input-icon-color);
+        margin-left: 8px;
+      }
 
       &:hover,
       .user-is-tabbing &:focus {
-        color: var(--danger);
+        i {
+          color: var(--danger);
+        }
         opacity: 1;
       }
     }
@@ -344,33 +367,38 @@ export default {
 
     .search {
       width: 100%;
-      height: var(--input-height);
+      height: 44px;
       border-radius: 22px;
       display: block;
-      border: 2px solid var(--lighter-gray);
-      color: var(--gray);
+      border: 2px solid var(--input-border-color);
       padding: 10px 40px 10px 40px;
       line-height: 1.5;
       transition: var(--fast) var(--transition);
       transition-property: color, border-color, padding, border-radius;
+      color: var(--input-text-color);
+      background-color: var(--input-background-color);
 
       &::placeholder {
-        color: var(--light-gray);
+        color: var(--input-placeholder-color);
+      }
+
+      &:hover {
+        border-color: var(--input-border-color-hover);
+        outline: 0;
       }
 
       &:focus {
-        color: var(--darker-gray);
-        border-color: var(--gray);
+        border-color: var(--input-border-color-focus);
         outline: 0;
       }
 
       &:focus + i {
-        color: var(--darker-gray);
+        color: var(--blue-grey-800);
       }
 
       &:-webkit-autofill {
-        color: var(--dark-gray) !important;
-        -webkit-text-fill-color: var(--dark-gray) !important;
+        color: var(--input-text-color) !important;
+        -webkit-text-fill-color: var(--input-text-color) !important;
       }
 
       &:-webkit-autofill,
@@ -397,7 +425,7 @@ export default {
       }
 
       > i {
-        color: var(--lighter-gray);
+        color: var(--input-border-color);
         left: 10px;
       }
 
@@ -406,12 +434,13 @@ export default {
       }
 
       .toggle {
+        transition: all var(--fast) var(--transition);
         right: 10px;
-        color: var(--gray);
+        color: var(--input-border-color);
 
         &:hover,
         .user-is-tabbing &:focus {
-          color: var(--darker-gray);
+          color: var(--input-text-color);
         }
 
         &::after {
@@ -424,7 +453,7 @@ export default {
           position: absolute;
           top: -3%;
           right: -3%;
-          border: 2px solid var(--white);
+          border: 2px solid var(--input-background-color);
           transform: scale(0);
           transition: transform var(--fast) var(--transition-out);
         }
@@ -437,8 +466,8 @@ export default {
       }
 
       .clear-filters {
-        right: 40px;
-        color: var(--gray);
+        right: 36px;
+        color: var(--input-text-color);
 
         &:hover,
         .user-is-tabbing &:focus {
@@ -454,11 +483,13 @@ export default {
     &.open {
       .toggle {
         i {
-          color: var(--darker-gray);
+          color: var(--input-text-color);
         }
       }
 
       .search {
+        border-top-left-radius: var(--border-radius);
+        border-top-right-radius: var(--border-radius);
         border-bottom-left-radius: 0;
         border-bottom-right-radius: 0;
       }
@@ -474,7 +505,7 @@ export default {
 
     &.open,
     &:focus-within {
-      width: 300px;
+      width: 344px;
     }
   }
 }

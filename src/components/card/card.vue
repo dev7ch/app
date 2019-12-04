@@ -6,7 +6,8 @@
       selected,
       selectable,
       'selection-mode': selectionMode,
-      disabled
+      disabled,
+      'text-background': textBackground
     }"
     class="v-card"
     @click="$emit('click', $event)"
@@ -16,7 +17,10 @@
         v-if="src || icon || $slots.icon"
         :style="{ backgroundColor: `var(--${color})` }"
         class="header"
-        :class="{ 'big-image': bigImage && src && !error }"
+        :class="{
+          'big-image': bigImage && src && !error,
+          'medium-image': mediumImage && src && !error
+        }"
       >
         <button v-if="selectable" type="button" class="select" @click.stop="$emit('select')">
           <v-icon :name="selectionIcon" />
@@ -53,17 +57,15 @@
             {{ title }}
           </component>
 
-          <div v-if="$slots.subtitle" class="subtitle">
+          <div v-if="$slots.subtitle" class="subtitle type-note">
             <slot name="subtitle"></slot>
           </div>
-          <p v-else-if="subtitle" class="subtitle">{{ subtitle }}</p>
-
-          <div v-if="$slots.content" class="content">
-            <slot name="content"></slot>
-          </div>
-          <p v-else-if="body" class="content">{{ body }}</p>
+          <p v-else-if="subtitle" class="subtitle type-note">
+            {{ subtitle }}
+          </p>
         </div>
         <v-contextual-menu
+          v-if="options"
           :disabled="disabled"
           :options="options"
           @click="$emit($event)"
@@ -91,7 +93,11 @@ export default {
     },
     color: {
       type: String,
-      default: "gray"
+      default: "card-background-color"
+    },
+    textBackground: {
+      type: Boolean,
+      default: false
     },
     src: {
       type: String,
@@ -102,10 +108,6 @@ export default {
       default: null
     },
     subtitle: {
-      type: String,
-      default: null
-    },
-    body: {
       type: String,
       default: null
     },
@@ -145,6 +147,10 @@ export default {
       default: false
     },
     bigImage: {
+      type: Boolean,
+      default: false
+    },
+    mediumImage: {
       type: Boolean,
       default: false
     }
@@ -197,10 +203,24 @@ export default {
 
 <style lang="scss" scoped>
 .v-card {
-  width: 136px;
+  width: var(--card-size);
   overflow: hidden;
   transition: box-shadow var(--fast) var(--transition);
   cursor: pointer;
+
+  &.text-background {
+    .header {
+      border-radius: var(--border-radius) var(--border-radius) 0 0;
+      &.medium-image {
+        height: 248px;
+      }
+    }
+    .body {
+      padding: 8px 12px;
+      background-color: var(--input-background-color-alt);
+      border-radius: 0 0 var(--border-radius) var(--border-radius);
+    }
+  }
 
   a {
     text-decoration: none;
@@ -208,17 +228,20 @@ export default {
     user-select: none;
   }
 
-  &:not(.disabled):hover,
-  &:not(.disabled).selected {
-    .header:not(.big-image) {
-      background-color: var(--dark-gray) !important;
+  &.link {
+    &:not(.disabled):hover,
+    &:not(.disabled).selected {
+      .header:not(.big-image) {
+        background-color: var(--card-background-color-hover) !important;
+      }
     }
   }
 
   .header {
     transition: all var(--fast) var(--transition);
-    height: 136px;
+    height: var(--card-size);
     border-radius: var(--border-radius);
+    background-color: var(--card-background-color);
     overflow: hidden;
     display: grid;
     grid-template-columns: 1;
@@ -229,6 +252,10 @@ export default {
 
     &.big-image {
       height: 400px;
+    }
+
+    &.medium-image {
+      height: 300px;
     }
 
     &.small {
@@ -273,7 +300,7 @@ export default {
 
     .icon {
       font-size: 64px;
-      color: var(--white);
+      color: var(--card-text-color);
       text-align: center;
     }
 
@@ -296,7 +323,7 @@ export default {
       border-radius: var(--border-radius);
       opacity: 0.5;
       background-color: var(--white);
-      color: var(--darker-gray);
+      color: var(--blue-grey-800);
       backdrop-filter: blur(5px);
       font-size: 10px;
       text-transform: uppercase;
@@ -307,9 +334,13 @@ export default {
     cursor: not-allowed;
 
     & .header {
-      & .icon,
+      & .icon {
+        color: var(--card-text-color-disabled) !important;
+      }
       & .custom-icon {
-        opacity: 0.3;
+        svg {
+          fill: var(--card-text-color-disabled) !important;
+        }
       }
     }
   }
@@ -338,17 +369,10 @@ export default {
   .title {
     margin-bottom: 2px;
   }
-  .subtitle {
-    color: var(--light-gray);
-    font-size: 13px;
-  }
 
-  .content {
-    font-size: 11px;
-    color: var(--gray);
-    max-height: 114px; // 8 lines of text
-    overflow: hidden;
-    margin-top: 10px;
+  .subtitle {
+    color: var(--note-text-color);
+    font-size: 13px;
   }
 
   .error {
@@ -368,7 +392,7 @@ export default {
       left: 0;
       top: 0;
       opacity: 0;
-      background-image: linear-gradient(-180deg, #263238 4%, rgba(38, 50, 56, 0) 100%);
+      background-image: linear-gradient(-180deg, #263238 10%, rgba(38, 50, 56, 0) 100%);
       transition: opacity var(--fast) var(--transition);
     }
 
@@ -392,7 +416,7 @@ export default {
       }
 
       .header::before {
-        opacity: 0.2;
+        opacity: 0.3;
       }
     }
 

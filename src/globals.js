@@ -8,13 +8,14 @@ import VCard from "./components/card/card.vue";
 import VDetails from "./components/details.vue";
 import VNotice from "./components/notice.vue";
 import VTable from "./components/table/table.vue";
+import VTimeAgo from "./components/time-ago.vue";
 
 // Extensions
 import VExtInput from "./components/extension/interface/input/input.vue";
 import VExtDisplay from "./components/extension/interface/display/display.vue";
 import VExtLayout from "./components/extension/layout/layout/layout.vue";
 import VExtLayoutOptions from "./components/extension/layout/layout-options/layout-options.vue";
-import VExtPage from "./components/extension/page/page.vue";
+import VExtModule from "./components/extension/module/module.vue";
 
 // Item listing
 import VItems from "./components/items.vue";
@@ -53,9 +54,12 @@ import VIcon from "./components/icon.vue";
 import VTag from "./components/tag.vue";
 
 import VItemSelect from "./components/item-select/item-select.vue";
+import VProgress from "./components/progress.vue";
+import VUserPopover from "./components/user-popover.vue";
+import VSheet from "./components/sheet.vue";
 
 // Extensions
-Vue.component("v-ext-page", VExtPage);
+Vue.component("v-ext-module", VExtModule);
 Vue.component("v-ext-input", VExtInput);
 Vue.component("v-ext-display", VExtDisplay);
 Vue.component("v-ext-layout", VExtLayout);
@@ -99,6 +103,7 @@ Vue.component("v-card", VCard);
 Vue.component("v-details", VDetails);
 Vue.component("v-notice", VNotice);
 Vue.component("v-table", VTable);
+Vue.component("v-time-ago", VTimeAgo);
 
 Vue.component("v-upload", VUpload);
 Vue.component("v-progress-ring", VProgressRing);
@@ -106,3 +111,6 @@ Vue.component("v-icon", VIcon);
 Vue.component("v-tag", VTag);
 Vue.component("v-contextual-menu", VContextualMenu);
 Vue.component("v-item-select", VItemSelect);
+Vue.component("v-progress", VProgress);
+Vue.component("v-user-popover", VUserPopover);
+Vue.component("v-sheet", VSheet);

@@ -273,8 +273,6 @@ export default {
               return new Code();
             case "code_block":
               return new CodeBlock();
-            case "hardbreak":
-              return new HardBreak();
             case "history":
               return new History();
             case "horizontal_rule":
@@ -300,6 +298,7 @@ export default {
             default:
               return [
                 new Heading(),
+                new HardBreak(),
                 new Placeholder({
                   emptyClass: "is-empty",
                   emptyNodeText: this.options.placeholder,

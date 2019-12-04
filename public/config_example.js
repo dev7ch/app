@@ -6,19 +6,12 @@
     // Object values are used as project name in the app
     // Don't forget to add the API environment!
     api: {
-      "https://d7api.campusderkuenste.ch/llad/" : "LLAD",
-      "https://d7api.campusderkuenste.ch/lom/" : "LLAD - LOM",
-      "https://d7api.campusderkuenste.ch/iid/" : "IID",
-      "https://d7api.campusderkuenste.ch/cdk/" : "CDK",
-      "https://d7api.campusderkuenste.ch/media1/": "Mediathek 1",
-      "https://d7api.campusderkuenste.ch/media2/": "KunstGestaltungsBibliothek",
-      "https://d7api.campusderkuenste.ch/_/" : "Testumgebung",
-      "https://hgk.dev7.ch/act/" : "ACT Test",
+      "../_/": "Directus Demo API"
     },
 
     // Allow the user to connect to any API by entering a URL in a text field
     //   instead of selecting from a dropdown
-    allowOtherAPI: true,
+    allowOtherAPI: false,
 
     // Controls the way the application routes. By default, routing is done using
     //   hashes (#) to ensure the app works without any server url rewrites.

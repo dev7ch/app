@@ -1,3 +1,6 @@
+// Reset store
+export const RESET = "🔥 Reset State";
+
 // Auth
 export const LOGIN_PENDING = "🔒 Login Pending";
 export const LOGIN_SUCCESS = "🔒✅ Login Successful";
@@ -35,7 +38,7 @@ export const REMOVE_FIELD = "📌 Remove Field";
 // Extensions
 export const SET_INTERFACES = "📦 Set Interfaces";
 export const SET_LAYOUTS = "📦 Set Layouts";
-export const SET_PAGES = "📦 Set Pages";
+export const SET_MODULES = "📦 Set Modules";
 
 // Hydrate
 export const STORE_HYDRATED = "🏪 Store Hydrated";
@@ -74,3 +77,13 @@ export const SET_USERS = "👯‍♀️ Set Users";
 // Notifications
 export const PUSH_NOTIFICATION = "💬 Push Notification";
 export const REMOVE_NOTIFICATION = "💬❌ Remove Notification";
+
+// Projects
+export const SET_CURRENT_PROJECT = "🌟 Set Current Project";
+export const UPDATE_PROJECT = "🌟 Update Project";
+export const SET_PROJECT_STATUS = "🌟 Set Status";
+export const INIT_PROJECTS = "🌟 Initialize Projects";
+
+// Settings
+export const SET_SETTINGS = "⚙️ Set Settings";
+export const SET_SETTING = "⚙️ Set Setting";

@@ -14,6 +14,7 @@ import "./design/main.scss";
 import "./globals";
 import "./helpers/handle-focus";
 import "./helpers/handle-drag";
+import { startPolling } from "@/latency";
 
 // import "./registerServiceWorker";
 import App from "./app.vue";
@@ -25,6 +26,12 @@ import helpers from "./helpers";
 import notify from "./notifications";
 import events from "./events/";
 
+import allSettled from "promise.allsettled";
+
+// This is a polyfill for Promise.allSettled. Can be removed in the future when the browser support
+// is there
+allSettled.shim();
+
 Vue.config.productionTip = false;
 
 // Make lodash globally available under it's common name `_`
@@ -33,13 +40,13 @@ window._ = lodash;
 Object.defineProperties(Vue.prototype, {
   $api: { value: api },
   $notify: { value: notify },
-  $axios: { value: axios },
+  $axios: { value: axios }
+});
 
-  // TODO: Remove this in/after 7.4
-  $lodash: {
-    get() {
-      console.warn("[Directus] this.$lodash is deprecated. Use _ instead.");
-      return _;
+Vue.directive("focus", {
+  inserted(el, binding) {
+    if (binding.value === undefined || Boolean(binding.value) !== false) {
+      el.focus();
     }
   }
 });
@@ -50,6 +57,7 @@ Vue.use(VTooltip, {
     show: 500
   },
   defaultOffset: 2,
+  defaultBoundariesElement: document.body,
   autoHide: false
 });
 Vue.use(PortalVue);
@@ -66,7 +74,7 @@ Vue.use(meta);
 Vue.component("draggable", VueDraggable);
 
 /* eslint-disable no-new */
-new Vue({
+const app = new Vue({
   render: h => h(App),
   router,
   i18n,
@@ -75,4 +83,15 @@ new Vue({
   helpers
 }).$mount("#app");
 
-store.watch(state => state.currentUser.locale, locale => loadLanguageAsync(locale));
+store.watch(
+  state => state.currentUser.locale,
+  locale => loadLanguageAsync(locale)
+);
+store.watch(
+  state => state.currentProjectKey,
+  key => (api.config.project = key)
+);
+
+startPolling();
+
+export default app;

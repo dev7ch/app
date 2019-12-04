@@ -30,12 +30,18 @@
     "description": {
       "name": "$t:desc-name",
       "comment": "$t:desc-comment",
-      "interface": "text-input",
-      "default": "An optional description of this divider or section"
+      "interface": "text-input"
     },
     "hr": {
       "name": "$t:hr-name",
       "comment": "$t:hr-comment",
+      "interface": "toggle",
+      "type": "BOOLEAN",
+      "default": true
+    },
+    "margin": {
+      "name": "$t:margin-name",
+      "comment": "$t:margin-comment",
       "interface": "toggle",
       "type": "BOOLEAN",
       "default": true
@@ -53,7 +59,9 @@
       "desc-name": "Divider description",
       "desc-comment": "Add here a description",
       "hr-name": "HR",
-      "hr-comment": "Display a horizontal rule?"
+      "hr-comment": "Display a horizontal rule?",
+      "margin-name": "Extra Margin",
+      "margin-comment": "Add extra margin above interface"
     },
 	"fr-FR": {
       "divider": "Intercalaire",

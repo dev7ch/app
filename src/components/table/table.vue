@@ -30,35 +30,31 @@
         class="cell"
       >
         <button
-          v-if="
-            sortable &&
-              !(
-                columns[index].fieldInfo.type.toLowerCase() === 'o2m' ||
-                columns[index].fieldInfo.type.toLowerCase() === 'm2o' ||
-                columns[index].fieldInfo.type.toLowerCase() === 'translation' ||
-                columns[index].fieldInfo.type.toLowerCase() === 'alias'
-              )
-          "
+          v-if="sortable && !isRelational(columns[index].fieldInfo)"
           :class="{ active: sortVal.field === field }"
-          class="sort style-4 no-wrap"
+          class="sort type-table-head no-wrap"
           @click="updateSort(field)"
         >
-          {{ widths[field] > 40 ? name : null }}
-          <v-icon class="sort-arrow" :name="sortVal.asc ? 'arrow_upward' : 'arrow_downward'" />
+          {{
+            widths[field] > 40
+              ? $helpers.formatField(field, columns[index].fieldInfo.collection)
+              : null
+          }}
+          <v-icon
+            class="sort-icon"
+            color="input-border-color-hover"
+            size="24"
+            name="sort"
+            :class="sortVal.asc ? 'asc' : 'desc'"
+          />
         </button>
 
         <span
           v-else
           v-tooltip="
-            (columns[index].fieldInfo && columns[index].fieldInfo.type.toLowerCase() === 'o2m') ||
-            (columns[index].fieldInfo && columns[index].fieldInfo.type.toLowerCase() === 'm2o') ||
-            (columns[index].fieldInfo && columns[index].fieldInfo.type.toLowerCase() === 'alias') ||
-            (columns[index].fieldInfo &&
-              columns[index].fieldInfo.type.toLowerCase() === 'translation')
-              ? $t('cant_sort_by_this_field')
-              : undefined
+            isRelational(columns[index].fieldInfo) ? $t('cant_sort_by_this_field') : undefined
           "
-          class="style-4"
+          class="type-table-head"
         >
           {{ widths[field] > 40 ? name : null }}
         </span>
@@ -139,6 +135,7 @@
                 :options="fieldInfo.options"
                 :value="row[field]"
                 :relation="fieldInfo.relation"
+                class="ellipsis"
               />
               <template v-else>
                 {{ row[field] }}
@@ -193,13 +190,15 @@
     </div>
     <transition name="fade">
       <div v-if="lazyLoading" class="lazy-loader">
-        <v-spinner line-fg-color="var(--light-gray)" line-bg-color="var(--lighter-gray)" />
+        <v-spinner line-fg-color="var(--blue-grey-300)" line-bg-color="var(--blue-grey-200)" />
       </div>
     </transition>
   </div>
 </template>
 
 <script>
+import isRelational from "@/helpers/is-relational";
+
 export default {
   name: "VTable",
   props: {
@@ -324,6 +323,7 @@ export default {
     }
   },
   methods: {
+    isRelational: isRelational,
     isNil(val) {
       return _.isNil(val);
     },
@@ -385,6 +385,7 @@ export default {
       img.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
       event.dataTransfer.setDragImage(img, 0, 0);
       event.dataTransfer.effectAllowed = "move";
+      event.dataTransfer.setData("text/plain", null); //Just to enable/make the drag event to be triggered in the Firefox browser
     },
     initWidths() {
       const widths = {};
@@ -461,7 +462,7 @@ export default {
   display: flex;
   align-items: center;
   padding: 0;
-  border-bottom: 2px solid var(--off-white);
+  border-bottom: 2px solid var(--table-row-border-color);
   box-sizing: content-box;
 }
 
@@ -471,8 +472,8 @@ export default {
   left: 0;
   top: 0;
   z-index: +1;
-  background-color: var(--white);
-  border-color: var(--lightest-gray);
+  background-color: var(--page-background-color);
+  border-color: var(--table-head-border-color);
   transition: box-shadow var(--fast) var(--transition-out);
 
   &.shadow {
@@ -504,14 +505,14 @@ export default {
 }
 
 .drag-handle-line {
-  background-color: var(--lightest-gray);
-  width: 1px;
+  background-color: var(--input-border-color);
+  width: 2px;
   height: 60%;
   transition: background-color var(--fast) var(--transition);
 }
 
 .drag-handle:hover .drag-handle-line {
-  background-color: var(--gray);
+  background-color: var(--input-border-color-hover);
 }
 
 .toolbar:hover .drag-handle {
@@ -521,7 +522,7 @@ export default {
 
 .row {
   opacity: 1;
-  background-color: var(--white);
+  background-color: var(--page-background-color);
   box-sizing: border-box;
 }
 
@@ -531,15 +532,11 @@ export default {
 }
 
 .dragging .row.link:hover {
-  background-color: var(--white);
+  background-color: var(--page-background-color);
 }
 
 .row.selected {
   background-color: var(--highlight);
-}
-
-.sort.active {
-  color: var(--dark-gray);
 }
 
 .cell {
@@ -556,7 +553,7 @@ export default {
 }
 
 .empty {
-  color: var(--lighter-gray);
+  color: var(--empty-value);
 }
 
 .toolbar .cell:not(.select) {
@@ -565,28 +562,36 @@ export default {
   align-items: center;
 }
 
+// Table column header
 .sort {
   width: 100%;
   height: 100%;
   text-align: left;
   transition: color var(--fast) var(--transition);
   position: relative;
+
+  &.active {
+    //
+  }
+
+  &:hover {
+    //
+  }
 }
 
-.sort:hover {
-  color: var(--darker-gray);
-}
-
-.sort-arrow {
+.sort-icon {
   opacity: 0;
-  font-size: 12px !important;
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  margin-left: 5px;
+  margin-left: 4px;
+  &.asc {
+    transform-origin: center 6px;
+    transform: scaleY(-1);
+  }
 }
 
-.active .sort-arrow {
+.active .sort-icon {
   opacity: 1;
 }
 
@@ -600,28 +605,28 @@ export default {
 
 .toolbar .manual-sort {
   button {
-    color: var(--light-gray);
+    color: var(--input-border-color);
     transition: color var(--fast) var(--transition);
 
     &:hover {
       transition: none;
-      color: var(--dark-gray);
+      color: var(--input-border-color-hover);
     }
   }
 
   &.active button {
-    color: var(--darkest-gray);
+    color: var(--input-border-color-focus);
   }
 }
 
 .body .manual-sort {
   cursor: not-allowed;
-  color: var(--lightest-gray);
+  color: var(--input-background-color-disabled);
 
   &.active {
     cursor: grab;
     cursor: -webkit-grab;
-    color: var(--gray);
+    color: var(--input-border-color);
   }
 }
 
@@ -632,10 +637,10 @@ export default {
 .dragging .sortable-chosen,
 .sortable-chosen:active {
   background-color: var(--highlight) !important;
-  color: var(--darkest-gray);
+  color: var(--blue-grey-900);
 
   .manual-sort {
-    color: var(--darkest-gray);
+    color: var(--blue-grey-700);
   }
 }
 
@@ -654,11 +659,11 @@ export default {
 
 @keyframes bounce {
   from {
-    border-color: var(--off-white);
+    border-color: var(--table-row-border-color);
   }
 
   to {
-    border-color: var(--lightest-gray);
+    border-color: var(--table-head-border-color);
   }
 }
 
@@ -682,5 +687,11 @@ export default {
 .fade-enter,
 .fade-leave-to {
   opacity: 0;
+}
+
+.ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>

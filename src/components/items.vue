@@ -29,9 +29,7 @@
   />
 
   <v-error
-    v-else-if="
-      items.data && items.data.length === 0 && (items.meta && items.meta.total_count !== 0)
-    "
+    v-else-if="items.data && items.data.length === 0 && items.meta && items.meta.total_count !== 0"
     :title="$t('no_results')"
     :body="$t('no_results_body')"
     icon="search"
@@ -60,6 +58,7 @@
 
 <script>
 import formatFilters from "../helpers/format-filters";
+import { mapState } from "vuex";
 
 export default {
   name: "VItems",
@@ -111,6 +110,7 @@ export default {
     };
   },
   computed: {
+    ...mapState(["currentProjectKey"]),
     allSelected() {
       const primaryKeys = this.items.data.map(item => item[this.primaryKeyField]).sort();
       const selection = [...this.selection];
@@ -146,7 +146,7 @@ export default {
       return (
         _.mapValues(fields, field => ({
           ...field,
-          name: this.$helpers.formatTitle(field.field)
+          name: this.$helpers.formatField(field.field, field.collection)
         })) || {}
       );
     },
@@ -227,17 +227,34 @@ export default {
           this.$store.dispatch("loadingFinished", id);
 
           if (this.links) {
-            this.items.data = res.data.map(item => ({
-              ...item,
-              __link__: this.collection.startsWith("directus_")
-                ? `/${this.collection.substr(9)}/${item[this.primaryKeyField]}`
-                : `/collections/${this.collection}/${item[this.primaryKeyField]}`
-            }));
+            this.items.data = res.data.map(item => {
+              let link = `/${this.currentProjectKey}/collections/${this.collection}/${
+                item[this.primaryKeyField]
+              }`;
+
+              if (this.collection.startsWith("directus_")) {
+                link = `/${this.currentProjectKey}/${this.collection.substr(9)}/${
+                  item[this.primaryKeyField]
+                }`;
+              }
+
+              if (this.collection === "directus_webhooks") {
+                link = `/${this.currentProjectKey}/settings/webhooks/${item[this.primaryKeyField]}`;
+              }
+
+              return {
+                ...item,
+                __link__: link
+              };
+            });
           } else {
             this.items.data = res.data;
           }
 
-          this.$emit("fetch", res.meta);
+          this.$emit("fetch", {
+            ...res.meta,
+            local_count: this.items.data.length
+          });
         })
         .catch(error => {
           console.error(error); // eslint-disable-line no-console
@@ -375,7 +392,10 @@ export default {
             this.items.data = [...this.items.data, ...res.data];
           }
 
-          this.$emit("fetch", res.meta);
+          this.$emit("fetch", {
+            ...res.meta,
+            local_count: this.items.data.length
+          });
         })
         .catch(error => {
           console.error(error); // eslint-disable-line no-console
@@ -386,8 +406,8 @@ export default {
     formatParams() {
       let params = {
         meta: "total_count,result_count",
-        limit: 100,
-        offset: 100 * this.items.page
+        limit: this.$store.state.settings.values.default_limit,
+        offset: this.$store.state.settings.values.default_limit * this.items.page
       };
 
       Object.assign(params, this.viewQuery);
@@ -399,6 +419,25 @@ export default {
 
         if (!params.fields.includes(this.primaryKeyField)) {
           params.fields.push(this.primaryKeyField);
+        }
+
+        /*
+          For non-admin users if created_at and status field is available in
+          collection fetch it from API even if it is set hidden from info sidebar.
+          Because for checking role_only and mine permissions while batch updating
+          or deleting data this fields are required.
+          Fix 2123
+        */
+        if (!this.$store.state.currentUser.admin) {
+          if (
+            this.userCreatedField !== undefined &&
+            !params.fields.includes(`${this.userCreatedField}.*`)
+          ) {
+            params.fields.push(`${this.userCreatedField}.*`);
+          }
+          if (this.statusField !== null && !params.fields.includes(`${this.statusField}.*`)) {
+            params.fields.push(`${this.statusField}.*`);
+          }
         }
 
         params.fields = params.fields.join(",");

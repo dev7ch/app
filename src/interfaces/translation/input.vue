@@ -11,7 +11,7 @@
       {{ $t("interfaces-translation-translation_no_languages") }}
     </p>
   </div>
-  <div v-else-if="activeLanguage" class="translation">
+  <div v-else-if="activeLanguage != null" class="translation">
     <v-simple-select
       v-model="activeLanguage"
       class="language-select"
@@ -114,14 +114,22 @@ export default {
               name: language[nameField]
             };
           });
-
-          this.activeLanguage =
-            this.options.defaultLanguage ||
-            languages[0][
-              _.find(this.languageFields, {
-                primary_key: true
-              }).field
-            ];
+          /*
+            When no default translation language is selected,display the placeholder and
+            when updating item if translation is added, display it otherwise display
+            the placeholder.
+            Fix 2099
+          */
+          if (this.values.translation == null) {
+            this.activeLanguage = this.options.defaultLanguage ? this.options.defaultLanguage : 0;
+          } else {
+            this.activeLanguage =
+              languages[0][
+                _.find(this.languageFields, {
+                  primary_key: true
+                }).field
+              ];
+          }
         });
     },
     stageValue({ field, value }) {
@@ -177,7 +185,7 @@ export default {
 .translation {
   width: 100%;
   padding: var(--page-padding);
-  border: var(--input-border-width) solid var(--lighter-gray);
+  border: var(--input-border-width) solid var(--input-border-color);
   border-radius: var(--border-radius);
 
   &.disabled {
@@ -208,12 +216,12 @@ export default {
 hr {
   margin: 20px 0;
   border: 0;
-  border-bottom: 1px dashed var(--lighter-gray);
+  border-bottom: 1px dashed var(--blue-grey-200);
 }
 
 .form {
   grid-template-columns:
-    [start] minmax(0, var(--column-width)) [half] minmax(0, var(--column-width))
+    [start] minmax(0, var(--form-column-width)) [half] minmax(0, var(--form-column-width))
     [full];
 }
 </style>

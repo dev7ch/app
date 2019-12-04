@@ -1,6 +1,8 @@
 <template>
   <v-modal
-    :title="$t('duplicating_field') + ': ' + $helpers.formatTitle(fieldInfo.field)"
+    :title="
+      $t('duplicating_field') + ': ' + $helpers.formatField(fieldInfo.field, fieldInfo.collection)
+    "
     :buttons="buttons"
     @save="saveField()"
     @close="$emit('close')"
@@ -190,7 +192,7 @@ form.options {
   }
 
   .required {
-    color: var(--darkest-gray);
+    color: var(--blue-grey-900);
     vertical-align: super;
     font-size: 7px;
   }
@@ -200,7 +202,7 @@ form.options {
     font-style: italic;
     font-size: 12px;
     line-height: 1.5em;
-    color: var(--light-gray);
+    color: var(--blue-grey-300);
     & b {
       font-weight: 600;
     }

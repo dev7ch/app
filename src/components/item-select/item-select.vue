@@ -22,10 +22,10 @@
         <div class="select">
           <select v-model="sortField">
             <option v-for="field in fields" :key="field" :value="field">
-              {{ $helpers.formatTitle(field) }}
+              {{ $helpers.formatField(field, collection) }}
             </option>
           </select>
-          <v-icon name="arrow_drop_down" color="light-gray" />
+          <v-icon name="arrow_drop_down" color="input-icon-color" />
         </div>
 
         <div class="select">
@@ -33,7 +33,7 @@
             <option value="asc">↑</option>
             <option value="desc">↓</option>
           </select>
-          <v-icon name="arrow_drop_down" color="light-gray" />
+          <v-icon name="arrow_drop_down" color="input-icon-color" />
         </div>
       </div>
 
@@ -50,7 +50,9 @@
           <!-- Checkboxes -->
           <span />
           <span v-if="collection === 'directus_files'">{{ $t("file") }}</span>
-          <span v-for="field in fields" :key="field">{{ $helpers.formatTitle(field) }}</span>
+          <span v-for="field in fields" :key="field">
+            {{ $helpers.formatField(field, collection) }}
+          </span>
         </div>
 
         <label v-for="item in items" :key="uid + '_' + item[primaryKeyField]">
@@ -67,10 +69,20 @@
               :name="
                 isChecked(item[primaryKeyField]) ? 'radio_button_checked' : 'radio_button_unchecked'
               "
+              :color="
+                isChecked(item[primaryKeyField])
+                  ? 'input-background-color-active'
+                  : 'input-border-color'
+              "
             />
             <v-icon
               v-else
               :name="isChecked(item[primaryKeyField]) ? 'check_box' : 'check_box_outline_blank'"
+              :color="
+                isChecked(item[primaryKeyField])
+                  ? 'input-background-color-active'
+                  : 'input-border-color'
+              "
             />
           </div>
 
@@ -102,8 +114,6 @@
       <v-button
         v-if="moreItemsAvailable && !hydrating"
         class="more"
-        bg="gray"
-        color="black"
         :loading="loading"
         @click="loadMore"
       >
@@ -317,7 +327,10 @@ export default {
       }
 
       if (this.value.includes(primaryKey)) {
-        this.$emit("input", this.value.filter(pk => pk !== primaryKey));
+        this.$emit(
+          "input",
+          this.value.filter(pk => pk !== primaryKey)
+        );
       } else {
         this.$emit("input", [...this.value, primaryKey]);
       }
@@ -351,7 +364,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .items {
   display: table;
   min-width: 100%;
@@ -371,22 +384,23 @@ export default {
   display: block;
   top: 0px;
   font-weight: 500;
-  background-color: var(--white);
+  background-color: var(--page-background-color);
 }
 .items .head > * {
   display: table-cell;
-  border-bottom: 2px solid var(--lightest-gray);
+  border-bottom: 2px solid var(--table-head-border-color);
   padding: 12px 32px 12px 0;
 }
 .items label > * {
   display: table-cell;
-  border-bottom: 2px solid var(--off-white);
+  border-bottom: 2px solid var(--table-row-border-color);
   padding: 8px 32px 8px 0;
 }
 .items label > *:first-child,
 .items .head > *:first-child {
-  max-width: 20px;
-  padding: 8px 32px 8px 0;
+  max-width: 40px;
+  padding: 8px 8px 8px 0;
+  width: 40px;
 }
 .input input,
 .search-sort input[type="checkbox"] {
@@ -404,7 +418,7 @@ export default {
 }
 .search-sort {
   display: flex;
-  border-bottom: 2px solid var(--lightest-gray);
+  border-bottom: 2px solid var(--modal-header-background-color);
   padding: 8px 0;
   padding-right: 32px;
   align-items: center;
@@ -416,9 +430,10 @@ export default {
   border-radius: 0;
   padding: 8px 0 8px 32px;
   appearance: none;
+  background-color: var(--page-background-color);
 }
 .search-sort input[type="search"]::placeholder {
-  color: var(--lighter-gray);
+  color: var(--input-placeholder-color);
 }
 .search-sort .select {
   position: relative;
@@ -428,13 +443,13 @@ export default {
   appearance: none;
   background-color: transparent;
   margin-left: 16px;
-  border: 2px solid var(--lightest-gray);
+  border: 2px solid var(--input-border-color);
   padding: 4px 8px;
   padding-right: 20px;
   cursor: pointer;
 }
 .search-sort select:hover {
-  border-color: var(--dark-gray);
+  border-color: var(--input-border-color-hover);
 }
 .search-sort .select i {
   position: absolute;

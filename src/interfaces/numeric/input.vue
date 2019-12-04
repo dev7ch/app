@@ -7,7 +7,8 @@
     :icon-left="options.iconLeft"
     :icon-right="options.iconRight"
     :step="step"
-    @input="$emit('input', Number($event))"
+    :monospace="options.monospace"
+    @input="$emit('input', $event)"
   ></v-input>
 </template>
 
